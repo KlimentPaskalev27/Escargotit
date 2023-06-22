@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snail Farming Web Application</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Snail Farming Web Application</h1>
+        <p>A convenient solution for managing your snail farming business</p>
+    </header>
+
+    <section class="benefits">
+        <h2>Benefits of using our Snail Farming Web App</h2>
+        <ul>
+            <li>Efficient tracking of snail bed conditions</li>
+            <li>Optimized feed management for improved productivity</li>
+            <li>Effective monitoring of snail health and medication</li>
+            <li>Streamlined inventory management for farm supplies</li>
+            <li>Accurate performance analysis for informed decision-making</li>
+        </ul>
+    </section>
+
+    <section class="cta">
+        <h2>Start managing your snail farm today!</h2>
+        <a href="{% url 'register' %}" class="btn">Register for Free</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Snail Farming Web Application. All rights reserved.</p>
+    </footer>
+</body>
+</html>
