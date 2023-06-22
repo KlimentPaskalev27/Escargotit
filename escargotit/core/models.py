@@ -34,3 +34,39 @@ class SnailBed(models.Model):
     
     def __str__(self):
         return f"Snail Bed #{self.id}"
+    
+
+class SnailFeed(models.Model):
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=255)
+    stock_amount = models.PositiveIntegerField()
+    
+    def __str__(self):
+        return self.name
+
+
+class Medicine(models.Model):
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=255)
+    stock_amount = models.PositiveIntegerField()
+    
+    def __str__(self):
+        return self.name
+
+
+class StaffUsableItems(models.Model):
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=255)
+    stock_amount = models.PositiveIntegerField()
+    
+    def __str__(self):
+        return self.name
+
+
+class InventoryPanel(models.Model):
+    snail_feed = models.ForeignKey(SnailFeed, on_delete=models.CASCADE)
+    medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
+    staff_usable_items = models.ForeignKey(StaffUsableItems, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"Inventory Panel #{self.id}"
