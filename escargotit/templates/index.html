@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Squares with Analytics</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .square {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            display: inline-block;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Squares with Analytics</h1>
+        <div class="row">
+            <div class="square" data-toggle="modal" data-target="#analyticsModal1"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal2"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal3"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal4"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal5"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal6"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal7"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal8"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal9"></div>
+            <div class="square" data-toggle="modal" data-target="#analyticsModal10"></div>
+        </div>
+    </div>
+
+    <!-- Modal 1 -->
+    <div class="modal fade" id="analyticsModal1" tabindex="-1" role="dialog" aria-labelledby="analyticsModalLabel1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="analyticsModalLabel1">Analytics for Square 1</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Analytics data for Square 1 goes here -->
+                    <p>Sample analytics data for Square 1</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals 2-10 follow the same structure with different IDs and content -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

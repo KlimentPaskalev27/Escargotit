@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snail Bed Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .dashboard-card {
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Snail Bed Dashboard</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h3>Snail Bed Analytics 1</h3>
+                    <p>Humidity: {{ snail_bed.humidity }}</p>
+                    <p>Temperature: {{ snail_bed.temperature }}</p>
+                    <p>Productivity: {{ snail_bed.productivity }}</p>
+                    <p>Mortality Rate: {{ snail_bed.mortality_rate }}</p>
+                    <p>Feed Level: {{ snail_bed.feed_level }}</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h3>Snail Bed Analytics 2</h3>
+                    <!-- Add additional fields here -->
+                </div>
+            </div>
+
+            <!-- Add more columns and cards for additional analytics -->
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

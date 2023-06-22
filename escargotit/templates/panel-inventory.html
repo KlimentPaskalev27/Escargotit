@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory Panel Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .dashboard-card {
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inventory Panel Dashboard</h1>
+        
+        {% for inventory in inventory_list %}
+            <div class="dashboard-card">
+                <h3>Inventory Panel #{{ inventory.id }}</h3>
+                <h4>Snail Feed</h4>
+                <p>Name: {{ inventory.snail_feed.name }}</p>
+                <p>Category: {{ inventory.snail_feed.category }}</p>
+                <p>Stock Amount: {{ inventory.snail_feed.stock_amount }}</p>
+                
+                <h4>Medicine</h4>
+                <p>Name: {{ inventory.medicine.name }}</p>
+                <p>Category: {{ inventory.medicine.category }}</p>
+                <p>Stock Amount: {{ inventory.medicine.stock_amount }}</p>
+                
+                <h4>Staff Usable Items</h4>
+                <p>Name: {{ inventory.staff_usable_items.name }}</p>
+                <p>Category: {{ inventory.staff_usable_items.category }}</p>
+                <p>Stock Amount: {{ inventory.staff_usable_items.stock_amount }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
