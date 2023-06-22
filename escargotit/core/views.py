@@ -2,7 +2,13 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
+from django.views.generic import CreateView
 
+class IndexCreateView(CreateView):
+    def get(self, request):
+
+        return render(request, 'index.html') 
+    
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
