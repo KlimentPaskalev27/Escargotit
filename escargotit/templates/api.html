@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Data Export</title>
+</head>
+<body>
+    <h1>API Data Export</h1>
+
+    <form method="GET" action="{% url 'api-data-export' %}">
+        <label for="format">Select Export Format:</label>
+        <select id="format" name="format">
+            <option value="csv">CSV</option>
+            <option value="json">JSON</option>
+        </select>
+        <br>
+        <input type="submit" value="Export">
+    </form>
+
+    {% if data %}
+        <h2>Data:</h2>
+        <pre>{{ data }}</pre>
+    {% endif %}
+</body>
+</html>

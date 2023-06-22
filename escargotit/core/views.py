@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import *
 
 def login_view(request):
     if request.method == 'POST':
@@ -17,3 +19,35 @@ def login_view(request):
             return render(request, 'login.html', {'error_message': error_message})
     
     return render(request, 'login.html')
+
+
+
+# def api_data_export(request):
+#     format = request.GET.get('format')
+
+#     # Retrieve data from your API or database
+#     data = YourModel.objects.all().values()
+
+#     if format == 'csv':
+#         # Generate CSV data
+#         response = HttpResponse(content_type='text/csv')
+#         response['Content-Disposition'] = 'attachment; filename="data.csv"'
+
+#         # Write CSV data to response
+#         writer = csv.DictWriter(response, fieldnames=data[0].keys())
+#         writer.writeheader()
+#         for row in data:
+#             writer.writerow(row)
+
+#         return response
+#     elif format == 'json':
+#         # Generate JSON data
+#         response = HttpResponse(content_type='application/json')
+#         response['Content-Disposition'] = 'attachment; filename="data.json"'
+
+#         # Write JSON data to response
+#         response.write(json.dumps(list(data), indent=4))
+
+#         return response
+
+#     return render(request, 'api_data_export.html', {'data': data})
