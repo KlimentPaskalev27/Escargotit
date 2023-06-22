@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'core',
     'bootstrap4',
-    'fontawesomefree',
+    #'fontawesomefree',
     'jquery',
     'django.contrib.admin',
     'django.contrib.auth',
