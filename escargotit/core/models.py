@@ -70,3 +70,99 @@ class InventoryPanel(models.Model):
     
     def __str__(self):
         return f"Inventory Panel #{self.id}"
+    
+
+class SnailPerformance(models.Model):
+    birth_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    mortality_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    feed_consumption = models.DecimalField(max_digits=10, decimal_places=2)
+    time_to_maturity = models.DecimalField(max_digits=5, decimal_places=2)
+    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
+
+    @property
+    def snail_performance(self):
+        return (self.birth_rate - self.mortality_rate) * self.feed_consumption / self.time_to_maturity
+
+    def __str__(self):
+        return f"Snail Performance for Snail Bed #{self.snail_bed.id}"
+    
+
+
+ANIMAL_FEED_INGREDIENTS = [
+    ('Corn', 'Corn'),
+    ('Soybean Meal', 'Soybean Meal'),
+    ('Wheat', 'Wheat'),
+    ('Barley', 'Barley'),
+    ('Oats', 'Oats'),
+    ('Fish Meal', 'Fish Meal'),
+    ('Bone Meal', 'Bone Meal'),
+    ('Canola Meal', 'Canola Meal'),
+    ('Cottonseed Meal', 'Cottonseed Meal'),
+    ('Peas', 'Peas'),
+    ('Rice Bran', 'Rice Bran'),
+    ('Alfalfa Meal', 'Alfalfa Meal'),
+    ('Molasses', 'Molasses'),
+    ('Dried Distillers Grains', 'Dried Distillers Grains'),
+    ('Sunflower Meal', 'Sunflower Meal'),
+]
+
+class Feed(models.Model):
+    ingredient = models.CharField(max_length=100, choices=ANIMAL_FEED_INGREDIENTS)
+    # Add other fields as needed
+
+    def __str__(self):
+        return self.ingredient
+    
+
+STAFF_USABLE_ITEMS = [
+    ('Shovel', 'Shovel'),
+    ('Rake', 'Rake'),
+    ('Wheelbarrow', 'Wheelbarrow'),
+    ('Pruning Shears', 'Pruning Shears'),
+    ('Gloves', 'Gloves'),
+    ('Bucket', 'Bucket'),
+    ('Hoe', 'Hoe'),
+    ('Sprayer', 'Sprayer'),
+    ('Secateurs', 'Secateurs'),
+    ('Pitchfork', 'Pitchfork'),
+]
+
+class StaffUsableItems(models.Model):
+    item = models.CharField(max_length=100, choices=STAFF_USABLE_ITEMS)
+    # Add other fields as needed
+
+    def __str__(self):
+        return self.item
+    
+
+
+CLEANING_PRODUCTS = [
+    ('Sanitizing Solution', 'Sanitizing Solution'),
+    ('Degreaser', 'Degreaser'),
+    ('All-Purpose Cleaner', 'All-Purpose Cleaner'),
+    ('Disinfectant Spray', 'Disinfectant Spray'),
+    ('Floor Cleaner', 'Floor Cleaner'),
+    ('Glass Cleaner', 'Glass Cleaner'),
+    ('Oven Cleaner', 'Oven Cleaner'),
+    ('Drain Cleaner', 'Drain Cleaner'),
+    ('Stainless Steel Polish', 'Stainless Steel Polish'),
+    ('Dishwashing Liquid', 'Dishwashing Liquid'),
+    ('Surface Disinfectant', 'Surface Disinfectant'),
+    ('Air Freshener', 'Air Freshener'),
+    ('Carpet Cleaner', 'Carpet Cleaner'),
+    ('Tile and Grout Cleaner', 'Tile and Grout Cleaner'),
+    ('Mold and Mildew Remover', 'Mold and Mildew Remover'),
+    ('Hand Soap', 'Hand Soap'),
+    ('Insecticide', 'Insecticide'),
+    ('Floor Polish', 'Floor Polish'),
+    ('Lubricant', 'Lubricant'),
+    ('Rust Remover', 'Rust Remover'),
+]
+
+
+class CleaningProducts(models.Model):
+    product = models.CharField(max_length=100, choices=CLEANING_PRODUCTS)
+    # Add other fields as needed
+
+    def __str__(self):
+        return self.product
