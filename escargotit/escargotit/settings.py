@@ -59,6 +59,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Other middleware classes
+    # 'core.middleware.UserAdminMiddleware',
 ]
 
 ROOT_URLCONF = 'escargotit.urls'
