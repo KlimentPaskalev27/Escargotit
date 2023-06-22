@@ -21,7 +21,27 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+     # Homepage
     path('', views.home, name='home'),
+
+    # Terms and Conditions
+    path('terms/', views.terms_and_conditions, name='terms'),
+
+    # Snail Bed Form
+    path('snailbed/new/', views.create_snail_bed, name='create_snail_bed'),
+
+    # Inventory Panel Form
+    path('inventory/panel/new/', views.create_inventory_panel, name='create_inventory_panel'),
+
+    # User Registration Form
+    path('register/', views.register, name='register'),
+
+    # Login Form
+    path('login/', views.login, name='login'),
+
+    # API Data Export
+    path('api/data/export/', views.api_data_export, name='api-data-export'),
+
 
     # URLs for forms
     path('create_snail_bed/', views.create_snail_bed, name='create_snail_bed'),
