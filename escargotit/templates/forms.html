@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Record</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Record</h1>
+        
+        <!-- Snail Feed Form -->
+        <h2>Snail Feed</h2>
+        <form method="post" action="{% url 'snail_feed_create' %}">
+            {% csrf_token %}
+            {{ snail_feed_form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        
+        <!-- Medicine Form -->
+        <h2>Medicine</h2>
+        <form method="post" action="{% url 'medicine_create' %}">
+            {% csrf_token %}
+            {{ medicine_form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        
+        <!-- Staff Usable Items Form -->
+        <h2>Staff Usable Items</h2>
+        <form method="post" action="{% url 'staff_usable_items_create' %}">
+            {% csrf_token %}
+            {{ staff_usable_items_form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        
+        <!-- Inventory Panel Form -->
+        <h2>Inventory Panel</h2>
+        <form method="post" action="{% url 'inventory_panel_create' %}">
+            {% csrf_token %}
+            {{ inventory_panel_form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
