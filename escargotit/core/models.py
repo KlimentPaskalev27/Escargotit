@@ -1,5 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
+from django.contrib.auth import get_user_model
+from django.utils.text import slugify #used to get a string with spaces and convert into %20 for urls
+import uuid #generate unique id 
+from datetime import datetime # be able to record ate and time of event or object
+
+# DJango auth user_model that comes with username, email and password fields, as well as many other
+User = get_user_model()
 
 class Admin(models.Model):
     # Additional fields for the admin model

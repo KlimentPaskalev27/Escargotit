@@ -3,28 +3,31 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
 from django.views.generic import CreateView
+from django.contrib.auth.models import User, auth #auth allows authentication
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required # give access only for logged in users
 
 class IndexCreateView(CreateView):
     def get(self, request):
 
         return render(request, 'index.html') 
     
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+# def login_view(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
         
-        if user is not None:
-            login(request, user)
-            # Redirect to a success page
-            return redirect('success')
-        else:
-            # Display an error message
-            error_message = 'Invalid username or password.'
-            return render(request, 'login.html', {'error_message': error_message})
+#         if user is not None:
+#             login(request, user)
+#             # Redirect to a success page
+#             return redirect('success')
+#         else:
+#             # Display an error message
+#             error_message = 'Invalid username or password.'
+#             return render(request, 'login.html', {'error_message': error_message})
     
-    return render(request, 'login.html')
+#     return render(request, 'login.html')
 
 
 

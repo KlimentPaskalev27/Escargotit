@@ -37,12 +37,12 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'django_extensions',
-    'rest_framework',
+    #'django_extensions',
+    #'rest_framework',
     'core',
-    'bootstrap4',
+    #'bootstrap4',
     #'fontawesomefree',
-    'jquery',
+    #'jquery',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -146,4 +146,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # specify Login url so that login_required decorators can redirect here
 LOGIN_REDIRECT_URL = 'index'
-LOGIN_URL = 'login'
+#LOGIN_URL = 'login'
