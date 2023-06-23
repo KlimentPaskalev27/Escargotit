@@ -1,0 +1,131 @@
+<!-- your_template.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snail Performance Dashboard</title>
+    <style>
+        .label {
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .label::after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background-color: #3498db; /* Adjust the color as needed */
+      transition: width 1s ease-in-out;
+    }
+    
+    .label:hover::after {
+      width: 100%;
+    }
+    </style>
+    <style>
+        /* CSS styling for the dashboard */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+        }
+        .dashboard {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard h1 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .dashboard ul {
+            padding: 0;
+            list-style-type: none;
+        }
+        .dashboard li {
+            margin-bottom: 10px;
+        }
+        .dashboard .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Snail Performance Dashboard</h1>
+        <ul>
+            <li><span class="label">Snail Feed:</span> {{ snail_performance.snail_feed }}</li>
+            <li><span class="label">Snail Birth Rate:</span> {{ snail_performance.snail_birth_rate }}</li>
+            <li><span class="label">Snail Mortality Rate:</span> {{ snail_performance.snail_mortality_rate }}</li>
+            <li><span class="label">Time Taken to Mature:</span> {{ snail_performance.time_taken_to_mature }}</li>
+            <li><span class="label">Normalized Birth Rate:</span> {{ snail_performance.normalized_birth_rate }}</li>
+            <li><span class="label">Normalized Mortality Rate:</span> {{ snail_performance.normalized_mortality_rate }}</li>
+            <li><span class="label">Normalized Mortality Rate:</span> {{ snail_performance.bed_performance }}</li>
+        </ul>
+    </div>
+
+
+
+    <script>
+        // Function to animate numbers incrementally
+function animateNumbers(element, startValue, endValue, duration) {
+  let range = endValue - startValue;
+  let current = startValue;
+  let increment = endValue > startValue ? 1 : -1;
+  let stepTime = Math.abs(Math.floor(duration / range));
+  let timer = setInterval(function() {
+    current += increment;
+    element.textContent = current;
+    if (current === endValue) {
+      clearInterval(timer);
+    }
+  }, stepTime);
+}
+
+// Function to animate percentages incrementally
+function animatePercentages(element, startValue, endValue, duration) {
+  let range = endValue - startValue;
+  let current = startValue;
+  let increment = endValue > startValue ? 1 : -1;
+  let stepTime = Math.abs(Math.floor(duration / range));
+  let timer = setInterval(function() {
+    current += increment;
+    element.textContent = current + "%";
+    if (current === endValue) {
+      clearInterval(timer);
+    }
+  }, stepTime);
+}
+
+// Get all elements with class "label"
+const labels = document.querySelectorAll(".label");
+
+// Animate each label element
+labels.forEach(function(label) {
+  // Get the data attributes for startValue, endValue, and duration
+  let startValue = parseInt(label.dataset.start);
+  let endValue = parseInt(label.dataset.end);
+  let duration = parseInt(label.dataset.duration);
+
+  // Check if the label represents a percentage
+  if (label.classList.contains("percentage")) {
+    animatePercentages(label, startValue, endValue, duration);
+  } else {
+    animateNumbers(label, startValue, endValue, duration);
+  }
+});
+
+    </script>
+</body>
+
+
+</html>
