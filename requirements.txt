@@ -3,4 +3,3 @@ django-picklefield==3.1
 neuralprophet==0.6.2
 numpy==1.23.5
 pandas==1.5.3
-pyaf==4.0
