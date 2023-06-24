@@ -130,3 +130,5 @@ class SnailPerformance(models.Model):
     def __str__(self):
         status = str(self.bed_performance) + "%"
         return status
+
+        
