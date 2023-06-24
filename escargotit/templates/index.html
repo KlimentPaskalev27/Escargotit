@@ -78,6 +78,22 @@
    </head>
    <body>
 
+    <div id="bookmarkDiv">
+      <button id="openModalBtn">Give Feedback</button>
+    </div>
+
+    <style>
+     #bookmarkDiv {
+      margin-top: -20px;
+      background-color: #fff;
+      width: max-content;
+      padding: 50px 10px 10px 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #423f3f;
+    }
+
+    </style>
+
 
     
   <div id="modalOverlay">
@@ -102,7 +118,7 @@
          <div class="dashboard">
             <h1>Snail Bed Performance Dashboard</h1>
          </div>
-         <button id="openModalBtn">Give Feedback</button>
+         
          <div class="dashboard">
             <div class="metric-box">
                <h2 class="metric-title">Snail Feed</h2>
@@ -414,7 +430,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 999;
