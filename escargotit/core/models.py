@@ -1,10 +1,15 @@
 import numpy as np
 import pandas as pd
+from pyaf import ForecastEngine
 import pyaf.ForecastEngine as autof
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from pyaf import ForecastEngine
+import datetime
+from neuralprophet import NeuralProphet
+from picklefield.fields import PickledObjectField
+
+
 
 class SnailFeed(models.Model):
     consumed_on = models.DateTimeField()
@@ -19,13 +24,15 @@ class SnailFeed(models.Model):
         return status
 
 class SnailBirthRate(models.Model):
+    birth_date = models.DateField()
+    #birth_date = models.DateTimeField()
     preexisting_snail_amount = models.IntegerField()
     newly_hatched_snails = models.IntegerField()
     birth_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # if self.preexisting_snail_amount and self.newly_hatched_snails:
-        #     self.birth_rate_percentage = (self.newly_hatched_snails / self.preexisting_snail_amount) * 100
+        if self.preexisting_snail_amount and self.newly_hatched_snails:
+           self.birth_rate_percentage = (self.newly_hatched_snails / self.preexisting_snail_amount) * 100
         super().save(*args, **kwargs)
 
     @property
@@ -140,7 +147,8 @@ class SnailPerformance(models.Model):
 
 class ForecastedBirthRate(models.Model):
     forecasted_value = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    forecasted_value_pyaf = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    #forecasted_value_pyaf = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    forecasted_value_pyaf = PickledObjectField()
 
     @staticmethod
     def calculate_forecast():
@@ -162,41 +170,120 @@ class ForecastedBirthRate(models.Model):
     def calculate_forecast_pyaf():
         # Get all previous SnailBirthRate records
         previous_records = SnailBirthRate.objects.all()
-
         # Create a dataframe from previous records
-        data = pd.DataFrame(list(previous_records.values('date', 'birth_rate')))
-
+        data = pd.DataFrame(list(previous_records.values('birth_date', 'newly_hatched_snails')))
         # Rename columns to match PyAF input requirements
-        data.rename(columns={'date': 'Time', 'birth_rate': 'Signal'}, inplace=True)
+        #data.rename(columns={'birth_date': 'Time', 'newly_hatched_snails': 'Signal'}, inplace=True)
+        data.rename(columns={'birth_date': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
+        #data['ds'] = pd.to_datetime(data.ds, format = "%Y-%m-%d").dt.tz_localize(None)
+        #data['ds'] = pd.DatetimeIndex(data['ds'])
 
-        # Initialize the PyAF ForecastEngine
-        engine = ForecastEngine()
 
-        # Fit the model and make the forecast
-        forecast_result = engine.fit(data, 'Time', 'Signal', 1)
-        forecast_df = forecast_result.forecast(forecast_result.data, steps=1)
+        
 
-        # Get the forecasted value
-        forecasted_value_pyaf = forecast_df['Signal_Forecast'].iloc[-1]
 
+        m = NeuralProphet()
+        metrics = m.fit(data, freq="D")
+        forecast1 = m.predict(data)
+        # fig_forecast = m.plot(forecast)
+        # forecasted_value_pyaf = fig_forecast
+        # return forecasted_value_pyaf
+
+        # m = NeuralProphet()
+        # metrics = m.fit(data, freq="D")
+        future = m.make_future_dataframe(data, periods=60)
+        # #forecast = m.predict(future)
+        forecast2 = m.predict(future)
+
+
+
+
+        # data1 = pd.DataFrame(list(previous_records.values('birth_date', 'preexisting_snail_amount')))
+        # data1.rename(columns={'birth_date': 'ds', 'preexisting_snail_amount': 'y'}, inplace=True)
+        # m1 = NeuralProphet()
+        # metrics1 = m1.fit(data1, freq="D")
+        # forecast11 = m1.predict(data1)
+        # future1 = m1.make_future_dataframe(data1, periods=60)
+        # forecast21 = m1.predict(future1)
+        # data1.rename(columns={'birth_date': 'ds', 'preexisting_snail_amount': 'preexisting_snail_amount'}, inplace=True)
+
+        # fig_forecast = m.plot(forecast)
+        # #fig_components = m.plot_components(forecast)
+        # #fig_model = m.plot_parameters()
+        # forecasted_value_pyaf = fig_forecast
+        # return forecasted_value_pyaf
+
+        #according to https://github.com/ourownstory/neural_prophet
+
+        combined = pd.concat([forecast1, forecast2])
+        fig_forecast = m.plot(combined)
+        forecasted_value_pyaf = fig_forecast
         return forecasted_value_pyaf
 
-@receiver(post_save, sender=SnailBirthRate)
-def update_forecasted_birth_rate(sender, instance, **kwargs):
-    # Whenever a new SnailBirthRate record is added, update the ForecastedBirthRate record
-    forecasted_birth_rate = ForecastedBirthRate.objects.first()
-    if forecasted_birth_rate:
-        forecasted_birth_rate.forecasted_value_pyaf = ForecastedBirthRate.calculate_forecast_pyaf()
-        forecasted_birth_rate.save()
-    else:
-        ForecastedBirthRate.objects.create(forecasted_value_pyaf=ForecastedBirthRate.calculate_forecast_pyaf())
+        # # Initialize the PyAF ForecastEngine
+        # engine = ForecastEngine()
+        # # Fit the model and make the forecast
+        # forecast_result = engine.fit(data, 'birth_date', 'newly_hatched_snails', 1)
+        # forecast_df = forecast_result.forecast(forecast_result.data, steps=1)
+        # # Get the forecasted value
+        # forecasted_value_pyaf = forecast_df['Signal_Forecast'].iloc[-1]
+        # return forecasted_value_pyaf
+    #===========================================================
+        # lEngine = autof.cForecastEngine()
+        # lEngine.train(data, 'birth_date', 'newly_hatched_snails', 1)
+        # forecast_result = lEngine
+        # # Fit the model and make the forecast
+        # forecast_df = forecast_result.forecast(forecast_result.data, steps=1)
+        # # Get the forecasted value
+        # forecasted_value_pyaf = forecast_df['Signal_Forecast'].iloc[-1]
 
-@receiver(post_save, sender=SnailBirthRate)
-def update_forecasted_birth_rate(sender, instance, **kwargs):
-    # Whenever a new SnailBirthRate record is added, update the ForecastedBirthRate record
-    forecasted_birth_rate = ForecastedBirthRate.objects.first()
-    if forecasted_birth_rate:
-        forecasted_birth_rate.forecasted_value = ForecastedBirthRate.calculate_forecast()
-        forecasted_birth_rate.save()
-    else:
-        ForecastedBirthRate.objects.create(forecasted_value=ForecastedBirthRate.calculate_forecast())
+        # return forecasted_value_pyaf
+
+        # if __name__ == '__main__':
+        #     # create a forecast engine, the main object handling all the operations
+        #     lEngine = autof.cForecastEngine()
+
+        #     data.rename(columns={'birth_date': 'Date', 'newly_hatched_snails': 'Signal'}, inplace=True)
+        #     df_train = data
+        #     # get the best time series model for predicting one week
+        #     lEngine.train(iInputDS=df_train, iTime='Date', iSignal='Signal', iHorizon=1)
+        #     lEngine.getModelInfo() # => relative error 7% (MAPE)
+
+        #     # predict one week
+        #     df_forecast = lEngine.forecast(iInputDS=df_train, iHorizon=1)
+        #     forecasted_value_pyaf = df_forecast ['Signal']
+        #     return forecasted_value_pyaf
+
+    def save(self, *args, **kwargs):
+        self.forecasted_value = self.calculate_forecast()
+        self.forecasted_value_pyaf = self.calculate_forecast_pyaf()
+
+        #if __name__ == '__main__':
+        #    self.forecasted_value_pyaf = self.calculate_forecast_pyaf()
+            
+        super().save(*args, **kwargs)
+
+# if __name__ == '__main__':
+#     obj = ForecastedBirthRate.objects.first()
+#     forecast = obj.calculate_forecast_pyaf()
+#     obj.forecasted_value_pyaf = forecast
+
+# @receiver(post_save, sender=SnailBirthRate)
+# def update_forecasted_birth_rate_pyaf(sender, instance, **kwargs):
+#     # Whenever a new SnailBirthRate record is added, update the ForecastedBirthRate record
+#     forecasted_birth_rate = ForecastedBirthRate.objects.first()
+#     if forecasted_birth_rate:
+#         forecasted_birth_rate.forecasted_value_pyaf = ForecastedBirthRate.calculate_forecast_pyaf()
+#         forecasted_birth_rate.save()
+#     else:
+#         ForecastedBirthRate.objects.create(forecasted_value_pyaf=ForecastedBirthRate.calculate_forecast_pyaf())
+
+# @receiver(post_save, sender=SnailBirthRate)
+# def update_forecasted_birth_rate(sender, instance, **kwargs):
+#     # Whenever a new SnailBirthRate record is added, update the ForecastedBirthRate record
+#     forecasted_birth_rate = ForecastedBirthRate.objects.first()
+#     if forecasted_birth_rate:
+#         forecasted_birth_rate.forecasted_value = ForecastedBirthRate.calculate_forecast()
+#         forecasted_birth_rate.save()
+#     else:
+#         ForecastedBirthRate.objects.create(forecasted_value=ForecastedBirthRate.calculate_forecast())
