@@ -1,11 +1,8 @@
 import numpy as np
 import pandas as pd
-from pyaf import ForecastEngine
-import pyaf.ForecastEngine as autof
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import datetime
 from neuralprophet import NeuralProphet
 from picklefield.fields import PickledObjectField
 
