@@ -102,14 +102,15 @@ def dashboard(request):
 
 def register(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        email = request.POST['email']
-        user = User.objects.create_user(username=username, password=password, email=email)
-        login(request, user)  # Log the user in after registration
-        # Redirect to a success page or dashboard
-        return redirect('dashboard')
-    return render(request, 'registration/register.html')
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'registration/register.html', {'form': form})
 
 
 def login_view(request):
