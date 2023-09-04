@@ -7,11 +7,23 @@
 </head>
 <body>
     <h1>User Settings</h1>
+    <h2>Update User Details</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ user_form.as_p }}
         <button type="submit">Update</button>
     </form>
+
+    <h2>Change Password</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ password_form.as_p }}
+        <button type="submit">Change Password</button>
+    </form>
+    {% for error in password_form.non_field_errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+
     <p><a href="{% url 'dashboard' %}">Back to Dashboard</a></p>
 </body>
 </html>

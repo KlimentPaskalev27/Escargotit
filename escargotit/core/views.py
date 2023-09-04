@@ -5,7 +5,8 @@ from .models import *
 from django.contrib.auth.models import User 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 
 def index(request):
@@ -135,11 +136,25 @@ def logout_view(request):
 
 @login_required
 def user_settings(request):
+    user = request.user
+
     if request.method == 'POST':
-        form = UserChangeForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
+        user_form = UserChangeForm(request.POST, instance=user)
+        password_form = PasswordChangeForm(user, request.POST)
+
+        if user_form.is_valid():
+            user_form.save()
+            # Update session auth hash to prevent automatic logout
+            update_session_auth_hash(request, user)
             return redirect('user_settings')  # Redirect after successful update
+
+        if password_form.is_valid():
+            password_form.save()
+            # Update session auth hash after password change
+            update_session_auth_hash(request, user)
+            return redirect('user_settings')  # Redirect after successful password change
     else:
-        form = UserChangeForm(instance=request.user)
-    return render(request, 'registration/user_settings.html', {'form': form})
+        user_form = UserChangeForm(instance=user)
+        password_form = PasswordChangeForm(user)
+
+    return render(request, 'registration/user_settings.html', {'user_form': user_form, 'password_form': password_form})
