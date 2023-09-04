@@ -130,8 +130,3 @@ def logout_view(request):
     logout(request)
     # Redirect to a logout success page or login page
     return redirect('login')
-
-
-@login_required
-def protected_view(request):
-    # View code for authenticated users
