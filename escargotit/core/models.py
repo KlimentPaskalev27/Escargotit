@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from neuralprophet import NeuralProphet
 from picklefield.fields import PickledObjectField
-
+from django.contrib.auth.models import User
 
 
 class SnailFeed(models.Model):
@@ -22,7 +22,6 @@ class SnailFeed(models.Model):
 
 class SnailBirthRate(models.Model):
     birth_date = models.DateField()
-    #birth_date = models.DateTimeField()
     preexisting_snail_amount = models.IntegerField()
     newly_hatched_snails = models.IntegerField()
     birth_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
@@ -82,9 +81,6 @@ class TimeTakenToMature(models.Model):
     days_to_mature = models.PositiveIntegerField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # if self.snail_hatched and self.snail_matured:
-        #     time_difference = self.snail_matured - self.snail_hatched
-        #     self.days_to_mature = time_difference.days
         super().save(*args, **kwargs)
 
     @property
@@ -113,17 +109,6 @@ class SnailPerformance(models.Model):
     bed_performance = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # if self.snail_birth_rate and self.snail_mortality_rate:
-        #     maximum_birth_rate = SnailBirthRate.objects.order_by('-birth_rate_percentage').first().birth_rate_percentage
-        #     maximum_mortality_rate = SnailMortalityRate.objects.order_by('-mortality_rate_percentage').first().mortality_rate_percentage
-
-        #     if maximum_birth_rate and maximum_birth_rate > 0:
-        #         self.normalized_birth_rate = (self.snail_birth_rate.birth_rate_percentage / maximum_birth_rate) * 100
-
-        #     if maximum_mortality_rate and maximum_mortality_rate > 0:
-        #         self.normalized_mortality_rate = (self.snail_mortality_rate.mortality_rate_percentage / maximum_mortality_rate) * 100
-
-        # self.bed_performance = (birth_rate_percentage - mortality_rate_percentage) * ( 1 * (expected_time_to_maturity / time_taken_to_mature))
         super().save(*args, **kwargs)
 
     @property
@@ -144,7 +129,6 @@ class SnailPerformance(models.Model):
 
 class ForecastedBirthRate(models.Model):
     forecasted_value = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    #forecasted_value_pyaf = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     forecasted_value_pyaf = PickledObjectField()
 
     @staticmethod
@@ -170,117 +154,51 @@ class ForecastedBirthRate(models.Model):
         # Create a dataframe from previous records
         data = pd.DataFrame(list(previous_records.values('birth_date', 'newly_hatched_snails')))
         # Rename columns to match PyAF input requirements
-        #data.rename(columns={'birth_date': 'Time', 'newly_hatched_snails': 'Signal'}, inplace=True)
         data.rename(columns={'birth_date': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
-        #data['ds'] = pd.to_datetime(data.ds, format = "%Y-%m-%d").dt.tz_localize(None)
-        #data['ds'] = pd.DatetimeIndex(data['ds'])
-
-
-        
-
 
         m = NeuralProphet()
         metrics = m.fit(data, freq="D")
         forecast1 = m.predict(data)
-        # fig_forecast = m.plot(forecast)
-        # forecasted_value_pyaf = fig_forecast
-        # return forecasted_value_pyaf
 
         # m = NeuralProphet()
-        # metrics = m.fit(data, freq="D")
         future = m.make_future_dataframe(data, periods=60)
-        # #forecast = m.predict(future)
         forecast2 = m.predict(future)
 
 
-
-
-        # data1 = pd.DataFrame(list(previous_records.values('birth_date', 'preexisting_snail_amount')))
-        # data1.rename(columns={'birth_date': 'ds', 'preexisting_snail_amount': 'y'}, inplace=True)
-        # m1 = NeuralProphet()
-        # metrics1 = m1.fit(data1, freq="D")
-        # forecast11 = m1.predict(data1)
-        # future1 = m1.make_future_dataframe(data1, periods=60)
-        # forecast21 = m1.predict(future1)
-        # data1.rename(columns={'birth_date': 'ds', 'preexisting_snail_amount': 'preexisting_snail_amount'}, inplace=True)
-
-        # fig_forecast = m.plot(forecast)
-        # #fig_components = m.plot_components(forecast)
-        # #fig_model = m.plot_parameters()
-        # forecasted_value_pyaf = fig_forecast
-        # return forecasted_value_pyaf
-
         #according to https://github.com/ourownstory/neural_prophet
-
         combined = pd.concat([forecast1, forecast2])
         fig_forecast = m.plot(combined)
         forecasted_value_pyaf = fig_forecast
         return forecasted_value_pyaf
 
-        # # Initialize the PyAF ForecastEngine
-        # engine = ForecastEngine()
-        # # Fit the model and make the forecast
-        # forecast_result = engine.fit(data, 'birth_date', 'newly_hatched_snails', 1)
-        # forecast_df = forecast_result.forecast(forecast_result.data, steps=1)
-        # # Get the forecasted value
-        # forecasted_value_pyaf = forecast_df['Signal_Forecast'].iloc[-1]
-        # return forecasted_value_pyaf
-    #===========================================================
-        # lEngine = autof.cForecastEngine()
-        # lEngine.train(data, 'birth_date', 'newly_hatched_snails', 1)
-        # forecast_result = lEngine
-        # # Fit the model and make the forecast
-        # forecast_df = forecast_result.forecast(forecast_result.data, steps=1)
-        # # Get the forecasted value
-        # forecasted_value_pyaf = forecast_df['Signal_Forecast'].iloc[-1]
-
-        # return forecasted_value_pyaf
-
-        # if __name__ == '__main__':
-        #     # create a forecast engine, the main object handling all the operations
-        #     lEngine = autof.cForecastEngine()
-
-        #     data.rename(columns={'birth_date': 'Date', 'newly_hatched_snails': 'Signal'}, inplace=True)
-        #     df_train = data
-        #     # get the best time series model for predicting one week
-        #     lEngine.train(iInputDS=df_train, iTime='Date', iSignal='Signal', iHorizon=1)
-        #     lEngine.getModelInfo() # => relative error 7% (MAPE)
-
-        #     # predict one week
-        #     df_forecast = lEngine.forecast(iInputDS=df_train, iHorizon=1)
-        #     forecasted_value_pyaf = df_forecast ['Signal']
-        #     return forecasted_value_pyaf
-
     def save(self, *args, **kwargs):
         self.forecasted_value = self.calculate_forecast()
         self.forecasted_value_pyaf = self.calculate_forecast_pyaf()
 
-        #if __name__ == '__main__':
-        #    self.forecasted_value_pyaf = self.calculate_forecast_pyaf()
-            
         super().save(*args, **kwargs)
 
-# if __name__ == '__main__':
-#     obj = ForecastedBirthRate.objects.first()
-#     forecast = obj.calculate_forecast_pyaf()
-#     obj.forecasted_value_pyaf = forecast
 
-# @receiver(post_save, sender=SnailBirthRate)
-# def update_forecasted_birth_rate_pyaf(sender, instance, **kwargs):
-#     # Whenever a new SnailBirthRate record is added, update the ForecastedBirthRate record
-#     forecasted_birth_rate = ForecastedBirthRate.objects.first()
-#     if forecasted_birth_rate:
-#         forecasted_birth_rate.forecasted_value_pyaf = ForecastedBirthRate.calculate_forecast_pyaf()
-#         forecasted_birth_rate.save()
-#     else:
-#         ForecastedBirthRate.objects.create(forecasted_value_pyaf=ForecastedBirthRate.calculate_forecast_pyaf())
 
-# @receiver(post_save, sender=SnailBirthRate)
-# def update_forecasted_birth_rate(sender, instance, **kwargs):
-#     # Whenever a new SnailBirthRate record is added, update the ForecastedBirthRate record
-#     forecasted_birth_rate = ForecastedBirthRate.objects.first()
-#     if forecasted_birth_rate:
-#         forecasted_birth_rate.forecasted_value = ForecastedBirthRate.calculate_forecast()
-#         forecasted_birth_rate.save()
-#     else:
-#         ForecastedBirthRate.objects.create(forecasted_value=ForecastedBirthRate.calculate_forecast())
+class SnailBed(models.Model):
+    # Fields specific to SnailBed
+    bed_name = models.CharField(max_length=100, unique=True)
+    location = models.CharField(max_length=255)
+    # Add any other fields specific to SnailBed here
+
+    # Inherit fields and relationships from other models
+    snail_feed = models.ForeignKey('SnailFeed', on_delete=models.CASCADE)
+    snail_birth_rate = models.ForeignKey('SnailBirthRate', on_delete=models.CASCADE)
+    snail_mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.CASCADE)
+    time_taken_to_mature = models.ForeignKey('TimeTakenToMature', on_delete=models.CASCADE)
+    snail_performance = models.ForeignKey('SnailPerformance', on_delete=models.CASCADE)
+    forecasted_birth_rate = models.ForeignKey('ForecastedBirthRate', on_delete=models.CASCADE)
+
+    # Add any additional fields or methods specific to SnailBed here
+
+    # User reference
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.bed_name
+
+
