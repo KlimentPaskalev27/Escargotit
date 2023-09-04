@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <!-- Add Bootstrap CSS and JS links (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+     
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <!-- Left side content -->
+                <h1>Welcome, {{ user_profile.username }}!</h1>
+                <p>User Profile Information:</p>
+                <ul>
+                    <li>Full Name: {{ user_profile.first_name }} {{ user_profile.last_name }}</li>
+                    <li>Email: {{ user_profile.email }}</li>
+                    <!-- Add more profile information here -->
+                </ul>
+
+
+                <h2>Access Forms</h2>
+                <ul>
+                    <li><a href="{% url 'snail_data_form' %}">Snail Feed Form</a></li>
+            
+                    <!-- Add links for other forms -->
+                </ul>
+
+            </div>
+            <div class="col">
+                <!-- Right side content -->
+
+                <h2>Snail Bed Boxes</h2>
+                <div class="rectangle">
+                    <!-- Generate snail boxes here -->
+
+                </div>
+                <button id="add-box-button" class="btn btn-primary btn-lg">Add Box</button>
+             
+            </div>
+        </div>
+        <!-- Container to display selected box data -->
+        <div id="selected-box-data" class="container" style="display: none;">
+            <h3>Selected Box Data</h3>
+            <div id="box-name"></div>
+            <div id="box-statistics"></div>
+        </div>
+
+
+    <script>
+    
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const rectangle = document.querySelector(".rectangle");
+            const addButton = document.getElementById("add-box-button");
+            const selectedBoxData = document.getElementById("selected-box-data");
+            const boxName = document.getElementById("box-name");
+            const boxStatistics = document.getElementById("box-statistics");
+
+            let selectedBox = null; // Store the currently selected box
+
+            addButton.addEventListener("click", function () {
+                // Generate random name and statistics
+                const randomName = "Box " + (rectangle.children.length + 1);
+                const randomStatistics = "Statistics: " + Math.floor(Math.random() * 100);
+
+                // Create a new Snail Bed Box
+                const newBox = document.createElement("div");
+                newBox.classList.add("snail-box", "empty");
+                newBox.innerText = randomName;
+
+                // Add the new box to the rectangle
+                rectangle.appendChild(newBox);
+
+                // Toggle box border when clicked
+                newBox.addEventListener("click", function () {
+                    if (selectedBox) {
+                        selectedBox.classList.remove("expanded");
+                    }
+
+                    selectedBox = newBox;
+                    selectedBox.classList.add("expanded");
+
+                    // Show selected box data
+                    selectedBoxData.style.display = "block";
+                    boxName.innerText = randomName;
+                    boxStatistics.innerText = randomStatistics;
+                });
+            });
+        });
+
+
+
+    </script>
+
+
+<style>
+    .rectangle {
+    width: 50%; /* Takes the right half of the screen */
+    border: 2px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.snail-box {
+    width: calc(25% - 20px); /* 25% of the rectangle width with some spacing */
+    border: 2px dashed #ccc;
+    margin: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: border 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.snail-box.empty {
+    background-color: #f0f0f0;
+}
+
+.snail-box.expanded {
+    border: 2px solid #000;
+}
+
+
+</style>
+</body>
+</html>
