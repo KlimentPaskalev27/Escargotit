@@ -1,0 +1,39 @@
+{% load filters %} 
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Snail Data Form</title>
+</head>
+<body>
+    <h1>Snail Data Form</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snail Data Form</title>
+</head>
+<body>
+    <h1>Snail Data Form</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ snail_feed_form.as_p }}
+        {{ snail_birth_rate_form.as_p }}
+        {{ snail_mortality_rate_form.as_p }}
+        {{ time_taken_to_mature_form.as_p }}
+        {{ snail_performance_form.as_p }}
+
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>
