@@ -36,7 +36,7 @@
          }
          .metric-value.percentage.mortality.label {
          color: #db3445;
-         }
+         }*/
          .metric-value.label::after {
          content: "";
          display: block;
@@ -45,23 +45,20 @@
          left: 0;
          width: 0;
          height: 100%;
-         background-color: #3498db;
          transition: width 1s ease-in-out;
+         margin-left: 10px;
          }
          .percentage.label::after {
          content: "%";
          display: inline-block;
-         color: #3498db;
+         color: #ffffff;
          font-size: 32px;
          position: relative;
          }
-         .percentage.mortality.label::after {
-         color: #db3445;
-         }
+
          .days.label::after {
          content: "days";
          display: inline-block;
-         color: #3498db;
          font-size: 20px;
          position: relative;
          margin-left: 10px;
@@ -69,11 +66,19 @@
          .feed.label::after {
          content: "grams";
          display: inline-block;
-         color: #3498db;
          font-size: 20px;
          position: relative;
-         margin-left: 10px;
-         } */
+         
+         } 
+
+         span.metric-value.label {
+          padding-right: 40px;
+         }
+
+         span.metric-value.label.feed,
+         span.metric-value.label.days {
+          padding-right: 60px;
+         }
       </style>
    </head>
    <body>
