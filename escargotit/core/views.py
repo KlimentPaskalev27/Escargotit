@@ -5,6 +5,7 @@ from .models import *
 from django.contrib.auth.models import User 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserChangeForm
 
 
 def index(request):
@@ -130,3 +131,15 @@ def logout_view(request):
     logout(request)
     # Redirect to a logout success page or login page
     return redirect('login')
+
+
+@login_required
+def user_settings(request):
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_settings')  # Redirect after successful update
+    else:
+        form = UserChangeForm(instance=request.user)
+    return render(request, 'registration/user_settings.html', {'form': form})
