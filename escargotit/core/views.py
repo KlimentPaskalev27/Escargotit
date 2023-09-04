@@ -4,6 +4,7 @@ from .forms import *
 from .models import *
 from django.contrib.auth.models import User 
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -124,9 +125,13 @@ def login_view(request):
     return render(request, 'registration/login.html')
 
 
-
+@login_required
 def logout_view(request):
     logout(request)
     # Redirect to a logout success page or login page
     return redirect('login')
 
+
+@login_required
+def protected_view(request):
+    # View code for authenticated users
