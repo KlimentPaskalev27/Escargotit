@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from .forms import *
 from .models import *
 from django.contrib.auth.models import User 
+from django.contrib.auth import login, authenticate
 
 
 def index(request):
@@ -94,5 +95,32 @@ def dashboard(request):
    
     context = {'user_profile': dummy_user2}  # Replace '.profile' with your user profile attribute
     return render(request, 'dashboard.html', context)
+
+
+def register(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        email = request.POST['email']
+        user = User.objects.create_user(username=username, password=password, email=email)
+        login(request, user)  # Log the user in after registration
+        # Redirect to a success page or dashboard
+        return redirect('dashboard')
+    return render(request, 'registration/register.html')
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page or dashboard
+            return redirect('dashboard')
+        else:
+            # Handle login failure (e.g., display an error message)
+            return render(request, 'registration/login.html', {'error_message': 'Invalid login credentials'})
+    return render(request, 'registration/login.html')
 
 
