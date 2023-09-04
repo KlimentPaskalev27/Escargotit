@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .forms import *
 from .models import *
 from django.contrib.auth.models import User 
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 
 
 def index(request):
@@ -123,4 +123,10 @@ def login_view(request):
             return render(request, 'registration/login.html', {'error_message': 'Invalid login credentials'})
     return render(request, 'registration/login.html')
 
+
+
+def logout_view(request):
+    logout(request)
+    # Redirect to a logout success page or login page
+    return redirect('login')
 
