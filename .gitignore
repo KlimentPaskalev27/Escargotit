@@ -138,3 +138,15 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+escargotit/lightning_logs/version_0/events.out.tfevents.1687849471.Alienware-15-R2.12676.0
+escargotit/lightning_logs/version_0/events.out.tfevents.1687849484.Alienware-15-R2.12676.1
+escargotit/lightning_logs/version_0/hparams.yaml
+escargotit/lightning_logs/version_1/events.out.tfevents.1687859090.Alienware-15-R2.13564.1
+escargotit/lightning_logs/version_1/events.out.tfevents.1687859090.Alienware-15-R2.13564.2
+escargotit/lightning_logs/version_1/events.out.tfevents.1687859076.Alienware-15-R2.13564.0
+escargotit/lightning_logs/version_1/hparams.yaml
+escargotit/lightning_logs/version_0/events.out.tfevents.1687849484.Alienware-15-R2.12676.2
+escargotit/core/__pycache__/models.cpython-310.pyc
+escargotit/core/__pycache__/views.cpython-310.pyc
+escargotit/core/__pycache__/urls.cpython-310.pyc
+escargotit/core/__pycache__/models.cpython-310.pyc
