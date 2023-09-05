@@ -1,0 +1,80 @@
+{% extends "base/base.html" %}
+{% block title %}Privacy Policy{% endblock %}
+
+
+{% block content %}
+<div class="privacy container mt-5">
+    <h1 class="mb-4">Privacy Policy</h1>
+
+    <!-- Introduction -->
+    <section class="mt-4">
+        <h2>Introduction</h2>
+        <p>This Privacy Policy explains how we collect, use, and protect your personal information when you use our services.</p>
+    </section>
+
+    <!-- Information We Collect -->
+    <section class="mt-4">
+        <h2>Information We Collect</h2>
+        <p>We may collect personal information such as your name, email address, and more when you register or use our services.</p>
+        <!-- Add more details about the information collected -->
+    </section>
+
+    <!-- How We Use Your Information -->
+    <section class="mt-4">
+        <h2>How We Use Your Information</h2>
+        <p>We use your information to provide, maintain, and improve our services. We do not share your personal information with third parties without your consent.</p>
+        <!-- Add more details about how the information is used -->
+    </section>
+
+    <!-- Your Choices -->
+    <section class="mt-4">
+        <h2>Your Choices</h2>
+        <p>You have the right to access, correct, or delete your personal information. You can manage your privacy settings in your account.</p>
+        <!-- Add more details about user choices and control -->
+    </section>
+
+    <!-- Security -->
+    <section class="mt-4">
+        <h2>Security</h2>
+        <p>We take the security of your personal information seriously and implement measures to protect it.</p>
+        <!-- Add more details about security measures -->
+    </section>
+
+    <!-- Contact Us -->
+    <section class="mt-4">
+        <h2>Contact Us</h2>
+        <p>If you have questions or concerns about our Privacy Policy, please <a href="{% url 'contact' %}">contact us</a>.</p>
+    </section>
+</div>
+{% endblock %}
+
+
+<style>
+    .privacy.container {
+        max-width: 800px; /* Limit the container width */
+        background-color: #f8f8f8; /* Light gray background */
+        padding: 20px; /* Add space around content */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Box shadow */
+    }
+
+h1, h2 {
+    font-size: 28px; /* Increase heading font size */
+    color: #333; /* Text color */
+}
+
+p {
+    font-size: 18px; /* Increase paragraph font size */
+    color: #555; /* Text color */
+    margin-bottom: 20px; /* Add margin to paragraphs */
+}
+
+a {
+    color: #007BFF; /* Link color */
+    text-decoration: none; /* Remove underline */
+}
+
+a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+</style>

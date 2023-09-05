@@ -159,3 +159,5 @@ def terms(request):
 def cookies(request):
     return render(request, 'company/cookies.html')
 
+def privacy(request):
+    return render(request, 'company/privacy.html')
