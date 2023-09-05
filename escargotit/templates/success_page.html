@@ -1,12 +1,14 @@
-{% load filters %} 
+{% extends "bootstrap5/layout.html" %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Success</title>
-</head>
-<body>
-    <h1>Success</h1>
+{% load filters %}
 
-</body>
-</html>
+{% block title %}
+    Success
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Success</h1>
+        <p>Your message or action was successful!</p>
+    </div>
+{% endblock %}

@@ -1,39 +1,44 @@
-{% load filters %} 
+{% extends "bootstrap5/layout.html" %}
 
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Snail Data Form</title>
-</head>
-<body>
-    <h1>Snail Data Form</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html> -->
+{% load filters %}
 
+{% block title %}
+    Snail Data Form
+{% endblock %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Snail Data Form</title>
-</head>
-<body>
-    <h1>Snail Data Form</h1>
-    
-    <form method="post">
-        {% csrf_token %}
-        {{ snail_feed_form.as_p }}
-        {{ snail_birth_rate_form.as_p }}
-        {{ snail_mortality_rate_form.as_p }}
-        {{ time_taken_to_mature_form.as_p }}
-        {{ snail_performance_form.as_p }}
-
-        <button type="submit">Submit</button>
-    </form>
-
-</body>
-</html>
+{% block content %}
+    <div class="container mt-4">
+        <h1>Snail Data Form</h1>
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <h2>Snail Feed Form</h2>
+            <div class="mb-3">
+                {{ snail_feed_form.consumed_on.label_tag }} <!-- Label -->
+                {{ snail_feed_form.consumed_on }} <!-- Input field -->
+            </div>
+            <div class="mb-3">
+                {{ snail_feed_form.grams_feed_given.label_tag }}
+                {{ snail_feed_form.grams_feed_given }}
+            </div>
+            
+            <h2>Snail Birth Rate Form</h2>
+            <div class="mb-3">
+                {{ snail_birth_rate_form.birth_date.label_tag }}
+                {{ snail_birth_rate_form.birth_date }}
+            </div>
+            <div class="mb-3">
+                {{ snail_birth_rate_form.preexisting_snail_amount.label_tag }}
+                {{ snail_birth_rate_form.preexisting_snail_amount }}
+            </div>
+            <div class="mb-3">
+                {{ snail_birth_rate_form.newly_hatched_snails.label_tag }}
+                {{ snail_birth_rate_form.newly_hatched_snails }}
+            </div>
+            
+            <!-- Add similar styling for other forms like Snail Mortality Rate, Time Taken To Mature, and Snail Performance -->
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock %}
