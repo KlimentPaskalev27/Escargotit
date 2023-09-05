@@ -45,6 +45,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'terms' %}">Terms & Conditions</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cookies' %}">Cookies Policy</a>
+                    </li>
                     <!-- Add more links for other pages defined in your URLs -->
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
@@ -66,6 +70,11 @@
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
+
+
+    <!-- Include the footer template -->
+    {% include 'base/footer.html' %}
+
 
     <!-- Load Bootstrap JavaScript and jQuery (optional) -->
     {% bootstrap_javascript %}
