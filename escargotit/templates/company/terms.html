@@ -1,0 +1,96 @@
+{% extends "base/base.html" %}
+
+{% block title %}Terms and Conditions{% endblock %}
+
+{% block content %}
+<div class="terms container mt-5">
+    <h1 class="mb-4">Terms and Conditions</h1>
+
+    <p class="lead">These Terms and Conditions ("Terms") govern your use of our website and services provided through the website (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use the Service.</p>
+
+    <h2>1. Acceptance of Terms</h2>
+    <p>By using the Service, you represent that you are of legal age to form a binding contract and are not a person barred from receiving services under the laws of your applicable jurisdiction. If you are using the Service on behalf of an entity, you further represent and warrant that you have the authority to accept these Terms on behalf of that entity.</p>
+
+    <h2>2. Changes to Terms</h2>
+    <p>We reserve the right to modify or replace these Terms at any time. You are responsible for regularly reviewing these Terms. Continued use of the Service after any such changes constitutes your acceptance of the new Terms.</p>
+
+    <h2>3. User Registration</h2>
+    <p>In order to use certain features of the Service, you may be required to register for an account. You agree to provide accurate and complete information when registering and to update your registration information to keep it accurate and complete.</p>
+
+    <h2>4. User Content</h2>
+    <p>You retain ownership of any content you submit, post, or display on or through the Service. By submitting, posting, or displaying content, you grant us a worldwide, non-exclusive, royalty-free license to use, copy, reproduce, process, adapt, modify, publish, transmit, display, and distribute such content in any and all media or distribution methods now known or later developed.</p>
+
+    <h2>5. Prohibited Conduct</h2>
+    <p>When using the Service, you agree not to engage in any of the following prohibited activities:</p>
+    <ul>
+        <li>Violating any applicable laws or regulations.</li>
+        <li>Using the Service for any purpose that is illegal or prohibited by these Terms.</li>
+        <li>Impersonating any person or entity or falsely stating or otherwise misrepresenting your affiliation with a person or entity.</li>
+        <li>Interfering with or disrupting the Service or servers or networks connected to the Service.</li>
+        <li>Harvesting or collecting email addresses or other contact information of other users for the purpose of sending unsolicited communications.</li>
+    </ul>
+
+    <h2>6. Termination</h2>
+    <p>We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, for any reason whatsoever, including if you breach these Terms.</p>
+
+    <h2>7. Limitation of Liability</h2>
+    <p>Our Service is provided "as is" and "as available" without any warranties, express or implied. We shall not be liable for any indirect, incidental, special, consequential, or punitive damages.</p>
+
+    <h2>8. Governing Law</h2>
+    <p>These Terms shall be governed and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.</p>
+
+    <h2>9. Contact Information</h2>
+    <p>If you have any questions about these Terms, please <a href="{% url 'contact' %}">contact us</a>.</p>
+
+    <h2>10. Company Information and Policy of Use</h2>
+    <p>For more information about our company and our policy of use, please visit our <a href="{% url 'about' %}">About Us</a> page.</p>
+
+    <h2>11. Free Registration</h2>
+    <p>Registration on our platform is free for all users. To get started, please <a href="{% url 'register' %}">register here</a>.</p>
+</div>
+
+<style>
+    /* Body styling */
+    body {
+        background-color: #f4f4f4; /* Light grey background */
+        
+    }
+
+    /* Container for the entire page */
+    .terms.container {
+        max-width: 800px; /* Max width for the text container */
+        margin: 0 auto; /* Center align the container */
+        font-size: 18px; /* Larger text */
+        color: #333; /* Text color */
+    }
+
+    /* Box styling for sections */
+    h2 {
+        background-color: #fff; /* White background for section headers */
+        border: 1px solid #ddd; /* Rounded borders for section headers */
+        border-radius: 10px; /* Rounded corners for section headers */
+        padding: 15px; /* Spacing inside section headers */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Shadow for section headers */
+        margin-bottom: 20px; /* Margin between sections */
+    }
+
+    p {
+        padding: 20px; /* Spacing inside content sections */
+        margin-bottom: 30px; /* More margin between content sections */
+    }
+
+    /* Link styling */
+    a {
+        color: #007BFF; /* Link color */
+        text-decoration: underline; /* Underline for links */
+    }
+
+    /* Remove default list styles */
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+</style>
+
+
+{% endblock %}

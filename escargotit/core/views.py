@@ -152,3 +152,7 @@ def contact(request):
 def about(request):
     return render(request, 'company/about.html')
 
+def terms(request):
+    return render(request, 'company/terms.html')
+
+
