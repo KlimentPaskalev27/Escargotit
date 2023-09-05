@@ -8,6 +8,8 @@ from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponseRedirect
 
+from .faq_data import faq_data  # Import the faq_data from the module
+
 def index(request):
     first_snail_performance = SnailPerformance.objects.first()
     forecasts = ForecastedBirthRate.objects.first()
@@ -161,3 +163,6 @@ def cookies(request):
 
 def privacy(request):
     return render(request, 'company/privacy.html')
+
+def faqs(request):
+    return render(request, 'company/faqs.html', {'faq_data': faq_data})

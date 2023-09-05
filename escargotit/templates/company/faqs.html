@@ -1,0 +1,40 @@
+{% extends "base/base.html" %}
+
+{% block title %}Frequently Asked Questions{% endblock %}
+
+{% block content %}
+<!-- FAQs Accordion Dropdowns -->
+<div class="mt-5">
+    <h2>Frequently Asked Questions</h2>
+    <div class="accordion" id="faqAccordion">
+
+        {% for faq in faq_data %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="faqHeading{{ forloop.counter }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse{{ forloop.counter }}" aria-expanded="false" aria-controls="faqCollapse{{ forloop.counter }}">
+                    {{ faq.question }}
+                </button>
+            </h2>
+            <div id="faqCollapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="faqHeading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                    {{ faq.answer | safe }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<script>
+    // Initialize the accordion
+    var accordions = document.querySelectorAll('.accordion-item');
+
+    accordions.forEach(function (accordion) {
+        accordion.addEventListener('click', function () {
+            this.classList.toggle('show');
+        });
+    });
+</script>
+
+{% endblock %}
