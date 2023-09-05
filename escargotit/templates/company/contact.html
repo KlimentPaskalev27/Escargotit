@@ -170,4 +170,24 @@
         <a href="#" class="btn btn-primary">Raise Support Ticket</a>
     </div>
 </div>
+
+
+
+<!-- Load Bootstrap JavaScript and jQuery (required for accordion) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Initialize the accordion
+    $(document).ready(function() {
+        // Add the 'show' class to the first FAQ item to expand it by default
+        $('.accordion .card:first').addClass('show');
+
+        // Handle accordion toggle
+        $('.accordion .btn-link').click(function() {
+            $(this).closest('.card').toggleClass('show');
+            $(this).closest('.card').siblings().removeClass('show');
+        });
+    });
+</script>
 {% endblock %}
