@@ -1,7 +1,12 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from .views import *
+
+from rest_framework.routers import DefaultRouter
+from . import views
+
+router = DefaultRouter()
 
 
 urlpatterns = [
@@ -24,4 +29,13 @@ urlpatterns = [
 
     # User Settings
     path('user/settings/', views.user_settings, name='user_settings'),
+
+
+
+    # Include the API endpoints
+    path('api/', include(router.urls)),
+
+    path('delete_all_snailbeds/', views.delete_all_snailbeds, name='delete_all_snailbeds'),
+
+
 ]

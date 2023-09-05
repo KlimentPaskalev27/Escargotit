@@ -181,17 +181,17 @@ class ForecastedBirthRate(models.Model):
 
 class SnailBed(models.Model):
     # Fields specific to SnailBed
-    bed_name = models.CharField(max_length=100, unique=True)
+    bed_name = models.CharField(max_length=100, unique=False)
     location = models.CharField(max_length=255)
     # Add any other fields specific to SnailBed here
 
     # Inherit fields and relationships from other models
-    snail_feed = models.ForeignKey('SnailFeed', on_delete=models.CASCADE)
-    snail_birth_rate = models.ForeignKey('SnailBirthRate', on_delete=models.CASCADE)
-    snail_mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.CASCADE)
-    time_taken_to_mature = models.ForeignKey('TimeTakenToMature', on_delete=models.CASCADE)
-    snail_performance = models.ForeignKey('SnailPerformance', on_delete=models.CASCADE)
-    forecasted_birth_rate = models.ForeignKey('ForecastedBirthRate', on_delete=models.CASCADE)
+    snail_feed = models.ForeignKey('SnailFeed', on_delete=models.CASCADE, null=True, blank=True)
+    snail_birth_rate = models.ForeignKey('SnailBirthRate', on_delete=models.CASCADE, null=True, blank=True)
+    snail_mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.CASCADE, null=True, blank=True)
+    time_taken_to_mature = models.ForeignKey('TimeTakenToMature', on_delete=models.CASCADE, null=True, blank=True)
+    snail_performance = models.ForeignKey('SnailPerformance', on_delete=models.CASCADE, null=True, blank=True)
+    forecasted_birth_rate = models.ForeignKey('ForecastedBirthRate', on_delete=models.CASCADE, null=True, blank=True)
 
     # Add any additional fields or methods specific to SnailBed here
 

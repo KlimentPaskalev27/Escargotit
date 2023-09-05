@@ -1,5 +1,4 @@
-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from .forms import *
 from .models import *
 from django.contrib.auth.models import User 
@@ -7,7 +6,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-
+from django.http import HttpResponseRedirect
 
 def index(request):
     first_snail_performance = SnailPerformance.objects.first()
@@ -25,20 +24,6 @@ def index(request):
     }
 
     return render(request, 'index.html', context)
-
-
-
-# def snail_data_form(request):
-#     if request.method == 'POST':
-#         form = SnailDataForm(request.POST)
-#         if form.is_valid():
-#             # Process and save the form data to the appropriate models
-#             form.save()
-#             return redirect('success_page')  # Redirect to a success page
-#     else:
-#         form = SnailDataForm()
-
-#     return render(request, 'snail_data_form.html', {'form': form})
 
 
 def snail_data_form(request):
@@ -66,39 +51,34 @@ def snail_data_form(request):
     })
 
 
+
+@login_required
 def dashboard(request):
-    # Replace 'dummy_user' with the user you want to display
-    # dummy_user = User.objects.get(username='dummy_user')
-    # dummy_user = {
-    #     profile: {
-    #         username: "kliment",
-    #         first_name: "kliment",
-    #         last_name: "paskalev",
-    #         email: "kliment@email.com",
+    # Handle the POST request to add a new SnailBed object
+    if request.method == 'POST':
+        # Create a new SnailBed object based on the form data
+        new_snail_bed = SnailBed(
+            bed_name=request.POST.get('bed_name', "name"),
+            user=request.user,
+            location=request.POST.get('location', ''), 
+        )
+        new_snail_bed.save()  # Save the new SnailBed to the database
 
-    #     },
-    # }
+        # After processing the POST request, redirect to the dashboard page using the GET method
+        return HttpResponseRedirect(request.path_info)  # Redirect to the same page (GET request)
 
-    # define a class
-    class User:
-        username= "kliment"
-        first_name= "kliment"
-        last_name="paskalev"
-        email="kliment@email.com"
+    # Retrieve all SnailBeds for the logged-in user
+    snail_beds = SnailBed.objects.filter(user=request.user)
+    snail_bed_count = snail_beds.count()
 
-    # dummy_user1 = {
-    #     username: "kliment",
-    #     first_name: "kliment",
-    #     last_name: "paskalev",
-    #     email: "kliment@email.com",
-    # }
+    return render(request, 'dashboard.html', {'snail_beds': snail_beds, 'snail_bed_count': snail_bed_count})
 
-    dummy_user2 = User()
 
-   
-    context = {'user_profile': dummy_user2}  # Replace '.profile' with your user profile attribute
-    return render(request, 'dashboard.html', context)
-
+def delete_all_snailbeds(request):
+    # Assuming you have a user-based association in your SnailBed model
+    # You should adjust this logic based on your model structure
+    SnailBed.objects.filter(user=request.user).delete()
+    return redirect('dashboard')  # Redirect back to the dashboard 
 
 def register(request):
     if request.method == 'POST':
@@ -113,19 +93,21 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             login(request, user)
-            # Redirect to a success page or dashboard
-            return redirect('dashboard')
+            return redirect('dashboard')  # Redirect to the dashboard view after successful login
         else:
-            # Handle login failure (e.g., display an error message)
-            return render(request, 'registration/login.html', {'error_message': 'Invalid login credentials'})
-    return render(request, 'registration/login.html')
+            # Handle invalid login credentials, display an error message, etc.
+            pass  # You can add your custom error handling here
+
+    return render(request, 'registration/login.html')  # Render the login page template
 
 
 @login_required
