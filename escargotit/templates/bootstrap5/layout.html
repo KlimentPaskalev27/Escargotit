@@ -8,13 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     
+    <!-- jQuery -->
+    <script type="text/javascript" src="{% static 'jquery-3.6.4.min.js' %}"></script>
+
+    
     <!-- Load Bootstrap CSS -->
     {% bootstrap_css %}
 
-    <!-- jQuery -->
-    <script type="text/javascript" src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
-<!-- 
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js" /> -->
+    
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
