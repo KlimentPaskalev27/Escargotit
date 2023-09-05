@@ -38,4 +38,7 @@ urlpatterns = [
     path('delete_all_snailbeds/', views.delete_all_snailbeds, name='delete_all_snailbeds'),
 
 
+    path('contact/', views.contact, name='contact'),
+
+
 ]

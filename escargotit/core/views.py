@@ -119,6 +119,7 @@ def logout_view(request):
 
 @login_required
 def user_settings(request):
+    
     user = request.user
 
     if request.method == 'POST':
@@ -141,3 +142,10 @@ def user_settings(request):
         password_form = PasswordChangeForm(user)
 
     return render(request, 'registration/user_settings.html', {'user_form': user_form, 'password_form': password_form})
+
+
+
+
+def contact(request):
+    return render(request, 'company/contact.html')
+
