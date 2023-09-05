@@ -1,152 +1,142 @@
-{% load bootstrap5 %}
-{% load static %}
+{% extends "base/base.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
 
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
+{% block content %}
 
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-</head>
-<body>
-     
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <!-- Left side content -->
-                <h1>Welcome, {{ user.username }}!</h1>
-                <p>User Profile Information:</p>
-                <ul>
-                    <li>Full Name: {{ user.first_name }} {{ user.last_name }}</li>
-                    <li>Email: {{ user.email }}</li>
-                    <!-- Add more profile information here -->
-                </ul>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <!-- Left side content -->
+            <h1>Welcome, {{ user.username }}!</h1>
+            <p>User Profile Information:</p>
+            <ul>
+                <li>Full Name: {{ user.first_name }} {{ user.last_name }}</li>
+                <li>Email: {{ user.email }}</li>
+                <!-- Add more profile information here -->
+            </ul>
 
-                <h2>Settings</h2>
-                <ul>
-                    <li><a href="{% url 'user_settings' %}">User Settings</a></li>
-                </ul>
+            <h2>Settings</h2>
+            <ul>
+                <li><a href="{% url 'user_settings' %}">User Settings</a></li>
+            </ul>
 
-                <h2>Access Forms</h2>
-                <ul>
-                    <li><a href="{% url 'snail_data_form' %}">Snail Feed Form</a></li>
-                    <!-- Add links for other forms -->
-                </ul>
-            </div>
-            <div class="col">
-                <!-- Right side content -->
-
-                <h2>Snail Bed Boxes</h2>
-
-                {% if error_message %}
-                    <h3>{{ error_message }}</h3>
-                {% else %}
-                    <h3>Number of Snail Beds: {{ snail_bed_count }}</h3>
-
-                    <div class="rectangle">
-                        <!-- Existing SnailBed boxes -->
-                        {% for snail_bed in snail_beds %}
-                            <div class="snail-box {% if snail_bed.is_empty %}empty{% else %}solid{% endif %}"
-                                 data-bed-name="{{ snail_bed.name }}"
-                                 data-bed-location="{{ snail_bed.location }}"
-                                 data-bed-user="{{ snail_bed.user }}">
-                                <span>{{ snail_bed.name }}</span>
-                                <!-- Store bed name, location, and user as data attributes -->
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <form method="POST" action="{% url 'dashboard' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary" name="add-box-button">Add Box</button>
-                    </form>
-
-                    <!-- Button to delete all SnailBed objects for this user -->
-                    <form method="POST" action="{% url 'delete_all_snailbeds' %}">
-                        {% csrf_token %}
-                        
-                        <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
-
-                    </form>
-                {% endif %}
-            </div>
+            <h2>Access Forms</h2>
+            <ul>
+                <li><a href="{% url 'snail_data_form' %}">Snail Feed Form</a></li>
+                <!-- Add links for other forms -->
+            </ul>
         </div>
-        <!-- Container to display selected box data -->
-        <div id="selected-box-data" class="container" style="display: none;">
-            <h3>Selected Box Data</h3>
-            <div id="box-name"></div>
-            <div id="box-location"></div>
-            <div id="box-user"></div>
+        <div class="col">
+            <!-- Right side content -->
+
+            <h2>Snail Bed Boxes</h2>
+
+            {% if error_message %}
+                <h3>{{ error_message }}</h3>
+            {% else %}
+                <h3>Number of Snail Beds: {{ snail_bed_count }}</h3>
+
+                <div class="rectangle">
+                    <!-- Existing SnailBed boxes -->
+                    {% for snail_bed in snail_beds %}
+                        <div class="snail-box {% if snail_bed.is_empty %}empty{% else %}solid{% endif %}"
+                                data-bed-name="{{ snail_bed.name }}"
+                                data-bed-location="{{ snail_bed.location }}"
+                                data-bed-user="{{ snail_bed.user }}">
+                            <span>{{ snail_bed.name }}</span>
+                            <!-- Store bed name, location, and user as data attributes -->
+                        </div>
+                    {% endfor %}
+                </div>
+                <form method="POST" action="{% url 'dashboard' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" name="add-box-button">Add Box</button>
+                </form>
+
+                <!-- Button to delete all SnailBed objects for this user -->
+                <form method="POST" action="{% url 'delete_all_snailbeds' %}">
+                    {% csrf_token %}
+                    
+                    <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
+
+                </form>
+            {% endif %}
         </div>
     </div>
+    <!-- Container to display selected box data -->
+    <div id="selected-box-data" class="container" style="display: none;">
+        <h3>Selected Box Data</h3>
+        <div id="box-name"></div>
+        <div id="box-location"></div>
+        <div id="box-user"></div>
+    </div>
+</div>
 
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const rectangle = document.querySelector(".rectangle");
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const rectangle = document.querySelector(".rectangle");
 
-            // Toggle box border and display selected data
-            function toggleBox(box) {
-                const selectedBox = rectangle.querySelector(".snail-box.expanded");
-                if (selectedBox) {
-                    selectedBox.classList.remove("expanded");
-                }
-                if (box !== selectedBox) {
-                    box.classList.add("expanded");
-                    const boxName = box.getAttribute("data-bed-name");
-                    const boxLocation = box.getAttribute("data-bed-location");
-                    const boxUser = box.getAttribute("data-bed-user");
-                    document.getElementById("box-name").innerText = "Name: " + boxName;
-                    document.getElementById("box-location").innerText = "Location: " + boxLocation;
-                    document.getElementById("box-user").innerText = "User: " + boxUser;
-                    document.getElementById("selected-box-data").style.display = "block";
-                } else {
-                    document.getElementById("selected-box-data").style.display = "none";
-                }
-            }
+    // Toggle box border and display selected data
+    function toggleBox(box) {
+        const selectedBox = rectangle.querySelector(".snail-box.expanded");
+        if (selectedBox) {
+            selectedBox.classList.remove("expanded");
+        }
+        if (box !== selectedBox) {
+            box.classList.add("expanded");
+            const boxName = box.getAttribute("data-bed-name");
+            const boxLocation = box.getAttribute("data-bed-location");
+            const boxUser = box.getAttribute("data-bed-user");
+            document.getElementById("box-name").innerText = "Name: " + boxName;
+            document.getElementById("box-location").innerText = "Location: " + boxLocation;
+            document.getElementById("box-user").innerText = "User: " + boxUser;
+            document.getElementById("selected-box-data").style.display = "block";
+        } else {
+            document.getElementById("selected-box-data").style.display = "none";
+        }
+    }
 
-            // Add click event listeners to all snail-box elements
-            const snailBoxes = rectangle.querySelectorAll(".snail-box");
-            snailBoxes.forEach(function (box) {
-                box.addEventListener("click", function () {
-                    toggleBox(box);
-                });
-            });
+    // Add click event listeners to all snail-box elements
+    const snailBoxes = rectangle.querySelectorAll(".snail-box");
+    snailBoxes.forEach(function (box) {
+        box.addEventListener("click", function () {
+            toggleBox(box);
         });
-    </script>
+    });
+});
+</script>
 
 
 <style>
     .rectangle {
-    width: 50%; /* Takes the right half of the screen */
-    border: 2px solid #ccc;
-    padding: 10px;
-    display: flex;
-    flex-wrap: wrap;
-}
+        width: 50%; /* Takes the right half of the screen */
+        border: 2px solid #ccc;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+    }
 
-.snail-box {
-    width: calc(25% - 20px); /* 25% of the rectangle width with some spacing */
-    border: 2px dashed #ccc;
-    margin: 10px;
-    padding: 10px;
-    box-sizing: border-box;
-    transition: border 0.3s ease-in-out;
-    cursor: pointer;
-}
+    .snail-box {
+        width: calc(25% - 20px); /* 25% of the rectangle width with some spacing */
+        border: 2px dashed #ccc;
+        margin: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        transition: border 0.3s ease-in-out;
+        cursor: pointer;
+    }
 
-.snail-box.empty {
-    background-color: #f0f0f0;
-}
+    .snail-box.empty {
+        background-color: #f0f0f0;
+    }
 
-.snail-box.expanded {
-    border: 2px solid #000;
-}
-
-
-
-
+    .snail-box.expanded {
+        border: 2px solid #000;
+    }
 </style>
-</body>
-</html>
+{% endblock %}

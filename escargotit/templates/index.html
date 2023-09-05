@@ -1,61 +1,57 @@
-{% load filters %} 
+{% extends "base/base.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
 
 
-{% load bootstrap5 %}
-{% load static %}
+{% block content %}
+<style>
 
+    .metric-value.label::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    transition: width 1s ease-in-out;
+    margin-left: 10px;
+    }
+    .percentage.label::after {
+    content: "%";
+    display: inline-block;
+    color: #ffffff;
+    font-size: 32px;
+    position: relative;
+    }
 
+    .days.label::after {
+    content: "days";
+    display: inline-block;
+    font-size: 20px;
+    position: relative;
+    margin-left: 10px;
+    }
+    .feed.label::after {
+    content: "grams";
+    display: inline-block;
+    font-size: 20px;
+    position: relative;
+    
+    } 
 
-<!DOCTYPE html>
-<html>
-   <head>
-      <style>
- 
-         .metric-value.label::after {
-         content: "";
-         display: block;
-         position: absolute;
-         top: 0;
-         left: 0;
-         width: 0;
-         height: 100%;
-         transition: width 1s ease-in-out;
-         margin-left: 10px;
-         }
-         .percentage.label::after {
-         content: "%";
-         display: inline-block;
-         color: #ffffff;
-         font-size: 32px;
-         position: relative;
-         }
+    span.metric-value.label {
+    padding-right: 40px;
+    }
 
-         .days.label::after {
-         content: "days";
-         display: inline-block;
-         font-size: 20px;
-         position: relative;
-         margin-left: 10px;
-         }
-         .feed.label::after {
-         content: "grams";
-         display: inline-block;
-         font-size: 20px;
-         position: relative;
-         
-         } 
+    span.metric-value.label.feed,
+    span.metric-value.label.days {
+    padding-right: 60px;
+    }
+</style>
 
-         span.metric-value.label {
-          padding-right: 40px;
-         }
-
-         span.metric-value.label.feed,
-         span.metric-value.label.days {
-          padding-right: 60px;
-         }
-      </style>
-   </head>
-   <body>
 
     <div id="bookmarkDiv">
       <button id="openModalBtn">Give Feedback</button>
@@ -136,24 +132,7 @@
             <button>Go Back</button>
          </div>
       </div>
-      <style>
-         /* .dataframe-table {
-         border-collapse: collapse;
-         width: 100%;
-         }
-         .dataframe-table th,
-         .dataframe-table td {
-         padding: 8px;
-         border: 1px solid #ddd;
-         }
-         .dataframe-table th {
-         background-color: #f2f2f2;
-         text-align: left;
-         }
-         .dataframe-table tr:nth-child(even) {
-         background-color: #f9f9f9;
-         } */
-      </style>
+
       <script>
          // Function to animate numbers incrementally
          function animateNumbers(element, startValue, endValue, duration) {
@@ -531,5 +510,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 
-   </body>
-</html>
+
+
+{% endblock %}
