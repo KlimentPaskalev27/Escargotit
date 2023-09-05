@@ -42,6 +42,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),
 
     path('terms/', views.terms, name='terms'),
+    path('cookies/', views.cookies, name='cookies'),
 
 
 ]

@@ -1,0 +1,96 @@
+{% extends "base/base.html" %}
+
+{% block title %}Cookies Policy{% endblock %}
+
+{% block content %}
+<div class="cookies container mt-5">
+    <h1>Cookies Policy</h1>
+
+    <!-- Introduction -->
+    <section>
+        <h2>Introduction</h2>
+        <p>This Cookies Policy explains how our website uses cookies and similar technologies to collect and store information when you visit our site. By using our website, you consent to the use of cookies as described in this policy.</p>
+    </section>
+
+    <!-- What Are Cookies -->
+    <section>
+        <h2>What Are Cookies</h2>
+        <p>Cookies are small pieces of text sent by your web browser by a website you visit. A cookie file is stored in your web browser and allows the site or a third-party to recognize you and make your next visit easier and the website more useful to you.</p>
+    </section>
+
+    <!-- How We Use Cookies -->
+    <section>
+        <h2>How We Use Cookies</h2>
+        <p>We use cookies for various purposes, including:</p>
+        <ul>
+            <li>Recognizing you when you visit our website.</li>
+            <li>Storing your preferences and settings.</li>
+            <li>Understanding how you use our website.</li>
+            <li>Improving our website's performance.</li>
+        </ul>
+    </section>
+
+    <!-- Types of Cookies -->
+    <section>
+        <h2>Types of Cookies</h2>
+        <p>We use both session and persistent cookies on our website:</p>
+        <ul>
+            <li><strong>Session Cookies:</strong> These are temporary cookies that expire when you close your browser.</li>
+            <li><strong>Persistent Cookies:</strong> These remain on your device for a specified period.</li>
+        </ul>
+    </section>
+
+    <!-- How to Manage Cookies -->
+    <section>
+        <h2>How to Manage Cookies</h2>
+        <p>You can manage or delete cookies according to your preferences. For details, please refer to your browser's settings.</p>
+    </section>
+
+    <!-- Changes to This Policy -->
+    <section>
+        <h2>Changes to This Policy</h2>
+        <p>We may update our Cookies Policy from time to time. We will notify you of any changes by posting the new policy on this page.</p>
+    </section>
+
+    <!-- Contact Us -->
+    <section>
+        <h2>Contact Us</h2>
+        <p>If you have any questions about our Cookies Policy, please contact us via our <a href="{% url 'contact' %}">Contact us page</a>.</p>
+    </section>
+</div>
+
+<style>
+    /* Custom CSS Styles */
+    body {
+        background-color: #f4f4f4;
+    }
+
+    .cookies.container {
+        font-size: 18px;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    a {
+        color: #007BFF;
+        text-decoration: underline;
+    }
+
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+</style>
+
+{% endblock %}
