@@ -1,9 +1,12 @@
-{% load bootstrap4 %}
+
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 <body>
      
@@ -60,7 +63,9 @@
                     <!-- Button to delete all SnailBed objects for this user -->
                     <form method="POST" action="{% url 'delete_all_snailbeds' %}">
                         {% csrf_token %}
+                        
                         <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
+
                     </form>
                 {% endif %}
             </div>
