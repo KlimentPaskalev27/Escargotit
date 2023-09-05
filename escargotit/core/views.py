@@ -149,3 +149,6 @@ def user_settings(request):
 def contact(request):
     return render(request, 'company/contact.html')
 
+def about(request):
+    return render(request, 'company/about.html')
+

@@ -1,0 +1,103 @@
+{% extends "bootstrap5/layout.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>About Us</h1>
+
+    <!-- Company History -->
+    <section class="mt-4">
+        <h2>Our History</h2>
+        <p>We started our journey in 2010 as a small team passionate about snail farming. Over the years, we evolved into a leading snail farm management web app provider, serving thousands of farms worldwide.</p>
+    </section>
+
+    <!-- Creator's Story -->
+    <section class="mt-4">
+        <h2>Our Creator</h2>
+        <p>Meet John Smith, the visionary behind our platform. With a background in agriculture and technology, John embarked on a mission to simplify snail farm management through innovative software solutions.</p>
+    </section>
+
+    <!-- Business Culture -->
+    <section class="mt-4">
+        <h2>Our Business Culture</h2>
+        <p>We foster a culture of innovation, collaboration, and continuous improvement. Our team is dedicated to providing the best tools for snail farmers, ensuring their success and sustainability.</p>
+    </section>
+
+    <!-- Environmental Footprint -->
+    <section class="mt-4">
+        <h2>Environmental Footprint</h2>
+        <p>We are committed to sustainability. Our cloud-based platform minimizes paper usage and supports eco-friendly farming practices. We are proud to contribute to a greener future.</p>
+    </section>
+
+    <!-- Hiring Practices -->
+    <section class="mt-4">
+        <h2>How We Hire</h2>
+        <p>We hire talent based on their passion, skills, and dedication. Our hiring process is designed to create a diverse team of experts who share our mission of empowering snail farmers.</p>
+    </section>
+
+    <!-- Diversity and Inclusion -->
+    <section class="mt-4">
+        <h2>Diversity and Inclusion</h2>
+        <p>We celebrate diversity and inclusion. Our team comprises individuals from diverse backgrounds, and we actively promote equality and inclusivity in all aspects of our work.</p>
+    </section>
+
+    <!-- Low Pay Gap -->
+    <section class="mt-4">
+        <h2>Low Pay Gap</h2>
+        <p>At our company, we ensure pay equity. We maintain a low pay gap and offer competitive compensation to all team members, regardless of gender, race, or background.</p>
+    </section>
+
+    <!-- Our Team -->
+    <section class="mt-4">
+        <h2>Our Team</h2>
+        <div id="teamCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <!-- Team Member 1 -->
+                <div class="carousel-item active">
+                    <img src="https://via.placeholder.com/150" class="d-block mx-auto" alt="Team Member 1">
+                    <h4 class="mt-3">Alice Johnson</h4>
+                    <p class="text-muted">Agriculture Specialist</p>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" class="d-block mx-auto" alt="Team Member 2">
+                    <h4 class="mt-3">David Lee</h4>
+                    <p class="text-muted">Software Engineer</p>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/150" class="d-block mx-auto" alt="Team Member 3">
+                    <h4 class="mt-3">Sarah Smith</h4>
+                    <p class="text-muted">Marketing Specialist</p>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#teamCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#teamCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+
+</div>
+
+
+<!-- Load Bootstrap JavaScript and jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    // Initialize the carousel when the document is ready
+    $(document).ready(function () {
+        $('#teamCarousel').carousel();
+    });
+</script>
+
+{% endblock %}
