@@ -5,9 +5,11 @@ C:\Users\Kiro's Alienware\Desktop\Final Project\Escargotit\env
 *.log
 *.pot
 *.pyc
-__pycache__
 db.sqlite3
 media
+__pycache__/
+migrations/
+
 
 # Backup files # 
 *.bak 
