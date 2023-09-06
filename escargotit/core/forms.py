@@ -12,7 +12,7 @@ class SnailFeedForm(forms.ModelForm):
 class SnailHatchRateForm(forms.ModelForm):
     class Meta:
         model = SnailHatchRate
-        fields = ['hatch_date', 'preexisting_snail_amount', 'newly_hatched_snails']
+        fields = ['preexisting_snail_amount', 'newly_hatched_snails', 'datetime']
 
 class SnailMortalityRateForm(forms.ModelForm):
     class Meta:

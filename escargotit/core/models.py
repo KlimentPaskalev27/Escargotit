@@ -14,6 +14,7 @@ class SnailBed(models.Model):
     bed_name = models.CharField(max_length=100, unique=False, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     snail_amount = models.IntegerField(null=True, blank=True)
+    hatch_rate = models.ForeignKey('SnailHatchRate', on_delete=models.SET_NULL, null=True, blank=True, default=0)
     mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.SET_NULL, null=True, blank=True, default=0)
 
     @property
@@ -55,22 +56,19 @@ class SnailFeed(models.Model):
         return status
 
 class SnailHatchRate(models.Model):
-    snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
-    hatch_date = models.DateField(default=timezone.now)
+    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
+    #hatch_date = models.DateField(default=timezone.now)
     preexisting_snail_amount = models.IntegerField(null=True, blank=True)
     newly_hatched_snails = models.IntegerField()
     hatch_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    datetime = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
-        if not self.pk and self.snail_bed:
-            self.preexisting_snail_amount = self.snail_bed.snail_amount
-
-        if self.preexisting_snail_amount is not None and self.newly_hatched_snails is not None:
-            self.snail_bed.snail_amount = self.preexisting_snail_amount + self.newly_hatched_snails
-            self.snail_bed.save()
+        self.preexisting_snail_amount = self.snail_bed.snail_amount
 
         if self.preexisting_snail_amount and self.newly_hatched_snails:
-           self.hatch_rate_percentage = (self.newly_hatched_snails / self.preexisting_snail_amount) * 100
+            self.snail_bed.snail_amount = self.preexisting_snail_amount + self.newly_hatched_snails
+            self.snail_bed.save()
 
         super().save(*args, **kwargs)
 
@@ -79,7 +77,7 @@ class SnailHatchRate(models.Model):
         # Calculate hatch rate percentage based on other fields
         # Adjust the formula according to your specific calculation
         if self.preexisting_snail_amount > 0:
-            return (self.newly_hatched_snails / self.preexisting_snail_amount) * 100
+            return round( (self.newly_hatched_snails / self.preexisting_snail_amount) * 100 , 1)
         else:
             return 0
 
@@ -90,6 +88,19 @@ class SnailHatchRate(models.Model):
         status = str(self.hatch_rate_percentage) + "%"
         return status
 
+
+@receiver(post_save, sender=SnailHatchRate)
+def update_snailbed_hatch_rate(sender, instance, **kwargs):
+    # When a SnailHatchRate object is created or saved,
+    # update the related SnailBed's hatch_rate property
+    # use the latest one
+    if instance.snail_bed:
+        latest_hatch_rate = SnailHatchRate.objects.filter(snail_bed=instance.snail_bed).aggregate(Max('datetime'))['datetime__max']
+        latest_hatch_object = SnailHatchRate.objects.filter(snail_bed=instance.snail_bed, datetime=latest_hatch_rate).first()
+
+        if latest_hatch_object:
+            instance.snail_bed.hatch_rate = latest_hatch_object
+            instance.snail_bed.save()
 
 class SnailMortalityRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
