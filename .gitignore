@@ -1,7 +1,11 @@
+# ignore the virtual environmnet directory
 C:\Users\Kiro's Alienware\Desktop\Final Project\Escargotit\env
 
+# ignore local environment django building cache files
 escargotit/lightning_logs/
+escargotit/escargotit/__pycache__/
 escargotit/core/__pycache__/
+escargotit/core/migrations/__pycache__/
 escargotit/escargotit/__pycache__/
 
 # Django #
