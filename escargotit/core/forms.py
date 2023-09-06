@@ -9,10 +9,10 @@ class SnailFeedForm(forms.ModelForm):
         model = SnailFeed
         fields = ['consumed_on', 'grams_feed_given']
 
-class SnailBirthRateForm(forms.ModelForm):
+class SnailHatchRateForm(forms.ModelForm):
     class Meta:
-        model = SnailBirthRate
-        fields = ['birth_date', 'preexisting_snail_amount', 'newly_hatched_snails']
+        model = SnailHatchRate
+        fields = ['hatch_date', 'preexisting_snail_amount', 'newly_hatched_snails']
 
 class SnailMortalityRateForm(forms.ModelForm):
     class Meta:
@@ -27,7 +27,7 @@ class TimeTakenToMatureForm(forms.ModelForm):
 class SnailPerformanceForm(forms.ModelForm):
     class Meta:
         model = SnailPerformance
-        fields = ['snail_feed', 'snail_birth_rate', 'snail_mortality_rate', 'time_taken_to_mature', 'expected_time_to_maturity']
+        fields = ['snail_feed', 'snail_hatch_rate', 'snail_mortality_rate', 'time_taken_to_mature', 'expected_time_to_maturity']
 
 
 
