@@ -57,7 +57,6 @@ class SnailFeed(models.Model):
 
 class SnailHatchRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
-    #hatch_date = models.DateField(default=timezone.now)
     preexisting_snail_amount = models.IntegerField(null=True, blank=True)
     newly_hatched_snails = models.IntegerField()
     hatch_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
@@ -88,7 +87,6 @@ class SnailHatchRate(models.Model):
         status = str(self.hatch_rate_percentage) + "%"
         return status
 
-
 @receiver(post_save, sender=SnailHatchRate)
 def update_snailbed_hatch_rate(sender, instance, **kwargs):
     # When a SnailHatchRate object is created or saved,
@@ -101,6 +99,7 @@ def update_snailbed_hatch_rate(sender, instance, **kwargs):
         if latest_hatch_object:
             instance.snail_bed.hatch_rate = latest_hatch_object
             instance.snail_bed.save()
+
 
 class SnailMortalityRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
@@ -135,7 +134,6 @@ class SnailMortalityRate(models.Model):
         status = str(self.mortality_rate_percentage) + "%"
         return status
 
-
 @receiver(post_save, sender=SnailMortalityRate)
 def update_snailbed_mortality_rate(sender, instance, **kwargs):
     # When a SnailMortalityRate object is created or saved,
@@ -150,28 +148,61 @@ def update_snailbed_mortality_rate(sender, instance, **kwargs):
             instance.snail_bed.save()
 
 class TimeTakenToMature(models.Model):
-    snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
+    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
     snail_hatched = models.DateTimeField(default=timezone.now)
     snail_matured = models.DateTimeField(default=timezone.now)
+    snails_matured_count = models.IntegerField(default=0)
     days_to_mature = models.PositiveIntegerField(null=True, blank=True)
+    period = models.DurationField(null=True, blank=True)
+    maturity_percentage = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True)
 
     def save(self, *args, **kwargs):
+        if self.snail_bed:
+            # Calculate the period between snail_matured and snail_hatched
+            time_difference = self.snail_matured - self.snail_hatched
+            self.period = time_difference
+
+            # Update the snails_matured_count based on snails hatched within the period
+            snails_hatched_within_period = SnailHatchRate.objects.filter(
+                snail_bed=self.snail_bed,
+                datetime__gte=self.snail_hatched,
+                datetime__lte=self.snail_matured
+            ).aggregate(models.Sum('newly_hatched_snails'))['newly_hatched_snails__sum']
+
+            if snails_hatched_within_period is not None:
+                self.snails_matured_count = snails_hatched_within_period
+
+                # Calculate the maturity percentage
+                total_snails_hatched_within_period = SnailHatchRate.objects.filter(
+                    snail_bed=self.snail_bed,
+                    datetime__gte=self.snail_hatched,
+                    datetime__lte=self.snail_matured
+                ).aggregate(models.Sum('preexisting_snail_amount'))['preexisting_snail_amount__sum']
+
+                if total_snails_hatched_within_period:
+                    self.maturity_percentage = round( (self.snails_matured_count / total_snails_hatched_within_period) * 100 , 1)
+
         super().save(*args, **kwargs)
 
     @property
     def days_to_mature(self):
-        # Calculate the number of days taken to mature based on other fields
-        # Adjust the formula according to your specific calculation
-        time_difference = self.snail_matured - self.snail_hatched
-        return time_difference.days
+        if self.period:
+            # Calculate the number of days taken to mature based on other fields
+            # Adjust the formula according to your specific calculation
+            time_difference = self.snail_matured - self.snail_hatched
+            return time_difference.days
+        return None
 
     def __int__(self):
         status = self.days_to_mature
         return status
     
     def __str__(self):
-        status = str(self.days_to_mature) + " days"
-        return status
+        if self.maturity_percentage and self.days_to_mature:
+            return str(self.maturity_percentage) + "% of snail bed has reached maturity in " + str(self.days_to_mature) + " days"
+        return "N/A"
+
+
 
 class SnailPerformance(models.Model):
     snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
