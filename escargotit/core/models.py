@@ -80,6 +80,10 @@ class SnailHatchRate(models.Model):
         else:
             return 0
 
+    def __float__(self):
+        status = self.hatch_rate_percentage
+        return status
+
     def __int__(self):
         return int(self.hatch_rate_percentage)
 
@@ -125,6 +129,10 @@ class SnailMortalityRate(models.Model):
             return round( (self.expired_snail_amount / self.preexisting_snail_amount) * 100 , 1)
         else:
             return 0
+
+    def __float__(self):
+        status = self.mortality_rate_percentage
+        return status
     
     def __int__(self):
         status = int(self.mortality_rate_percentage)
@@ -204,34 +212,52 @@ class TimeTakenToMature(models.Model):
 
 
 
-class SnailPerformance(models.Model):
-    snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
+class SnailBedPerformance(models.Model):
+    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
 
     snail_feed = models.ForeignKey(SnailFeed, on_delete=models.CASCADE)
     snail_hatch_rate = models.ForeignKey(SnailHatchRate, on_delete=models.CASCADE)
     snail_mortality_rate = models.ForeignKey(SnailMortalityRate, on_delete=models.CASCADE)
     time_taken_to_mature = models.ForeignKey(TimeTakenToMature, on_delete=models.CASCADE)
-    normalized_hatch_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    normalized_mortality_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
+    reproduction_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
     expected_time_to_maturity = models.PositiveIntegerField(null=True, blank=True)
+
     bed_performance = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
     @property
+    def reproduction_rate(self):
+        if self.snail_hatch_rate and self.snail_mortality_rate and self.time_taken_to_mature:
+            normalized_hatch_rate = float(self.snail_hatch_rate) * 100
+            normalized_mortality_rate = float(self.snail_mortality_rate) * 100
+            normalized_reproduction_rate = normalized_hatch_rate - normalized_mortality_rate
+            reproduction_rate_factor = round(normalized_reproduction_rate / 100, 2)
+            return reproduction_rate_factor
+        return None
+
+    @property
     def bed_performance(self):
-        hatch_rate_percentage = int(self.snail_hatch_rate)
-        mortality_rate_percentage = int(self.snail_mortality_rate)
-        bed_performance = (hatch_rate_percentage - mortality_rate_percentage) * (int(self.expected_time_to_maturity) / int(self.time_taken_to_mature))
-        return int(bed_performance)
+        if self.reproduction_rate and self.expected_time_to_maturity and self.time_taken_to_mature.days_to_mature > 0:
+            maturity_factor = self.expected_time_to_maturity / self.time_taken_to_mature.days_to_mature
+            performance = self.reproduction_rate * maturity_factor
+            return round(performance, 2)
+        else:
+            maturity_factor = 1.0
+
+            performance = self.reproduction_rate * maturity_factor
+            return round(performance, 2)  # Convert to percentage and round to 2 decimal places
+        return None
 
     def __int__(self):
         status = self.bed_performance
         return status
 
     def __str__(self):
-        status = str(self.bed_performance) + "%"
+        status = str( self.bed_performance ) + "%"
         return status
 
 
