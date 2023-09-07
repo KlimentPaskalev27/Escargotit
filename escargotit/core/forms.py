@@ -12,22 +12,22 @@ class SnailFeedForm(forms.ModelForm):
 class SnailHatchRateForm(forms.ModelForm):
     class Meta:
         model = SnailHatchRate
-        fields = ['snail_bed', 'preexisting_snail_amount', 'newly_hatched_snails', 'datetime']
+        fields = ['snail_bed', 'newly_hatched_snails', 'datetime']
 
 class SnailMortalityRateForm(forms.ModelForm):
     class Meta:
         model = SnailMortalityRate
-        fields = ['snail_bed', 'preexisting_snail_amount', 'expired_snail_amount', 'datetime']
+        fields = ['snail_bed', 'expired_snail_amount', 'datetime']
 
 class TimeTakenToMatureForm(forms.ModelForm):
     class Meta:
         model = TimeTakenToMature
-        fields = ['snail_bed', 'snail_hatched', 'snail_matured', 'snails_matured_count', 'days_to_mature', 'period', 'maturity_percentage']
+        fields = ['snail_bed', 'snail_hatched', 'snail_matured', 'snails_matured_count']
 
 class SnailBedPerformanceForm(forms.ModelForm):
     class Meta:
         model = SnailBedPerformance
-        fields = ['snail_bed', 'snail_feed', 'snail_hatch_rate', 'snail_mortality_rate', 'time_taken_to_mature', 'reproduction_rate', 'expected_time_to_maturity', 'bed_performance']
+        fields = ['expected_time_to_maturity']
 
 
 
