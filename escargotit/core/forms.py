@@ -7,27 +7,27 @@ from django.core.exceptions import ValidationError
 class SnailFeedForm(forms.ModelForm):
     class Meta:
         model = SnailFeed
-        fields = ['consumed_on', 'grams_feed_given']
+        fields = ['snail_bed', 'consumed_on', 'grams_feed_given']
 
 class SnailHatchRateForm(forms.ModelForm):
     class Meta:
         model = SnailHatchRate
-        fields = ['preexisting_snail_amount', 'newly_hatched_snails', 'datetime']
+        fields = ['snail_bed', 'preexisting_snail_amount', 'newly_hatched_snails', 'datetime']
 
 class SnailMortalityRateForm(forms.ModelForm):
     class Meta:
         model = SnailMortalityRate
-        fields = ['preexisting_snail_amount', 'expired_snail_amount']
+        fields = ['snail_bed', 'preexisting_snail_amount', 'expired_snail_amount', 'datetime']
 
 class TimeTakenToMatureForm(forms.ModelForm):
     class Meta:
         model = TimeTakenToMature
-        fields = ['snail_hatched', 'snail_matured']
+        fields = ['snail_bed', 'snail_hatched', 'snail_matured', 'snails_matured_count', 'days_to_mature', 'period', 'maturity_percentage']
 
 class SnailBedPerformanceForm(forms.ModelForm):
     class Meta:
         model = SnailBedPerformance
-        fields = ['snail_feed', 'snail_hatch_rate', 'snail_mortality_rate', 'time_taken_to_mature', 'expected_time_to_maturity']
+        fields = ['snail_bed', 'snail_feed', 'snail_hatch_rate', 'snail_mortality_rate', 'time_taken_to_mature', 'reproduction_rate', 'expected_time_to_maturity', 'bed_performance']
 
 
 
