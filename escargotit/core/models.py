@@ -60,7 +60,8 @@ class SnailHatchRate(models.Model):
     preexisting_snail_amount = models.IntegerField(null=True, blank=True)
     newly_hatched_snails = models.IntegerField()
     hatch_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    datetime = models.DateTimeField(default=timezone.now)
+    datetime = models.DateField(default=timezone.now)
+    #datetime = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         self.preexisting_snail_amount = self.snail_bed.snail_amount
@@ -110,7 +111,9 @@ class SnailMortalityRate(models.Model):
     preexisting_snail_amount = models.IntegerField(null=True, blank=True)
     expired_snail_amount = models.IntegerField(default=0)
     mortality_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    datetime = models.DateTimeField(default=timezone.now)
+    #datetime = models.DateTimeField(default=timezone.now)
+
+    datetime = models.DateField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         self.preexisting_snail_amount = self.snail_bed.snail_amount
@@ -262,49 +265,9 @@ class SnailBedPerformance(models.Model):
 
 
 class ForecastedHatchRate(models.Model):
-    snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
+    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
     forecasted_value = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     forecasted_value_pyaf = PickledObjectField()
-
-    # @staticmethod
-    # def calculate_forecast():
-    #     # Get all previous records
-    #     previous_records = SnailHatchRate.objects.all()
-
-    #     # Calculate the forecasted value based on previous records (example: average)
-    #     total_records = previous_records.count()
-    #     if total_records > 0:
-    #         sum_hatch_rate = sum([record.hatch_rate_percentage for record in previous_records])
-    #         forecasted_value = sum_hatch_rate / total_records
-    #     else:
-    #         forecasted_value = 0
-
-    #     return forecasted_value
-
-
-    # @staticmethod
-    # def calculate_forecast_pyaf():
-    #     # Get all previous records
-    #     previous_records = SnailHatchRate.objects.all()
-    #     # Create a dataframe from previous records
-    #     data = pd.DataFrame(list(previous_records.values('hatch_date', 'newly_hatched_snails')))
-    #     # Rename columns to match PyAF input requirements
-    #     data.rename(columns={'hatch_date': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
-
-    #     m = NeuralProphet()
-    #     metrics = m.fit(data, freq="D")
-    #     forecast1 = m.predict(data)
-
-    #     # m = NeuralProphet()
-    #     future = m.make_future_dataframe(data, periods=60)
-    #     forecast2 = m.predict(future)
-
-
-    #     #according to https://github.com/ourownstory/neural_prophet
-    #     combined = pd.concat([forecast1, forecast2])
-    #     fig_forecast = m.plot(combined)
-    #     forecasted_value_pyaf = fig_forecast
-    #     return forecasted_value_pyaf
 
     @staticmethod
     def calculate_forecast(snail_bed):
@@ -325,16 +288,15 @@ class ForecastedHatchRate(models.Model):
     def calculate_forecast_pyaf(snail_bed):
         # Get all previous records for the specific snail_bed
         previous_records = SnailHatchRate.objects.filter(snail_bed=snail_bed)
+        
         # Create a dataframe from previous records
-        data = pd.DataFrame(list(previous_records.values('hatch_date', 'newly_hatched_snails')))
+        data = pd.DataFrame(list(previous_records.values('datetime', 'newly_hatched_snails')))
         # Rename columns to match PyAF input requirements
-        data.rename(columns={'hatch_date': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
+        data.rename(columns={'datetime': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
 
         m = NeuralProphet()
-        metrics = m.fit(data, freq="D")
+        m.fit(data, freq="D")
         forecast1 = m.predict(data)
-
-        # m = NeuralProphet()
         future = m.make_future_dataframe(data, periods=60)
         forecast2 = m.predict(future)
 
@@ -347,12 +309,16 @@ class ForecastedHatchRate(models.Model):
     def save(self, *args, **kwargs):
         self.forecasted_value = self.calculate_forecast(self.snail_bed)
         self.forecasted_value_pyaf = self.calculate_forecast_pyaf(self.snail_bed)
-
         super().save(*args, **kwargs)
 
-    # def save(self, *args, **kwargs):
-    #     self.forecasted_value = self.calculate_forecast()
-    #     self.forecasted_value_pyaf = self.calculate_forecast_pyaf()
+    def __float__(self):
+        status = self.forecasted_value
+        return status
 
-    #     super().save(*args, **kwargs)
+    def __int__(self):
+        status = int(self.forecasted_value)
+        return status
 
+    def __str__(self):
+        status = str(self.forecasted_value) + "%"
+        return status
