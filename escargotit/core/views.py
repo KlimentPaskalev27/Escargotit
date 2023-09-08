@@ -20,16 +20,16 @@ from scipy.stats import pearsonr  # For calculating correlation coefficient
 from .faq_data import faq_data  # Import the faq_data from the module
 
 def index(request):
-    first_snail_performance = SnailPerformance.objects.first()
+    first_snail_bed_performance = SnailBedPerformance.objects.first()
     forecasts = ForecastedHatchRate.objects.first()
 
-    a = first_snail_performance
+    a = first_snail_bed_performance
 
     # Convert DataFrame to HTML
     html_table = forecasts.forecasted_value_pyaf.to_html()
 
     context = {
-        'snail_performance': a,
+        'snail_bed_performance': a,
         'forecasts': forecasts,
         'html_table': html_table,
     }
@@ -50,14 +50,14 @@ def snail_data_form(request):
         snail_hatch_rate_form = SnailHatchRateForm()
         snail_mortality_rate_form = SnailMortalityRateForm()
         time_taken_to_mature_form = TimeTakenToMatureForm()
-        snail_performance_form = SnailPerformanceForm()
+        snail_bed_performance_form = SnailBedPerformanceForm()
 
     return render(request, 'snail_data_form.html', {
         'snail_feed_form': snail_feed_form,
         'snail_hatch_rate_form': snail_hatch_rate_form,
         'snail_mortality_rate_form': snail_mortality_rate_form,
         'time_taken_to_mature_form': time_taken_to_mature_form,
-        'snail_performance_form': snail_performance_form,
+        'snail_bed_performance_form': snail_bed_performance_form,
     
     })
 

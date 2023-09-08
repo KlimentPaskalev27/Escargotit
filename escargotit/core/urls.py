@@ -47,7 +47,7 @@ urlpatterns = [
     path('faqs/', views.faqs, name='faqs'),
 
     path('barchart/', views.barchart, name='barchart'),
-    path('barchart-with-correlation/', views.barchart_with_correlation, name='barchart_with_correlation'),
+    path('barchart_with_correlation/', views.barchart_with_correlation, name='barchart_with_correlation'),
 
 
 ]
