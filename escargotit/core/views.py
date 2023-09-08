@@ -112,26 +112,7 @@ def dashboard(request):
 
 @login_required
 def index(request):
-
-    current_user = AdminUser.objects.filter(user=request.user).first()
-
-    # Handle the POST request to add a new SnailBed object
-    if request.method == 'POST':
-        
-        # Create a new SnailBed object based on the form data
-        new_snail_bed = SnailBed.objects.create(
-            user = current_user,
-        )
-        new_snail_bed.save()  # Save the new SnailBed to the database
-
-        # After processing the POST request, redirect to the dashboard page using the GET method
-        return HttpResponseRedirect(request.path_info)  # Redirect to the same page (GET request)
-
-    # Retrieve all SnailBeds for the logged-in user
-    snail_beds = SnailBed.objects.filter(user=current_user)
-    snail_bed_count = snail_beds.count()
-
-    return render(request, 'dashboard.html', {'snail_beds': snail_beds, 'snail_bed_count': snail_bed_count})
+    return render(request, 'index.html')
 
 
 def delete_all_snailbeds(request):
