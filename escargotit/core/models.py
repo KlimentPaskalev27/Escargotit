@@ -9,13 +9,32 @@ from picklefield.fields import PickledObjectField # pickle together objects and 
 from django.contrib.auth.models import User # django User class ready to use
 from django.utils import timezone
 from decimal import Decimal
+from django.contrib.auth.models import AbstractUser
+
+# from django.contrib.auth import get_user_model
+# User = get_user_model()
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+
+# class StaffMember(AbstractUser):
+#     # Add any additional fields specific to staff members
+#     staff_id = models.CharField(max_length=10, unique=True)
+#     is_staff_member = models.BooleanField(default=True)
+
+#     def __str__(self):
+#         return self.username
 
 class SnailBed(models.Model):
     bed_name = models.CharField(max_length=100, unique=False, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
     snail_amount = models.IntegerField(null=True, blank=True)
-    hatch_rate = models.ForeignKey('SnailHatchRate', on_delete=models.SET_NULL, null=True, blank=True, default=0)
-    mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.SET_NULL, null=True, blank=True, default=0)
+    hatch_rate = models.ForeignKey('SnailHatchRate', on_delete=models.SET_NULL, null=True, blank=True)
+    mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.SET_NULL, null=True, blank=True)
 
     @property
     def mortality_percentage_rate(self):
@@ -39,6 +58,8 @@ class SnailBed(models.Model):
             self.snail_amount = 0
 
         super().save(*args, **kwargs)
+
+
 
 class SnailFeed(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)

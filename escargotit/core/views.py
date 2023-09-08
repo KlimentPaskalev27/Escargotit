@@ -8,6 +8,11 @@ from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponseRedirect
 
+from django.views.generic import CreateView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+
 import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
@@ -19,7 +24,8 @@ from scipy.stats import pearsonr  # For calculating correlation coefficient
 
 from .faq_data import faq_data  # Import the faq_data from the module
 
-def index(request):
+@login_required
+def performance(request):
     first_snail_bed_performance = SnailBedPerformance.objects.first()
     forecasts = ForecastedHatchRate.objects.first()
 
@@ -34,9 +40,10 @@ def index(request):
         'html_table': html_table,
     }
 
-    return render(request, 'index.html', context)
+    return render(request, 'performance.html', context)
 
 
+@login_required
 def snail_data_form(request):
     if request.method == 'POST':
         form = SnailDataForm(request.POST)
@@ -69,9 +76,12 @@ def dashboard(request):
     if request.method == 'POST':
         # Create a new SnailBed object based on the form data
         new_snail_bed = SnailBed(
-            bed_name=request.POST.get('bed_name', "name"),
+            #bed_name=request.POST.get('bed_name', ""),
+            bed_name="",
             user=request.user,
-            location=request.POST.get('location', ''), 
+            snail_amount=0,
+            #hatch_rate="",
+            #mortality_rate="",
         )
         new_snail_bed.save()  # Save the new SnailBed to the database
 
@@ -84,6 +94,29 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', {'snail_beds': snail_beds, 'snail_bed_count': snail_bed_count})
 
+@login_required
+def index(request):
+
+    current_user = Profile.objects.filter(user=request.user).first()
+
+    # Handle the POST request to add a new SnailBed object
+    if request.method == 'POST':
+        
+        # Create a new SnailBed object based on the form data
+        new_snail_bed = SnailBed.objects.create(
+            user = current_user,
+        )
+        new_snail_bed.save()  # Save the new SnailBed to the database
+
+        # After processing the POST request, redirect to the dashboard page using the GET method
+        return HttpResponseRedirect(request.path_info)  # Redirect to the same page (GET request)
+
+    # Retrieve all SnailBeds for the logged-in user
+    snail_beds = SnailBed.objects.filter(user=current_user)
+    snail_bed_count = snail_beds.count()
+
+    return render(request, 'dashboard.html', {'snail_beds': snail_beds, 'snail_bed_count': snail_bed_count})
+
 
 def delete_all_snailbeds(request):
     # Assuming you have a user-based association in your SnailBed model
@@ -91,34 +124,25 @@ def delete_all_snailbeds(request):
     SnailBed.objects.filter(user=request.user).delete()
     return redirect('dashboard')  # Redirect back to the dashboard 
 
-def register(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('dashboard')
-    else:
-        form = CustomUserCreationForm()
-
-    return render(request, 'registration/register.html', {'form': form})
 
 
+from django.contrib import messages  # Import the messages module
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard')  # Redirect to the dashboard view after successful login
-        else:
-            # Handle invalid login credentials, display an error message, etc.
-            pass  # You can add your custom error handling here
+class RegisterFormView(SuccessMessageMixin, CreateView):
+    form_class = RegisterForm #CustomUserCreationForm  # Use the CustomUserCreationForm
+    template_name = 'registration/register.html'
+    success_url = reverse_lazy('login')  # Use reverse_lazy to specify the URL for the login page
+    success_message = "Your profile was created successfully"
 
-    return render(request, 'registration/login.html')  # Render the login page template
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, self.success_message)
+        return response
+
+
+class LoginFormView(LoginView):
+    template_name = 'registration/login.html'
+    success_url = ' '
 
 
 @login_required

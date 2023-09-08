@@ -10,7 +10,9 @@ router = DefaultRouter()
 
 
 urlpatterns = [
-    # Site structure urls
+    # Main Features
+    path('performance/', views.performance, name='performance'),
+
     path('', views.index, name='index'),
 
     path('snail-data-form/', views.snail_data_form, name='snail_data_form'),
@@ -19,10 +21,10 @@ urlpatterns = [
 
 
     # Registration
-    path('register/', views.register, name='register'),
+    path('register/', views.RegisterFormView.as_view() , name='register'),
 
     # Login
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('login', views.LoginFormView.as_view() , name='login'),
 
     # Logout
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
@@ -30,24 +32,21 @@ urlpatterns = [
     # User Settings
     path('user/settings/', views.user_settings, name='user_settings'),
 
-
-
-    # Include the API endpoints
+    # API endpoints
     path('api/', include(router.urls)),
 
     path('delete_all_snailbeds/', views.delete_all_snailbeds, name='delete_all_snailbeds'),
 
-
+    # Company pages
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),
-
     path('terms/', views.terms, name='terms'),
     path('cookies/', views.cookies, name='cookies'),
     path('privacy/', views.privacy, name='privacy'),
     path('faqs/', views.faqs, name='faqs'),
 
+    # Statistics and Insights
     path('barchart/', views.barchart, name='barchart'),
     path('barchart_with_correlation/', views.barchart_with_correlation, name='barchart_with_correlation'),
-
 
 ]

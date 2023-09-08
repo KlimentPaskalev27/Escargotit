@@ -44,11 +44,10 @@
                     <!-- Existing SnailBed boxes -->
                     {% for snail_bed in snail_beds %}
                         <div class="snail-box {% if snail_bed.is_empty %}empty{% else %}solid{% endif %}"
-                                data-bed-name="{{ snail_bed.name }}"
-                                data-bed-location="{{ snail_bed.location }}"
+                                data-bed-name="{{ snail_bed.bed_name }}"
                                 data-bed-user="{{ snail_bed.user }}">
                             <span>{{ snail_bed.name }}</span>
-                            <!-- Store bed name, location, and user as data attributes -->
+                            <!-- Store bed name and user as data attributes -->
                         </div>
                     {% endfor %}
                 </div>
@@ -71,7 +70,6 @@
     <div id="selected-box-data" class="container" style="display: none;">
         <h3>Selected Box Data</h3>
         <div id="box-name"></div>
-        <div id="box-location"></div>
         <div id="box-user"></div>
     </div>
 </div>
@@ -90,10 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (box !== selectedBox) {
             box.classList.add("expanded");
             const boxName = box.getAttribute("data-bed-name");
-            const boxLocation = box.getAttribute("data-bed-location");
             const boxUser = box.getAttribute("data-bed-user");
             document.getElementById("box-name").innerText = "Name: " + boxName;
-            document.getElementById("box-location").innerText = "Location: " + boxLocation;
             document.getElementById("box-user").innerText = "User: " + boxUser;
             document.getElementById("selected-box-data").style.display = "block";
         } else {

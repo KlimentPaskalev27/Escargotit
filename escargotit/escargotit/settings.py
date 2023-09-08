@@ -153,10 +153,6 @@ LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
 
-# enable password reset functionality by using Django's built-in password reset views and templates
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'your-smtp-host'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@example.com'
-EMAIL_HOST_PASSWORD = 'your-email-password'
+#AUTH_USER_MODEL = 'core.User'
+# register auth User model to get rido of this conflict
+# HINT: Add or change a related_name argument to the definition for 'core.CustomUser.user_permissions' or 'auth.User.user_permissions'.
