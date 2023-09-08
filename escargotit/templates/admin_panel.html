@@ -15,5 +15,27 @@
     </form>
 
     <a href="{% url 'custom_admin_panel' %}">Back to Admin Panel</a>
+
+
+    <h1>Assign Employee to Snail Bed</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="snail_bed">Select Snail Bed:</label>
+        <select name="snail_bed_id" id="snail_bed">
+            {% for snail_bed in snail_beds %}
+                <option value="{{ snail_bed.id }}">{{ snail_bed.bed_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="employee">Select Employee:</label>
+        <select name="employee_id" id="employee">
+            {% for employee in employees %}
+                <option value="{{ employee.id }}">{{ employee.user.username }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" name="assign_employee">Assign Employee</button>
+    </form>
 </body>
 </html>

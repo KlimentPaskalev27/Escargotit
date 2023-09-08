@@ -314,9 +314,14 @@ def barchart(request):
 
 
 
+from django.shortcuts import get_object_or_404
+
 
 
 def custom_admin_panel(request):
+
+    current_user = AdminUser.objects.filter(user=request.user).first()
+
     if request.method == 'POST':
         form = EmployeeCreationForm(request.POST)
         #form = UserCreationForm(request.POST)
@@ -328,4 +333,23 @@ def custom_admin_panel(request):
     else:
         form = UserCreationForm()
 
-    return render(request, 'admin_panel.html', {'form': form})
+    snail_beds = SnailBed.objects.filter(user=current_user)
+    employees = EmployeeUser.objects.all()
+
+     # Add code to handle the assignment of existing employees to snail beds
+    if request.method == 'POST' and 'assign_employee' in request.POST:
+        snail_bed_id = request.POST.get('snail_bed_id')
+        employee_id = request.POST.get('employee_id')
+        snail_bed = get_object_or_404(SnailBed, pk=snail_bed_id)
+        employee = get_object_or_404(EmployeeUser, pk=employee_id)
+        snail_bed.employees = employee
+        snail_bed.save()
+        messages.success(request, f'Employee {employee.user.username} has been assigned to Snail Bed {snail_bed.bed_name}.')
+
+    context = {
+        'snail_beds': snail_beds,
+        'employees': employees,
+        'form': form
+        }
+
+    return render(request, 'admin_panel.html', context)

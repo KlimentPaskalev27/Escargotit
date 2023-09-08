@@ -50,4 +50,7 @@ urlpatterns = [
     path('barchart_with_correlation/', views.barchart_with_correlation, name='barchart_with_correlation'),
 
     path('custom_admin_panel/', views.custom_admin_panel, name='custom_admin_panel'),
+
+
+    #path('assign_employee/', views.custom_admin_panel, name='assign_employee'),
 ]
