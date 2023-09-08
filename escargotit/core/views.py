@@ -8,6 +8,15 @@ from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponseRedirect
 
+import numpy as np
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
+from scipy.stats import pearsonr  # For calculating correlation coefficient
+# https://scipy.org/install/
+
+
+
 from .faq_data import faq_data  # Import the faq_data from the module
 
 def index(request):
@@ -166,3 +175,108 @@ def privacy(request):
 
 def faqs(request):
     return render(request, 'company/faqs.html', {'faq_data': faq_data})
+
+
+
+
+from scipy.stats import pearsonr  # Import Pearson correlation coefficient
+def barchart_with_correlation(request):
+    # Retrieve the combined data
+    snail_feeds = SnailFeed.objects.all().order_by('consumed_on')
+    hatch_rates = SnailHatchRate.objects.all().order_by('datetime')
+
+    # Extract grams feed given and hatch rates
+    grams_feed_given = [entry.grams_feed_given for entry in snail_feeds]
+    hatch_rates_percentage = [entry.hatch_rate_percentage for entry in hatch_rates]
+
+    # Calculate percentage change for grams feed given
+    grams_feed_change = [0]  # Initial value is 0
+    for i in range(1, len(grams_feed_given)):
+        percentage_change = ((grams_feed_given[i] - grams_feed_given[i - 1]) / grams_feed_given[i - 1]) * 100
+        grams_feed_change.append(percentage_change)
+
+    # Calculate percentage change for hatch rates
+    hatch_rate_change = [0]  # Initial value is 0
+    for i in range(1, len(hatch_rates_percentage)):
+        percentage_change = ((hatch_rates_percentage[i] - hatch_rates_percentage[i - 1]) / hatch_rates_percentage[i - 1]) * 100
+        hatch_rate_change.append(percentage_change)
+
+    # Ensure both arrays have the same length (truncate the longer one)
+    min_length = min(len(grams_feed_change), len(hatch_rate_change))
+    grams_feed_change = grams_feed_change[:min_length]
+    hatch_rate_change = hatch_rate_change[:min_length]
+
+    # Calculate the Pearson correlation coefficient
+    correlation_coefficient, _ = pearsonr(grams_feed_change, hatch_rate_change)
+
+    # Create the overlapping bar chart
+    plt.figure(figsize=(10, 6))
+    plt.bar(np.arange(min_length), grams_feed_change, alpha=0.5, label='Grams Feed Change (%)', width=0.4)
+    plt.bar(np.arange(min_length), hatch_rate_change, alpha=0.5, label='Hatch Rate Change (%)', width=0.4)
+    plt.xlabel('Date')
+    plt.ylabel('Percentage Change (%)')
+    plt.title(f'Overlapping Bar Chart of Percentage Change (Correlation: {correlation_coefficient:.2f})')  # Display correlation
+    plt.xticks(np.arange(min_length), snail_feeds.values_list('consumed_on', flat=True)[:min_length], rotation=45)
+    plt.legend()
+
+    # Save the plot to a BytesIO object
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    plt.close()
+
+    # Convert the plot to base64 for embedding in HTML
+    plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+    context = {
+        'plot_base64': plot_base64,
+    }
+
+    return render(request, 'barchart.html', context)
+
+
+def barchart(request):
+    # Retrieve the combined data
+    snail_feeds = SnailFeed.objects.all().order_by('consumed_on')
+    hatch_rates = SnailHatchRate.objects.all().order_by('datetime')
+
+    # Extract grams feed given and hatch rates
+    grams_feed_given = [entry.grams_feed_given for entry in snail_feeds]
+    hatch_rates_percentage = [entry.hatch_rate_percentage for entry in hatch_rates]
+
+    # Calculate percentage change for grams feed given
+    grams_feed_change = [0]  # Initial value is 0
+    for i in range(1, len(grams_feed_given)):
+        percentage_change = ((grams_feed_given[i] - grams_feed_given[i - 1]) / grams_feed_given[i - 1]) * 100
+        grams_feed_change.append(percentage_change)
+
+    # Calculate percentage change for hatch rates
+    hatch_rate_change = [0]  # Initial value is 0
+    for i in range(1, len(hatch_rates_percentage)):
+        percentage_change = ((hatch_rates_percentage[i] - hatch_rates_percentage[i - 1]) / hatch_rates_percentage[i - 1]) * 100
+        hatch_rate_change.append(percentage_change)
+
+    # Create the overlapping bar chart
+    plt.figure(figsize=(10, 6))
+    plt.bar(snail_feeds.values_list('consumed_on', flat=True), grams_feed_change, alpha=0.5, label='Grams Feed Change (%)', width=0.4)
+    plt.bar(hatch_rates.values_list('datetime', flat=True), hatch_rate_change, alpha=0.5, label='Hatch Rate Change (%)', width=0.4)
+    plt.xlabel('Date')
+    plt.ylabel('Percentage Change (%)')
+    plt.title('Overlapping Bar Chart of Percentage Change')
+    plt.xticks(rotation=45)
+    plt.legend()
+
+    # Save the plot to a BytesIO object
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    plt.close()
+
+    # Convert the plot to base64 for embedding in HTML
+    plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+    context = {
+        'plot_base64': plot_base64,
+    }
+
+    return render(request, 'barchart.html', context)

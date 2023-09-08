@@ -1,0 +1,12 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+    Bar Chart
+{% endblock %}
+
+{% block content %}
+<h1>Bar Chart with Trendline</h1>
+<div>
+    <img src="data:image/png;base64,{{ plot_base64 }}" alt="Bar Chart with Trendline">
+</div>
+{% endblock %}

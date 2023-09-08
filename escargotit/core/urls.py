@@ -18,7 +18,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
 
 
-     # Registration
+    # Registration
     path('register/', views.register, name='register'),
 
     # Login
@@ -45,6 +45,9 @@ urlpatterns = [
     path('cookies/', views.cookies, name='cookies'),
     path('privacy/', views.privacy, name='privacy'),
     path('faqs/', views.faqs, name='faqs'),
+
+    path('barchart/', views.barchart, name='barchart'),
+    path('barchart-with-correlation/', views.barchart_with_correlation, name='barchart_with_correlation'),
 
 
 ]

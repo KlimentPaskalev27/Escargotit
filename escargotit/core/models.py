@@ -8,7 +8,7 @@ from neuralprophet import NeuralProphet # used to forecast data based on previou
 from picklefield.fields import PickledObjectField # pickle together objects and data to be passed in
 from django.contrib.auth.models import User # django User class ready to use
 from django.utils import timezone
-
+from decimal import Decimal
 
 class SnailBed(models.Model):
     bed_name = models.CharField(max_length=100, unique=False, null=True, blank=True)
@@ -40,11 +40,9 @@ class SnailBed(models.Model):
 
         super().save(*args, **kwargs)
 
-
-
 class SnailFeed(models.Model):
-    snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
-    consumed_on = models.DateTimeField(default=timezone.now)
+    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
+    consumed_on = models.DateField(default=timezone.now)
     grams_feed_given = models.IntegerField()
 
     def __int__(self):
@@ -61,7 +59,6 @@ class SnailHatchRate(models.Model):
     newly_hatched_snails = models.IntegerField()
     hatch_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     datetime = models.DateField(default=timezone.now)
-    #datetime = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         self.preexisting_snail_amount = self.snail_bed.snail_amount
@@ -105,13 +102,11 @@ def update_snailbed_hatch_rate(sender, instance, **kwargs):
             instance.snail_bed.hatch_rate = latest_hatch_object
             instance.snail_bed.save()
 
-
 class SnailMortalityRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
     preexisting_snail_amount = models.IntegerField(null=True, blank=True)
     expired_snail_amount = models.IntegerField(default=0)
     mortality_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    #datetime = models.DateTimeField(default=timezone.now)
 
     datetime = models.DateField(default=timezone.now)
 
@@ -213,8 +208,6 @@ class TimeTakenToMature(models.Model):
             return str(self.maturity_percentage) + "% of snail bed has reached maturity in " + str(self.days_to_mature) + " days"
         return "N/A"
 
-
-
 class SnailBedPerformance(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
 
@@ -262,7 +255,6 @@ class SnailBedPerformance(models.Model):
     def __str__(self):
         status = str( self.bed_performance ) + "%"
         return status
-
 
 class ForecastedHatchRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
@@ -322,3 +314,4 @@ class ForecastedHatchRate(models.Model):
     def __str__(self):
         status = str(self.forecasted_value) + "%"
         return status
+
