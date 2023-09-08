@@ -153,6 +153,6 @@ LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
 
-#AUTH_USER_MODEL = 'core.User'
+#AUTH_USER_MODEL = 'core.AdminUser'
 # register auth User model to get rido of this conflict
 # HINT: Add or change a related_name argument to the definition for 'core.CustomUser.user_permissions' or 'auth.User.user_permissions'.

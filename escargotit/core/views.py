@@ -13,12 +13,15 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from scipy.stats import pearsonr  # For calculating correlation coefficient
 # https://scipy.org/install/
+
 
 
 
@@ -72,14 +75,17 @@ def snail_data_form(request):
 
 @login_required
 def dashboard(request):
+
+    current_user = AdminUser.objects.filter(user=request.user).first()
+    
     # Handle the POST request to add a new SnailBed object
     if request.method == 'POST':
         # Create a new SnailBed object based on the form data
         new_snail_bed = SnailBed(
             #bed_name=request.POST.get('bed_name', ""),
-            bed_name="",
-            user=request.user,
-            snail_amount=0,
+            #bed_name="",
+            user=current_user,
+            #snail_amount=0,
             #hatch_rate="",
             #mortality_rate="",
         )
@@ -89,7 +95,7 @@ def dashboard(request):
         return HttpResponseRedirect(request.path_info)  # Redirect to the same page (GET request)
 
     # Retrieve all SnailBeds for the logged-in user
-    snail_beds = SnailBed.objects.filter(user=request.user)
+    snail_beds = SnailBed.objects.filter(user=current_user)
     snail_bed_count = snail_beds.count()
 
     return render(request, 'dashboard.html', {'snail_beds': snail_beds, 'snail_bed_count': snail_bed_count})
@@ -97,7 +103,7 @@ def dashboard(request):
 @login_required
 def index(request):
 
-    current_user = Profile.objects.filter(user=request.user).first()
+    current_user = AdminUser.objects.filter(user=request.user).first()
 
     # Handle the POST request to add a new SnailBed object
     if request.method == 'POST':
@@ -304,3 +310,22 @@ def barchart(request):
     }
 
     return render(request, 'barchart.html', context)
+
+
+
+
+
+
+def custom_admin_panel(request):
+    if request.method == 'POST':
+        form = EmployeeCreationForm(request.POST)
+        #form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Employee user {username} has been created.')
+            return redirect('custom_admin_panel')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'admin_panel.html', {'form': form})

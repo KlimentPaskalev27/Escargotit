@@ -67,25 +67,69 @@ class CustomUserCreationForm(UserCreationForm):
             user.save()
         # now create profile
         user = super().save(*args, **kwargs)
-        profile = Profile.objects.create(user = user)
+        profile = AdminUser.objects.create(user = user)
         profile.save()
         return user
-
-    # def save(self, *args, **kwargs):
-    #     user = super().save(*args, **kwargs)
-    #     profile = Profile.objects.create(user = user)
-    #     profile.save()
-    #     return user
 
 
 
 class RegisterForm(UserCreationForm):
     def save(self, *args, **kwargs):
         user = super().save(*args, **kwargs)
-        profile = Profile.objects.create(user = user)
+        profile = AdminUser.objects.create(user = user)
         profile.save()
         return user
 
     class Meta:
         model = User
         fields = ['username', 'email'] #password is added as field by default + pass confirmation
+
+
+
+class EmployeeCreationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'email']
+
+class EmployeePermissionForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['user_permissions']
+
+
+
+class EmployeeCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email'] #password is added as field by default + pass confirmation
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if get_user_model().objects.filter(email=email).exists():
+            raise ValidationError("This email address is already in use.")
+        return email
+
+    def clean_password1(self):
+        password = self.cleaned_data.get('password1')
+        if len(password) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
+        return password
+
+    def clean_password2(self):
+        password = self.cleaned_data.get('password2')
+        if len(password) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
+        return password
+
+    def save(self, commit=True, *args, **kwargs):
+        user = super().save(commit=False)  # Create the user object but don't save it yet
+        user.set_password(self.cleaned_data['password1'])  # Set the password
+        if commit:
+            user.save()
+        # now create employee
+        user = super().save(*args, **kwargs)
+        employee = EmployeeUser.objects.create(user = user)
+        employee.save()
+        return user

@@ -1,0 +1,19 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Employee User</title>
+</head>
+<body>
+    <h1>Create a New Employee User</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Create Employee User</button>
+    </form>
+
+    <a href="{% url 'custom_admin_panel' %}">Back to Admin Panel</a>
+</body>
+</html>

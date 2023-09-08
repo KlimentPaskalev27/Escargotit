@@ -11,30 +11,34 @@ from django.utils import timezone
 from decimal import Decimal
 from django.contrib.auth.models import AbstractUser
 
-# from django.contrib.auth import get_user_model
-# User = get_user_model()
-
-
-class Profile(models.Model):
+class AdminUser(models.Model):
+    can_create_snailbed = models.BooleanField(default=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
 
-# class StaffMember(AbstractUser):
-#     # Add any additional fields specific to staff members
-#     staff_id = models.CharField(max_length=10, unique=True)
-#     is_staff_member = models.BooleanField(default=True)
 
-#     def __str__(self):
-#         return self.username
+class EmployeeUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    can_create_snailbed = models.BooleanField(default=False)
+    def __str__(self):
+        return self.user.username
+
 
 class SnailBed(models.Model):
     bed_name = models.CharField(max_length=100, unique=False, null=True, blank=True)
-    user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
+    user = models.ForeignKey(AdminUser, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
+    employees = models.ForeignKey(EmployeeUser, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
     snail_amount = models.IntegerField(null=True, blank=True)
     hatch_rate = models.ForeignKey('SnailHatchRate', on_delete=models.SET_NULL, null=True, blank=True)
     mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def can_create(self, user):
+        return user.has_perm('add_snailbed')
+
+    def can_delete(self, user):
+        return user.has_perm('delete_snailbed')
 
     @property
     def mortality_percentage_rate(self):

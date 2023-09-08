@@ -51,18 +51,22 @@
                         </div>
                     {% endfor %}
                 </div>
-                <form method="POST" action="{% url 'dashboard' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary" name="add-box-button">Add Box</button>
-                </form>
 
-                <!-- Button to delete all SnailBed objects for this user -->
-                <form method="POST" action="{% url 'delete_all_snailbeds' %}">
-                    {% csrf_token %}
-                    
-                    <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
+                <!-- Conditional check to display the "Create Box" button for admins only -->
+              
+                    <form method="POST" action="{% url 'dashboard' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" name="add-box-button">Add Box</button>
+                    </form>
 
-                </form>
+                    <!-- Button to delete all SnailBed objects for this user -->
+                    <form method="POST" action="{% url 'delete_all_snailbeds' %}">
+                        {% csrf_token %}
+                        
+                        <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
+
+                    </form>
+               
             {% endif %}
         </div>
     </div>
