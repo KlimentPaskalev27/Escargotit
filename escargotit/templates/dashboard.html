@@ -53,7 +53,7 @@
                 </div>
 
                 <!-- Conditional check to display the "Create Box" button for admins only -->
-              
+                {% if user.can_create_snailbed %}
                     <form method="POST" action="{% url 'dashboard' %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary" name="add-box-button">Add Box</button>
@@ -66,7 +66,7 @@
                         <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
 
                     </form>
-               
+                {% endif %}
             {% endif %}
         </div>
     </div>
