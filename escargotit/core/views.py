@@ -77,25 +77,35 @@ def snail_data_form(request):
 def dashboard(request):
 
     current_user = AdminUser.objects.filter(user=request.user).first()
-    
-    # Handle the POST request to add a new SnailBed object
-    if request.method == 'POST':
-        # Create a new SnailBed object based on the form data
-        new_snail_bed = SnailBed(
-            #bed_name=request.POST.get('bed_name', ""),
-            #bed_name="",
-            user=current_user,
-            #snail_amount=0,
-            #hatch_rate="",
-            #mortality_rate="",
-        )
-        new_snail_bed.save()  # Save the new SnailBed to the database
+    if isinstance(current_user, AdminUser):
+        
+        # Handle the POST request to add a new SnailBed object
+        if request.method == 'POST':
+            # Create a new SnailBed object based on the form data
+            new_snail_bed = SnailBed(
+                #bed_name=request.POST.get('bed_name', ""),
+                #bed_name="",
+                user=current_user,
+                #snail_amount=0,
+                #hatch_rate="",
+                #mortality_rate="",
+            )
+            new_snail_bed.save()  # Save the new SnailBed to the database
 
-        # After processing the POST request, redirect to the dashboard page using the GET method
-        return HttpResponseRedirect(request.path_info)  # Redirect to the same page (GET request)
+            # After processing the POST request, redirect to the dashboard page using the GET method
+            return HttpResponseRedirect(request.path_info)  # Redirect to the same page (GET request)
+
+        # Retrieve all SnailBeds for the logged-in user
+        snail_beds = SnailBed.objects.filter(user=current_user)
+
+    else:
+        current_user = EmployeeUser.objects.filter(user=request.user).first()
+        if isinstance(current_user, EmployeeUser):
+            snail_beds = SnailBed.objects.filter(employees=current_user)
+
 
     # Retrieve all SnailBeds for the logged-in user
-    snail_beds = SnailBed.objects.filter(user=current_user)
+    #snail_beds = SnailBed.objects.filter(user=current_user)
     snail_bed_count = snail_beds.count()
 
     return render(request, 'dashboard.html', {'snail_beds': snail_beds, 'snail_bed_count': snail_bed_count})
