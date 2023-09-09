@@ -61,4 +61,6 @@ urlpatterns = [
     path('log_snail_feed/<int:snail_bed_id>/', views.log_snail_feed, name='log_snail_feed'),
     path('log_hatch_rate/<int:snail_bed_id>/', views.log_hatch_rate, name='log_hatch_rate'),
     path('log_mortality_rate/<int:snail_bed_id>/', views.log_mortality_rate, name='log_mortality_rate'),
+
+    path('bed_performance/<int:snail_bed_id>/', views.bed_performance, name='bed_performance'),
 ]

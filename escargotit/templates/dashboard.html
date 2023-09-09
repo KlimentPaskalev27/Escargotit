@@ -92,6 +92,7 @@
         <div id="box-hatch"></div>
         <div id="box-mortality"></div>
         <div id="box-snails"></div>
+        <div id="box-details"></div>
     </div>
 </div>
 
@@ -177,6 +178,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (boxMortality != "None") { 
                 document.getElementById("box-mortality").innerText = "Mortality rate: " + boxMortality; 
             } else { document.getElementById("box-mortality").innerText = "Hatch rate: No data available";}
+
+            document.getElementById("box-details").innerHTML = 
+            `<a class="btn btn-success" id="box-details-link">Inspect Snail Bed</a>`;
+
+            document.getElementById("box-details-link").href = "/bed_performance/" + boxId;
             
             
             document.getElementById("box-snails").innerText = "Snails: " + boxSnails;

@@ -410,3 +410,23 @@ def log_mortality_rate(request, snail_bed_id):
     return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
 
 
+@login_required(login_url='login')
+def bed_performance(request, snail_bed_id):
+
+    snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
+
+    snail_bed_performance = SnailBedPerformance.objects.filter(snail_bed=snail_bed).first()
+    #forecasts = ForecastedHatchRate.objects.first()
+
+    a = snail_bed_performance
+
+    # Convert DataFrame to HTML
+  #  html_table = forecasts.forecasted_value_pyaf.to_html()
+
+    context = {
+        'snail_bed_performance': a,
+        #'forecasts': forecasts,
+        #'html_table': html_table,
+    }
+
+    return render(request, 'bed_performance.html', context)
