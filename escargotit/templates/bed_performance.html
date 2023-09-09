@@ -50,6 +50,19 @@
            <h2 class="metric-title">Bed Performance</h2>
            <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.bed_performance }}" data-duration="4500"></span>
         </div>
+    </div>
+
+    <div class="dashboard">
+        <div class="metric-box">
+           <h2 class="metric-title">Forecasted Average hatch Rate</h2>
+           <span class="metric-value label days" data-start="0" data-end="{{ forecasts.forecasted_value }}" data-duration="3500"></span>
+        </div>
+        <div class="dataframe-table">
+           {{ html_table | safe }}
+        </div>
+     </div>
+     <div class="button-container">
+        <button onclick="history.back()">Go Back</button>
      </div>
 </div>
 

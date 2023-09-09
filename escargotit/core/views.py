@@ -425,28 +425,6 @@ def log_maturity_rate(request, snail_bed_id):
     return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
 
 
-# @login_required(login_url='login')
-# def bed_performance(request, snail_bed_id):
-
-#     snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
-
-#     snail_bed_performance = SnailBedPerformance.objects.filter(snail_bed=snail_bed).first()
-#     #forecasts = ForecastedHatchRate.objects.first()
-
-#     a = snail_bed_performance
-
-#     # Convert DataFrame to HTML
-#   #  html_table = forecasts.forecasted_value_pyaf.to_html()
-
-#     context = {
-#         'snail_bed_performance': a,
-#         #'forecasts': forecasts,
-#         #'html_table': html_table,
-#     }
-
-#     return render(request, 'bed_performance.html', context)
-
-
 @login_required(login_url='login')
 def bed_performance(request, snail_bed_id):
     snail_bed = get_object_or_404(SnailBed, pk=snail_bed_id)
@@ -499,17 +477,16 @@ def bed_performance(request, snail_bed_id):
     bed_performance.actual_average_time_to_maturity = average_days_to_mature_for_snail_bed
     bed_performance.save()
 
-    # Create a SnailBedPerformance object
-    # bed_performance = SnailBedPerformance(
-    #     snail_bed=snail_bed,
-    #     average_hatch_rate=int(snail_bed.hatch_rate),
-    #     average_mortality_rate=int(snail_bed.mortality_rate),
-    #     average_maturity_rate=int(snail_bed.maturity_rate)
-    # )
-    # bed_performance.save()
+
+    # Get the existing SnailBedPerformance object related to this SnailBed
+    forecast, created = ForecastedHatchRate.objects.get_or_create(snail_bed=snail_bed)
+    # Convert DataFrame to HTML
+    html_table = forecast.forecasted_value_pyaf.to_html()
 
     context = {
         'bed_performance': bed_performance,
+        'forecast': forecast,
+        'html_table': html_table,
     }
 
     return render(request, 'bed_performance.html', context)

@@ -90,6 +90,7 @@ class SnailHatchRate(models.Model):
         else:
             return 0
 
+
     def save(self, *args, **kwargs):
         # Calculate the new snail_amount for the associated SnailBed
         self.preexisting_snail_amount = self.snail_bed.snail_amount
@@ -339,13 +340,14 @@ class ForecastedHatchRate(models.Model):
 
     @staticmethod
     def calculate_forecast_pyaf(snail_bed):
-        # Get all previous records for the specific snail_bed
-        previous_records = SnailHatchRate.objects.filter(snail_bed=snail_bed)
-        
-        # Create a dataframe from previous records
-        data = pd.DataFrame(list(previous_records.values('datetime', 'newly_hatched_snails')))
+        # Get all previous records for the specific snail_bed and annotate a date field
+        previous_records = SnailHatchRate.objects.filter(snail_bed=snail_bed).annotate(date_only=models.ExpressionWrapper(models.F('datetime'), output_field=models.DateField()))
+
+        # Create a DataFrame from the annotated records
+        data = pd.DataFrame(list(previous_records.values('date_only', 'newly_hatched_snails')))
+
         # Rename columns to match PyAF input requirements
-        data.rename(columns={'datetime': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
+        data.rename(columns={'date_only': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
 
         m = NeuralProphet()
         m.fit(data, freq="D")
