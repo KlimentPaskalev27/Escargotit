@@ -57,8 +57,7 @@
 
                 {% if snail_bed_count > 0 %}
                     <button type="button" class="btn btn-primary" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#logDataModal"
+                            id="logDataButton"
                             data-snail-bed-id="{{ snail_bed.id }}">
                         Log Data
                     </button>
@@ -126,23 +125,25 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Get the button element
-        var logDataButton = document.getElementById("logDataButton");
-    
-        // Add a click event listener to the button
-        logDataButton.addEventListener("click", function () {
+// make sure that a Snail Bed is selected when Log Data button is clicked
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the button element
+    var logDataButton = document.getElementById("logDataButton");
+    // Add a click event listener to the button
+    logDataButton.addEventListener("click", function () {
+        const selectedBox = document.querySelector(".snail-box.expanded");
+        console.log(selectedBox)
+        if (!selectedBox) {
+            // If no box is selected, show an alert
+            alert("Select a Snail Bed first");
+        } else {
             // Show the modal with the specified ID when the button is clicked
             var logDataModal = new bootstrap.Modal(document.getElementById("logDataModal"));
             logDataModal.show();
-        });
+        }
     });
-</script>
+});
 
-
-
-
-<script>
 document.addEventListener("DOMContentLoaded", function () {
     const rectangle = document.querySelector(".rectangle");
 
