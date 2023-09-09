@@ -409,6 +409,21 @@ def log_mortality_rate(request, snail_bed_id):
     
     return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
 
+def log_maturity_rate(request, snail_bed_id):
+    snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
+    
+    if request.method == 'POST':
+        form = TimeTakenToMatureForm(request.POST)
+        if form.is_valid():
+            form.instance.snail_bed = snail_bed
+            form.save()
+            # Redirect to a success page or back to the dashboard
+            return redirect('dashboard')
+    else:
+        form = TimeTakenToMatureForm()
+    
+    return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
+
 
 @login_required(login_url='login')
 def bed_performance(request, snail_bed_id):

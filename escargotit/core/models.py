@@ -30,6 +30,7 @@ class SnailBed(models.Model):
     snail_amount = models.IntegerField(null=True, blank=True)
     hatch_rate = models.ForeignKey('SnailHatchRate', on_delete=models.SET_NULL, null=True, blank=True)
     mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.SET_NULL, null=True, blank=True)
+    maturity_rate = models.ForeignKey('TimeTakenToMature', on_delete=models.SET_NULL, null=True, blank=True)
 
     def can_create(self, user):
         return user.has_perm('add_snailbed')
@@ -232,6 +233,22 @@ class TimeTakenToMature(models.Model):
         if self.maturity_percentage and self.days_to_mature:
             return str(self.maturity_percentage) + "% of snail bed has reached maturity in " + str(self.days_to_mature) + " days"
         return "N/A"
+
+
+@receiver(post_save, sender=TimeTakenToMature)
+def update_snailbed_maturity_rate(sender, instance, **kwargs):
+    # When a TimeTakenToMature object is created or saved,
+    # update the related SnailBed's maturity_rate property
+    # get latest one
+    if instance.snail_bed:
+        latest_maturity_rate = TimeTakenToMature.objects.filter(snail_bed=instance.snail_bed).aggregate(Max('snail_matured'))['snail_matured__max']
+        latest_maturity_object = TimeTakenToMature.objects.filter(snail_bed=instance.snail_bed, snail_matured=latest_maturity_rate).first()
+
+        if latest_maturity_object:
+            instance.snail_bed.maturity_rate = latest_maturity_object
+            instance.snail_bed.save()
+
+
 
 class SnailBedPerformance(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)

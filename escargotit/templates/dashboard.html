@@ -49,6 +49,7 @@
                                 data-bed-id="{{ snail_bed.id }}"
                                 data-bed-hatch="{{ snail_bed.hatch_rate }}"
                                 data-bed-mortality="{{ snail_bed.mortality_rate }}"
+                                data-bed-maturity="{{ snail_bed.maturity_rate }}"
                                 data-bed-snails="{{ snail_bed.snail_amount }}">
                             <span>{{ snail_bed.name }}</span>
                         </div>
@@ -91,6 +92,7 @@
         <div id="box-id"></div>
         <div id="box-hatch"></div>
         <div id="box-mortality"></div>
+        <div id="box-maturity"></div>
         <div id="box-snails"></div>
         <div id="box-details"></div>
     </div>
@@ -112,6 +114,7 @@
                     <li><a id="box-hatch-link" href="log_hatch_rate/">Log Hatched Snails</a></li>
                     <li><a id="box-mortality-link" href="log_mortality_rate/">Log Snails Expired</a></li>
                     <li><a id="box-feed-link" href="log_snail_feed/">Log Feed Given</a></li>
+                    <li><a id="box-maturity-link" href="log_maturity_rate/">Time taken to reach Maturity</a></li>
                    
                 </ul>
             </div>
@@ -161,6 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const boxId = box.getAttribute("data-bed-id");
             const boxHatch = box.getAttribute("data-bed-hatch");
             const boxMortality = box.getAttribute("data-bed-mortality");
+            const boxMaturity = box.getAttribute("data-bed-maturity");
             const boxSnails = box.getAttribute("data-bed-snails");
 
             document.getElementById("box-name").innerText = "Name: " + boxName;
@@ -179,6 +183,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("box-mortality").innerText = "Mortality rate: " + boxMortality; 
             } else { document.getElementById("box-mortality").innerText = "Hatch rate: No data available";}
 
+            if (boxMaturity != "None") { 
+                document.getElementById("box-maturity").innerText = "Maturity rate: " + boxMaturity; 
+            } else { document.getElementById("box-maturity").innerText = "Maturity rate: No data available";}
+
             document.getElementById("box-details").innerHTML = 
             `<a class="btn btn-success" id="box-details-link">Inspect Snail Bed</a>`;
 
@@ -189,6 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("box-hatch-link").href = "/log_hatch_rate/" + boxId;
             document.getElementById("box-mortality-link").href = "/log_mortality_rate/" + boxId;
+            document.getElementById("box-maturity-link").href = "/log_maturity_rate/" + boxId;
             document.getElementById("box-feed-link").href = "/log_snail_feed/" + boxId;
 
             document.getElementById("selected-box-data").style.display = "block";
