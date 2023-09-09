@@ -425,23 +425,91 @@ def log_maturity_rate(request, snail_bed_id):
     return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
 
 
+# @login_required(login_url='login')
+# def bed_performance(request, snail_bed_id):
+
+#     snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
+
+#     snail_bed_performance = SnailBedPerformance.objects.filter(snail_bed=snail_bed).first()
+#     #forecasts = ForecastedHatchRate.objects.first()
+
+#     a = snail_bed_performance
+
+#     # Convert DataFrame to HTML
+#   #  html_table = forecasts.forecasted_value_pyaf.to_html()
+
+#     context = {
+#         'snail_bed_performance': a,
+#         #'forecasts': forecasts,
+#         #'html_table': html_table,
+#     }
+
+#     return render(request, 'bed_performance.html', context)
+
+
 @login_required(login_url='login')
 def bed_performance(request, snail_bed_id):
+    snail_bed = get_object_or_404(SnailBed, pk=snail_bed_id)
 
-    snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
+    # Calculate the average hatch rate
+    summed_hatch_rates = 0
+    iteration_counter = 0
+    hatch_rates_for_snail_bed = SnailHatchRate.objects.filter(snail_bed=snail_bed)
+    for hatch_rate in hatch_rates_for_snail_bed:
+        if hatch_rate.hatch_rate_percentage is not 0: # dont count initial snail population of bed which results in 0 rate
+            summed_hatch_rates += hatch_rate.hatch_rate_percentage
+            iteration_counter += 1
+    average_hatch_rate_for_snail_bed = summed_hatch_rates / iteration_counter
 
-    snail_bed_performance = SnailBedPerformance.objects.filter(snail_bed=snail_bed).first()
-    #forecasts = ForecastedHatchRate.objects.first()
 
-    a = snail_bed_performance
+    # Calculate the average mortality rate
+    summed_mortality_rates = 0
+    iteration_counter = 0
+    mortality_rates_for_snail_bed = SnailMortalityRate.objects.filter(snail_bed=snail_bed)
+    for mortality_rate in mortality_rates_for_snail_bed:
+        if mortality_rate.mortality_rate_percentage is not 0: # dont count initial snail population of bed which results in 0 rate
+            summed_mortality_rates += mortality_rate.mortality_rate_percentage
+            iteration_counter += 1
+    average_mortality_rate_for_snail_bed = summed_mortality_rates / iteration_counter
 
-    # Convert DataFrame to HTML
-  #  html_table = forecasts.forecasted_value_pyaf.to_html()
+
+
+    # Calculate the average maturity rate and average days to mature
+    summed_maturity_rates = 0
+    summed_days_to_mature = 0
+    iteration_counter = 0
+    maturity_rates_for_snail_bed = TimeTakenToMature.objects.filter(snail_bed=snail_bed)
+    for maturity_rate in maturity_rates_for_snail_bed:
+        if maturity_rate.maturity_percentage is not None: # dont count initial snail population of bed which results in 0 rate
+            summed_maturity_rates += maturity_rate.maturity_percentage
+        if maturity_rate.days_to_mature > 0:
+            summed_days_to_mature += maturity_rate.days_to_mature
+        iteration_counter += 1
+    average_maturity_rate_for_snail_bed = summed_maturity_rates / iteration_counter
+    average_days_to_mature_for_snail_bed = summed_days_to_mature / iteration_counter
+
+   
+    # Get the existing SnailBedPerformance object related to this SnailBed
+    bed_performance, created = SnailBedPerformance.objects.get_or_create(snail_bed=snail_bed)
+
+    # Update the fields with the calculated averages
+    bed_performance.average_hatch_rate = average_hatch_rate_for_snail_bed
+    bed_performance.average_mortality_rate = average_mortality_rate_for_snail_bed 
+    bed_performance.average_maturity_rate = average_maturity_rate_for_snail_bed
+    bed_performance.actual_average_time_to_maturity = average_days_to_mature_for_snail_bed
+    bed_performance.save()
+
+    # Create a SnailBedPerformance object
+    # bed_performance = SnailBedPerformance(
+    #     snail_bed=snail_bed,
+    #     average_hatch_rate=int(snail_bed.hatch_rate),
+    #     average_mortality_rate=int(snail_bed.mortality_rate),
+    #     average_maturity_rate=int(snail_bed.maturity_rate)
+    # )
+    # bed_performance.save()
 
     context = {
-        'snail_bed_performance': a,
-        #'forecasts': forecasts,
-        #'html_table': html_table,
+        'bed_performance': bed_performance,
     }
 
     return render(request, 'bed_performance.html', context)

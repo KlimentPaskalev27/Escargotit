@@ -22,10 +22,6 @@ class TimeTakenToMatureForm(forms.ModelForm):
         model = TimeTakenToMature
         fields = ['snail_hatched', 'snail_matured', 'snails_matured_count']
 
-class SnailBedPerformanceForm(forms.ModelForm):
-    class Meta:
-        model = SnailBedPerformance
-        fields = ['expected_time_to_maturity']
 
 class SnailBedForm(forms.ModelForm):
     class Meta:

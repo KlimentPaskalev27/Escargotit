@@ -252,16 +252,15 @@ def update_snailbed_maturity_rate(sender, instance, **kwargs):
 
 class SnailBedPerformance(models.Model):
     snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
-
     average_hatch_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     average_mortality_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     average_maturity_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
     reproduction_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-
     net_growth_amount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
-    expected_time_to_maturity = models.PositiveIntegerField(default=10)
+    expected_average_time_to_maturity = models.PositiveIntegerField(default=30)
+    actual_average_time_to_maturity = models.PositiveIntegerField(default=0)
 
     bed_performance = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
@@ -290,20 +289,21 @@ class SnailBedPerformance(models.Model):
 
             if initial_hatched_snails > 0:
                 difference = latest_snail_amount - initial_hatched_snails
-                percentage_difference = (Decimal(difference) / Decimal(initial_hatched_snails)) * Decimal(100)
+                percentage_difference = (difference / initial_hatched_snails) * 100
                 return round(percentage_difference, 2)
         return None
 
     @property
     def bed_performance(self):
-        if self.reproduction_rate and self.average_maturity_rate:
-            maturity_factor = self.expected_time_to_maturity * int(self.average_maturity_rate)
-            performance = int(self.reproduction_rate) * int(maturity_factor)
-            return round(performance, 2)
+        # if reproduction rate is positive, then add 1. Reproduction rate of 30% means that there is a positive 30% growth in the bed.
+        if int(self.reproduction_rate) > 0:
+            adjusted_reproduction_rate = 1 + (int(self.reproduction_rate) / 100)
         else:
-            maturity_factor = 1
-            performance = self.reproduction_rate * maturity_factor
-            return round(performance, 2)  # Convert to percentage and round to 2 decimal places
+            adjusted_reproduction_rate = 1 - (int(self.reproduction_rate) / 100) # if it's a negative number then multiply by 0.30 which will decrease bed growth
+        
+        maturity_factor = (self.expected_average_time_to_maturity / self.actual_average_time_to_maturity) * ( int(self.average_maturity_rate) / 100 )
+        performance = adjusted_reproduction_rate * maturity_factor * int(self.net_growth_amount)
+        return round(performance, 2)
 
     def __int__(self):
         status = self.bed_performance
