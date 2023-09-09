@@ -62,7 +62,7 @@ class SnailBed(models.Model):
 
 class SnailFeed(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
-    consumed_on = models.DateField(default=timezone.now)
+    consumed_on = models.DateTimeField(default=timezone.now)
     grams_feed_given = models.IntegerField()
 
     def __int__(self):
