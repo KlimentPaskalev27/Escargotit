@@ -251,16 +251,17 @@ def update_snailbed_maturity_rate(sender, instance, **kwargs):
 
 
 class SnailBedPerformance(models.Model):
-    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
+    snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
 
-    snail_feed = models.ForeignKey(SnailFeed, on_delete=models.CASCADE)
-    snail_hatch_rate = models.ForeignKey(SnailHatchRate, on_delete=models.CASCADE)
-    snail_mortality_rate = models.ForeignKey(SnailMortalityRate, on_delete=models.CASCADE)
-    time_taken_to_mature = models.ForeignKey(TimeTakenToMature, on_delete=models.CASCADE)
+    average_hatch_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    average_mortality_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    average_maturity_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
     reproduction_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
-    expected_time_to_maturity = models.PositiveIntegerField(null=True, blank=True)
+    net_growth_amount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
+    expected_time_to_maturity = models.PositiveIntegerField(default=10)
 
     bed_performance = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
@@ -269,26 +270,40 @@ class SnailBedPerformance(models.Model):
 
     @property
     def reproduction_rate(self):
-        if self.snail_hatch_rate and self.snail_mortality_rate and self.time_taken_to_mature:
-            normalized_hatch_rate = float(self.snail_hatch_rate) * 100
-            normalized_mortality_rate = float(self.snail_mortality_rate) * 100
+        if self.average_hatch_rate and self.average_mortality_rate:
+            normalized_hatch_rate = float(self.average_hatch_rate) * 100
+            normalized_mortality_rate = float(self.average_mortality_rate) * 100
             normalized_reproduction_rate = normalized_hatch_rate - normalized_mortality_rate
             reproduction_rate_factor = round(normalized_reproduction_rate / 100, 2)
             return reproduction_rate_factor
         return None
 
     @property
+    def net_growth_amount(self):
+        # Get the first SnailHatchRate object for the SnailBed to check the initial snails 
+        first_hatch_rate = SnailHatchRate.objects.filter(snail_bed=self.snail_bed).order_by('datetime').first()
+
+        if first_hatch_rate:
+            # Calculate the percentage difference
+            initial_hatched_snails = first_hatch_rate.newly_hatched_snails
+            latest_snail_amount = self.snail_bed.snail_amount
+
+            if initial_hatched_snails > 0:
+                difference = latest_snail_amount - initial_hatched_snails
+                percentage_difference = (Decimal(difference) / Decimal(initial_hatched_snails)) * Decimal(100)
+                return round(percentage_difference, 2)
+        return None
+
+    @property
     def bed_performance(self):
-        if self.reproduction_rate and self.expected_time_to_maturity and self.time_taken_to_mature.days_to_mature > 0:
-            maturity_factor = self.expected_time_to_maturity / self.time_taken_to_mature.days_to_mature
-            performance = self.reproduction_rate * maturity_factor
+        if self.reproduction_rate and self.average_maturity_rate:
+            maturity_factor = self.expected_time_to_maturity * int(self.average_maturity_rate)
+            performance = int(self.reproduction_rate) * int(maturity_factor)
             return round(performance, 2)
         else:
-            maturity_factor = 1.0
-
+            maturity_factor = 1
             performance = self.reproduction_rate * maturity_factor
             return round(performance, 2)  # Convert to percentage and round to 2 decimal places
-        return None
 
     def __int__(self):
         status = self.bed_performance
@@ -297,6 +312,10 @@ class SnailBedPerformance(models.Model):
     def __str__(self):
         status = str( self.bed_performance ) + "%"
         return status
+
+
+
+
 
 class ForecastedHatchRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
