@@ -78,11 +78,10 @@ class SnailHatchRate(models.Model):
     preexisting_snail_amount = models.IntegerField(null=True, blank=True, default=0)
     newly_hatched_snails = models.IntegerField()
     hatch_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    datetime = models.DateField(default=timezone.now)
+    datetime = models.DateTimeField(default=timezone.now)
 
     @property
     def hatch_rate_percentage(self):
-        self.preexisting_snail_amount = self.snail_bed.snail_amount - self.newly_hatched_snails
         # Calculate hatch rate percentage based on other fields
         # Adjust the formula according to your specific calculation
         if self.preexisting_snail_amount > 0:
@@ -133,8 +132,7 @@ class SnailMortalityRate(models.Model):
     preexisting_snail_amount = models.IntegerField(null=True, blank=True)
     expired_snail_amount = models.IntegerField(default=0)
     mortality_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-
-    datetime = models.DateField(default=timezone.now)
+    datetime = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         self.preexisting_snail_amount = self.snail_bed.snail_amount
@@ -148,14 +146,10 @@ class SnailMortalityRate(models.Model):
 
     @property
     def mortality_rate_percentage(self):
-        #self.preexisting_snail_amount = self.snail_bed.snail_amount + self.expired_snail_amount
         # Calculate mortality rate percentage based on other fields
         # Adjust the formula according to your specific calculation, mentioned in report
         if self.preexisting_snail_amount > 0:
-            if self.snail_bed.snail_amount > 0:
-                return round( (self.expired_snail_amount / self.preexisting_snail_amount) * 100 , 1)
-            else:
-                return 100
+            return round( (self.expired_snail_amount / self.preexisting_snail_amount) * 100 , 1)
         else:
             return 0
 

@@ -13,8 +13,6 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
@@ -68,7 +66,6 @@ def snail_data_form(request):
         'snail_mortality_rate_form': snail_mortality_rate_form,
         'time_taken_to_mature_form': time_taken_to_mature_form,
         'snail_bed_performance_form': snail_bed_performance_form,
-    
     })
 
 
@@ -82,14 +79,7 @@ def dashboard(request):
         # Handle the POST request to add a new SnailBed object
         if request.method == 'POST':
             # Create a new SnailBed object based on the form data
-            new_snail_bed = SnailBed(
-                #bed_name=request.POST.get('bed_name', ""),
-                #bed_name="",
-                user=current_user,
-                #snail_amount=0,
-                #hatch_rate="",
-                #mortality_rate="",
-            )
+            new_snail_bed = SnailBed(user=current_user)
             new_snail_bed.save()  # Save the new SnailBed to the database
 
             # After processing the POST request, redirect to the dashboard page using the GET method
@@ -107,7 +97,7 @@ def dashboard(request):
     snail_bed_count = snail_beds.count()
 
     context = {
-        "current_user": current_user,
+        'current_user': current_user,
         'snail_beds': snail_beds,
         'snail_bed_count': snail_bed_count,
     }
@@ -389,7 +379,6 @@ def log_snail_feed(request, snail_bed_id):
         form = SnailFeedForm()
     return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
 
-
 def log_hatch_rate(request, snail_bed_id):
     snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
     
@@ -404,8 +393,6 @@ def log_hatch_rate(request, snail_bed_id):
         form = SnailHatchRateForm()
     
     return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
-
-
 
 def log_mortality_rate(request, snail_bed_id):
     snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
