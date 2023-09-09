@@ -6,10 +6,10 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model  # Use get_user_model to reference the user model
 
 
-class SnailFeedForm(forms.ModelForm):
-    class Meta:
-        model = SnailFeed
-        fields = ['snail_bed', 'consumed_on', 'grams_feed_given']
+# class SnailFeedForm(forms.ModelForm):
+#     class Meta:
+#         model = SnailFeed
+#         fields = ['snail_bed', 'consumed_on', 'grams_feed_given']
 
 class SnailHatchRateForm(forms.ModelForm):
     class Meta:
@@ -133,3 +133,37 @@ class EmployeeCreationForm(UserCreationForm):
         employee = EmployeeUser.objects.create(user = user)
         employee.save()
         return user
+
+
+class SnailHatchRateForm(forms.ModelForm):
+    class Meta:
+        model = SnailHatchRate
+        fields = ['newly_hatched_snails', 'datetime']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['newly_hatched_snails'].label = 'Newly Hatched Snails'
+        self.fields['datetime'].label = 'Date and Time'
+        #self.fields['datetime'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
+
+
+class SnailMortalityRateForm(forms.ModelForm):
+    class Meta:
+        model = SnailMortalityRate
+        fields = ['expired_snail_amount', 'datetime']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['expired_snail_amount'].label = 'Expired Snail Amount'
+        self.fields['datetime'].label = 'Date and Time'
+        #self.fields['datetime'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
+
+class SnailFeedForm(forms.ModelForm):
+    class Meta:
+        model = SnailFeed
+        fields = ['grams_feed_given', 'consumed_on']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['grams_feed_given'].label = 'Grams of Feed Given'
+        self.fields['consumed_on'].label = 'Date'

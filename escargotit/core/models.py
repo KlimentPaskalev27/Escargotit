@@ -9,7 +9,6 @@ from picklefield.fields import PickledObjectField # pickle together objects and 
 from django.contrib.auth.models import User # django User class ready to use
 from django.utils import timezone
 from decimal import Decimal
-from django.contrib.auth.models import AbstractUser
 
 class AdminUser(models.Model):
     can_create_snailbed = models.BooleanField(default=True)
@@ -18,18 +17,16 @@ class AdminUser(models.Model):
     def __str__(self):
         return self.user.username
 
-
 class EmployeeUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     can_create_snailbed = models.BooleanField(default=False)
     def __str__(self):
         return self.user.username
 
-
 class SnailBed(models.Model):
     bed_name = models.CharField(max_length=100, unique=False, null=True, blank=True)
     user = models.ForeignKey(AdminUser, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
-    employees = models.ForeignKey(EmployeeUser, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
+    employee = models.ForeignKey(EmployeeUser, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
     snail_amount = models.IntegerField(null=True, blank=True)
     hatch_rate = models.ForeignKey('SnailHatchRate', on_delete=models.SET_NULL, null=True, blank=True)
     mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.SET_NULL, null=True, blank=True)
@@ -63,8 +60,6 @@ class SnailBed(models.Model):
 
         super().save(*args, **kwargs)
 
-
-
 class SnailFeed(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
     consumed_on = models.DateField(default=timezone.now)
@@ -80,28 +75,34 @@ class SnailFeed(models.Model):
 
 class SnailHatchRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
-    preexisting_snail_amount = models.IntegerField(null=True, blank=True)
+    preexisting_snail_amount = models.IntegerField(null=True, blank=True, default=0)
     newly_hatched_snails = models.IntegerField()
     hatch_rate_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     datetime = models.DateField(default=timezone.now)
 
-    def save(self, *args, **kwargs):
-        self.preexisting_snail_amount = self.snail_bed.snail_amount
-
-        if self.preexisting_snail_amount and self.newly_hatched_snails:
-            self.snail_bed.snail_amount = self.preexisting_snail_amount + self.newly_hatched_snails
-            self.snail_bed.save()
-
-        super().save(*args, **kwargs)
-
     @property
     def hatch_rate_percentage(self):
+        self.preexisting_snail_amount = self.snail_bed.snail_amount - self.newly_hatched_snails
         # Calculate hatch rate percentage based on other fields
         # Adjust the formula according to your specific calculation
         if self.preexisting_snail_amount > 0:
             return round( (self.newly_hatched_snails / self.preexisting_snail_amount) * 100 , 1)
         else:
             return 0
+
+    def save(self, *args, **kwargs):
+        # Calculate the new snail_amount for the associated SnailBed
+        self.preexisting_snail_amount = self.snail_bed.snail_amount
+
+        if self.preexisting_snail_amount is not None and self.newly_hatched_snails is not None:
+            # Calculate the new snail_amount by adding the newly hatched snails
+            new_snail_amount = self.preexisting_snail_amount + self.newly_hatched_snails
+
+            # Update the SnailBed's snail_amount field
+            self.snail_bed.snail_amount = new_snail_amount
+            self.snail_bed.save()
+
+        super().save(*args, **kwargs)
 
     def __float__(self):
         status = self.hatch_rate_percentage
@@ -138,18 +139,23 @@ class SnailMortalityRate(models.Model):
     def save(self, *args, **kwargs):
         self.preexisting_snail_amount = self.snail_bed.snail_amount
 
-        if self.preexisting_snail_amount and self.expired_snail_amount:
-            self.snail_bed.snail_amount = self.preexisting_snail_amount - self.expired_snail_amount
+        if self.preexisting_snail_amount is not None and self.expired_snail_amount is not None:
+            new_snail_amount = self.preexisting_snail_amount - self.expired_snail_amount
+            self.snail_bed.snail_amount = new_snail_amount
             self.snail_bed.save()
 
         super().save(*args, **kwargs)
 
     @property
     def mortality_rate_percentage(self):
+        #self.preexisting_snail_amount = self.snail_bed.snail_amount + self.expired_snail_amount
         # Calculate mortality rate percentage based on other fields
         # Adjust the formula according to your specific calculation, mentioned in report
         if self.preexisting_snail_amount > 0:
-            return round( (self.expired_snail_amount / self.preexisting_snail_amount) * 100 , 1)
+            if self.snail_bed.snail_amount > 0:
+                return round( (self.expired_snail_amount / self.preexisting_snail_amount) * 100 , 1)
+            else:
+                return 100
         else:
             return 0
 

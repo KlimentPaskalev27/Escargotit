@@ -45,28 +45,42 @@
                     {% for snail_bed in snail_beds %}
                         <div class="snail-box {% if snail_bed.is_empty %}empty{% else %}solid{% endif %}"
                                 data-bed-name="{{ snail_bed.bed_name }}"
-                                data-bed-user="{{ snail_bed.user }}">
+                                data-bed-employee="{{ snail_bed.employee }}"
+                                data-bed-id="{{ snail_bed.id }}"
+                                data-bed-hatch="{{ snail_bed.hatch_rate }}"
+                                data-bed-mortality="{{ snail_bed.mortality_rate }}"
+                                data-bed-snails="{{ snail_bed.snail_amount }}">
                             <span>{{ snail_bed.name }}</span>
-                            <!-- Store bed name and user as data attributes -->
                         </div>
                     {% endfor %}
                 </div>
 
+                {% if snail_bed_count > 0 %}
+                    <button type="button" class="btn btn-primary" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#logDataModal"
+                            data-snail-bed-id="{{ snail_bed.id }}">
+                        Log Data
+                    </button>
+                {% endif %}
+
+                
                 <!-- Conditional check to display the "Create Box" button for admins only -->
-                {% if user.can_create_snailbed %}
+                {% if current_user.can_create_snailbed %}
                     <form method="POST" action="{% url 'dashboard' %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary" name="add-box-button">Add Box</button>
                     </form>
 
-                    <!-- Button to delete all SnailBed objects for this user -->
-                    <form method="POST" action="{% url 'delete_all_snailbeds' %}">
-                        {% csrf_token %}
-                        
-                        <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
-
-                    </form>
+                    {% if snail_bed_count > 0 %}
+                        <!-- Button to delete all SnailBed objects for this user -->
+                        <form method="POST" action="{% url 'delete_all_snailbeds' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
+                        </form>
+                    {% endif %}
                 {% endif %}
+                
             {% endif %}
         </div>
     </div>
@@ -74,9 +88,58 @@
     <div id="selected-box-data" class="container" style="display: none;">
         <h3>Selected Box Data</h3>
         <div id="box-name"></div>
-        <div id="box-user"></div>
+        <div id="box-employee"></div>
+        <div id="box-id"></div>
+        <div id="box-hatch"></div>
+        <div id="box-mortality"></div>
+        <div id="box-snails"></div>
     </div>
 </div>
+
+
+
+
+<div class="modal fade" id="logDataModal" tabindex="-1" aria-labelledby="logDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logDataModalLabel">Log Data Options</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select an option:</p>
+                <ul>
+                    <li><a id="box-hatch-link" href="log_hatch_rate/">Log Hatched Snails</a></li>
+                    <li><a id="box-mortality-link" href="log_mortality_rate/">Log Snails Expired</a></li>
+                    <li><a id="box-feed-link" href="log_snail_feed/">Log Feed Given</a></li>
+                   
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the button element
+        var logDataButton = document.getElementById("logDataButton");
+    
+        // Add a click event listener to the button
+        logDataButton.addEventListener("click", function () {
+            // Show the modal with the specified ID when the button is clicked
+            var logDataModal = new bootstrap.Modal(document.getElementById("logDataModal"));
+            logDataModal.show();
+        });
+    });
+</script>
+
+
 
 
 <script>
@@ -92,9 +155,35 @@ document.addEventListener("DOMContentLoaded", function () {
         if (box !== selectedBox) {
             box.classList.add("expanded");
             const boxName = box.getAttribute("data-bed-name");
-            const boxUser = box.getAttribute("data-bed-user");
+            const boxEmployees = box.getAttribute("data-bed-employee");
+            const boxId = box.getAttribute("data-bed-id");
+            const boxHatch = box.getAttribute("data-bed-hatch");
+            const boxMortality = box.getAttribute("data-bed-mortality");
+            const boxSnails = box.getAttribute("data-bed-snails");
+
             document.getElementById("box-name").innerText = "Name: " + boxName;
-            document.getElementById("box-user").innerText = "User: " + boxUser;
+
+            if ( boxEmployees != "None") { 
+                document.getElementById("box-employee").innerText = "Assigned employee: " + boxEmployees;
+            } else { document.getElementById("box-employee").innerText = "Assigned employee: Not assigned";}
+
+            document.getElementById("box-id").innerText = "id: " + boxId;
+
+            if (boxHatch != "None") { 
+                document.getElementById("box-hatch").innerText = "Hatch rate: " + boxHatch; 
+            } else { document.getElementById("box-hatch").innerText = "Hatch rate: No data available"; }
+
+            if (boxMortality != "None") { 
+                document.getElementById("box-mortality").innerText = "Mortality rate: " + boxMortality; 
+            } else { document.getElementById("box-mortality").innerText = "Hatch rate: No data available";}
+            
+            
+            document.getElementById("box-snails").innerText = "Snails: " + boxSnails;
+
+            document.getElementById("box-hatch-link").href = "/log_hatch_rate/" + boxId;
+            document.getElementById("box-mortality-link").href = "/log_mortality_rate/" + boxId;
+            document.getElementById("box-feed-link").href = "/log_snail_feed/" + boxId;
+
             document.getElementById("selected-box-data").style.display = "block";
         } else {
             document.getElementById("selected-box-data").style.display = "none";

@@ -27,7 +27,7 @@ from scipy.stats import pearsonr  # For calculating correlation coefficient
 
 from .faq_data import faq_data  # Import the faq_data from the module
 
-@login_required
+@login_required(login_url='login')
 def performance(request):
     first_snail_bed_performance = SnailBedPerformance.objects.first()
     forecasts = ForecastedHatchRate.objects.first()
@@ -46,7 +46,7 @@ def performance(request):
     return render(request, 'performance.html', context)
 
 
-@login_required
+@login_required(login_url='login')
 def snail_data_form(request):
     if request.method == 'POST':
         form = SnailDataForm(request.POST)
@@ -73,7 +73,7 @@ def snail_data_form(request):
 
 
 
-@login_required
+@login_required(login_url='login')
 def dashboard(request):
 
     current_user = AdminUser.objects.filter(user=request.user).first()
@@ -98,27 +98,32 @@ def dashboard(request):
         # Retrieve all SnailBeds for the logged-in user
         snail_beds = SnailBed.objects.filter(user=current_user)
 
-    else:
+    elif isinstance(EmployeeUser.objects.filter(user=request.user).first(), EmployeeUser):
         current_user = EmployeeUser.objects.filter(user=request.user).first()
-        if isinstance(current_user, EmployeeUser):
-            snail_beds = SnailBed.objects.filter(employees=current_user)
+        snail_beds = SnailBed.objects.filter(employee=current_user)
+    else:
+        snail_beds = SnailBed.objects.filter(user=current_user)
 
-
-    # Retrieve all SnailBeds for the logged-in user
-    #snail_beds = SnailBed.objects.filter(user=current_user)
     snail_bed_count = snail_beds.count()
 
-    return render(request, 'dashboard.html', {'snail_beds': snail_beds, 'snail_bed_count': snail_bed_count})
+    context = {
+        "current_user": current_user,
+        'snail_beds': snail_beds,
+        'snail_bed_count': snail_bed_count,
+    }
 
-@login_required
+    return render(request, 'dashboard.html',context)
+
+@login_required(login_url='login')
 def index(request):
     return render(request, 'index.html')
 
-
+@login_required(login_url='login')
 def delete_all_snailbeds(request):
+    current_user = AdminUser.objects.filter(user=request.user).first()
     # Assuming you have a user-based association in your SnailBed model
     # You should adjust this logic based on your model structure
-    SnailBed.objects.filter(user=request.user).delete()
+    SnailBed.objects.filter(user=current_user).delete()
     return redirect('dashboard')  # Redirect back to the dashboard 
 
 
@@ -142,14 +147,14 @@ class LoginFormView(LoginView):
     success_url = ' '
 
 
-@login_required
+
 def logout_view(request):
     logout(request)
     # Redirect to a logout success page or login page
     return redirect('login')
 
 
-@login_required
+@login_required(login_url='login')
 def user_settings(request):
     
     user = request.user
@@ -201,6 +206,7 @@ def faqs(request):
 
 
 from scipy.stats import pearsonr  # Import Pearson correlation coefficient
+@login_required(login_url='login')
 def barchart_with_correlation(request):
     # Retrieve the combined data
     snail_feeds = SnailFeed.objects.all().order_by('consumed_on')
@@ -255,7 +261,7 @@ def barchart_with_correlation(request):
 
     return render(request, 'barchart.html', context)
 
-
+@login_required(login_url='login')
 def barchart(request):
     # Retrieve the combined data
     snail_feeds = SnailFeed.objects.all().order_by('consumed_on')
@@ -308,7 +314,7 @@ def barchart(request):
 from django.shortcuts import get_object_or_404
 
 
-
+@login_required(login_url='login')
 def custom_admin_panel(request):
 
     current_user = AdminUser.objects.filter(user=request.user).first()
@@ -333,14 +339,87 @@ def custom_admin_panel(request):
         employee_id = request.POST.get('employee_id')
         snail_bed = get_object_or_404(SnailBed, pk=snail_bed_id)
         employee = get_object_or_404(EmployeeUser, pk=employee_id)
-        snail_bed.employees = employee
+        snail_bed.employee = employee
         snail_bed.save()
         messages.success(request, f'Employee {employee.user.username} has been assigned to Snail Bed {snail_bed.bed_name}.')
 
     context = {
         'snail_beds': snail_beds,
-        'employees': employees,
+        'employee': employee,
         'form': form
         }
 
     return render(request, 'admin_panel.html', context)
+
+
+
+
+
+
+def log_data_options(request, snail_bed_id, data_type):
+    snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
+    print(snail_bed_id)
+    print(snail_bed)
+
+    if data_type == 'snail_feed':
+        form = SnailFeedForm(initial={'snail_bed': snail_bed})
+    elif data_type == 'hatch_rate':
+        form = SnailHatchRateForm(initial={'snail_bed': snail_bed})
+    elif data_type == 'mortality_rate':
+        form = SnailMortalityRateForm(initial={'snail_bed': snail_bed})
+    else:
+        # Handle the case when an invalid data_type is provided
+        return JsonResponse({'error': 'Invalid data type'})
+
+    # Render the form as a string
+    form_html = render_to_string('form_template.html', {'form': form})
+
+    return JsonResponse({'form_html': form_html})
+
+def log_snail_feed(request, snail_bed_id):
+    snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
+    if request.method == 'POST':
+        form = SnailFeedForm(request.POST)
+        if form.is_valid():
+            form.instance.snail_bed = snail_bed
+            form.save()
+            # Redirect to a success page or back to the dashboard
+            return redirect('dashboard')
+    else:
+        form = SnailFeedForm()
+    return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
+
+
+def log_hatch_rate(request, snail_bed_id):
+    snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
+    
+    if request.method == 'POST':
+        form = SnailHatchRateForm(request.POST)
+        if form.is_valid():
+            form.instance.snail_bed = snail_bed
+            form.save()
+            # Redirect to a success page or back to the dashboard
+            return redirect('dashboard')
+    else:
+        form = SnailHatchRateForm()
+    
+    return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
+
+
+
+def log_mortality_rate(request, snail_bed_id):
+    snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
+    
+    if request.method == 'POST':
+        form = SnailMortalityRateForm(request.POST)
+        if form.is_valid():
+            form.instance.snail_bed = snail_bed
+            form.save()
+            # Redirect to a success page or back to the dashboard
+            return redirect('dashboard')
+    else:
+        form = SnailMortalityRateForm()
+    
+    return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
+
+

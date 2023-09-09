@@ -53,4 +53,12 @@ urlpatterns = [
 
 
     #path('assign_employee/', views.custom_admin_panel, name='assign_employee'),
+
+    # URL for logging data options
+    path('log-data/<int:snail_bed_id>/', views.log_data_options, name='log_data_options'),
+
+    # URLs for specific data logging forms
+    path('log_snail_feed/<int:snail_bed_id>/', views.log_snail_feed, name='log_snail_feed'),
+    path('log_hatch_rate/<int:snail_bed_id>/', views.log_hatch_rate, name='log_hatch_rate'),
+    path('log_mortality_rate/<int:snail_bed_id>/', views.log_mortality_rate, name='log_mortality_rate'),
 ]
