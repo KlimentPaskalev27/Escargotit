@@ -12,10 +12,8 @@
     <!-- jQuery -->
     <script type="text/javascript" src="{% static 'jquery-3.6.4.min.js' %}"></script>
 
-    
     <!-- Load Bootstrap CSS -->
     {% bootstrap_css %}
-
     
 </head>
 <body>
@@ -36,30 +34,56 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'contact' %}">Contact</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-                    </li>
-   
-                    {% if user.is_authenticated %}
+
+                    {% if not user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'custom_admin_panel' %}">Admin</a>
-                        </li>
-                    
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-user-circle"></i> {{ user.username }} <i class="fa fa-chevron-down"></i>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="{% url 'user_settings' %}">User Settings</a>
-                                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-                            </div>
+                            <a class="nav-link" href="{% url 'login' %}">Sign in</a>
                         </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+
+    {% if user.is_authenticated %}
+    <nav class="navbar second navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'custom_admin_panel' %}">Admin</a>
+                    </li>
+                
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user-circle"></i> {{ user.username }} <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="{% url 'user_settings' %}">User Settings</a>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    </li>
+            
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
     
+
+    <style>
+        nav.navbar.second {
+            background-color: rgb(222, 221, 221) !important;
+        }
+        nav.navbar.second > div.container > div.collapse {
+            flex-direction: row-reverse !important;
+        }
+    </style>
 
     <div class="container mt-4">
         {% block content %}{% endblock %}
