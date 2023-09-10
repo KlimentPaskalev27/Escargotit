@@ -1,40 +1,33 @@
-from django.shortcuts import render, redirect, HttpResponse
-from .forms import *
-from .models import *
-from django.contrib.auth.models import User 
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
-from django.http import HttpResponseRedirect
+#Import standard library modules first
+from io import BytesIO
+import base64
 
-from django.views.generic import CreateView
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
-from django.contrib.auth.views import LoginView
-
-from django.contrib.auth import update_session_auth_hash # make possible to update passwords
-
-
-from django.views.generic import ListView
-
-import numpy as np
+#Import third-party libraries 
 import matplotlib
 # avoid error crashes runtime - async handler deleted by the wrong thread
 # matplotlib uses tkinter by default, overide that to avoid exception crash
 # https://stackoverflow.com/questions/27147300/matplotlib-tcl-asyncdelete-async-handler-deleted-by-the-wrong-thread
 matplotlib.use('Agg')
-from matplotlib import pyplot as plt
-
-from io import BytesIO
-import base64
-from scipy.stats import pearsonr  # For calculating correlation coefficient
+from matplotlib import pyplot as plt # plot graphs
 # https://scipy.org/install/
+from scipy.stats import pearsonr  # For calculating correlation coefficient
 
-from django.urls import reverse # used to redirect back to the request url 
-from django.shortcuts import get_object_or_404 # allows to return 404 when searching for object in database
+#Django modules and classes
+from django.contrib import messages  # the messages module allows success, info, and error messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash  # auth_hash makes it possible to update passwords
+from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy  # used to redirect back to the request URL
+from django.views.generic import CreateView, ListView
 
-
+# custom forms, models, and other local modules
+from .forms import *
+from .models import *
 from .faq_data import faq_data  # Import the faq_data from the module
 
 
@@ -90,11 +83,8 @@ def delete_all_snailbeds(request):
     return redirect('dashboard')  # Redirect back to the dashboard 
 
 
-
-from django.contrib import messages  # Import the messages module
-
 class RegisterFormView(SuccessMessageMixin, CreateView):
-    form_class = RegisterForm #CustomUserCreationForm  # Use the CustomUserCreationForm
+    form_class = RegisterForm 
     template_name = 'registration/register.html'
     success_url = reverse_lazy('login')  # Use reverse_lazy to specify the URL for the login page
     success_message = "Your profile was created successfully"
@@ -366,7 +356,7 @@ def custom_admin_panel(request):
     return render(request, 'admin_panel.html', context)
 
 
-from django.http import JsonResponse
+
 
 @login_required(login_url='login')
 def manage_employee(request, employee_id):
