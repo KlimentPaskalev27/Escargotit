@@ -19,13 +19,20 @@ from django.contrib.auth import update_session_auth_hash # make possible to upda
 from django.views.generic import ListView
 
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib
+# avoid error crashes runtime - async handler deleted by the wrong thread
+# matplotlib uses tkinter by default, overide that to avoid exception crash
+# https://stackoverflow.com/questions/27147300/matplotlib-tcl-asyncdelete-async-handler-deleted-by-the-wrong-thread
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+
 from io import BytesIO
 import base64
 from scipy.stats import pearsonr  # For calculating correlation coefficient
 # https://scipy.org/install/
 
 from django.urls import reverse # used to redirect back to the request url 
+from django.shortcuts import get_object_or_404 # allows to return 404 when searching for object in database
 
 
 
@@ -206,24 +213,27 @@ def faqs(request):
 
 
 
-from scipy.stats import pearsonr  # Import Pearson correlation coefficient
-@login_required(login_url='login')
-def barchart_with_correlation(request, snail_bed_id):
 
+@login_required(login_url='login')
+def barchart(request, snail_bed_id):
     snail_bed = get_object_or_404(SnailBed, pk=snail_bed_id)
 
     # Retrieve the combined data
     snail_feeds = SnailFeed.objects.filter(snail_bed=snail_bed).order_by('consumed_on')
     hatch_rates = SnailHatchRate.objects.filter(snail_bed=snail_bed).order_by('datetime')
+    mortality_rates = SnailMortalityRate.objects.filter(snail_bed=snail_bed).order_by('datetime')
+    maturity_rates = TimeTakenToMature.objects.filter(snail_bed=snail_bed).order_by('snail_matured')
 
     # Check if there are enough data points for correlation calculation
-    if len(snail_feeds) < 2 or len(hatch_rates) < 2:
+    if len(snail_feeds) < 2 or len(hatch_rates) < 2 or len(mortality_rates) < 2 or len(maturity_rates) < 2:
         messages.error(request, "There are not enough data points for correlation calculation. Snail Bed should have at least 2 logs for each data field.")
         return redirect('dashboard')  # Redirect to a suitable page
 
     # Extract grams feed given and hatch rates
     grams_feed_given = [entry.grams_feed_given for entry in snail_feeds]
     hatch_rates_percentage = [entry.hatch_rate_percentage for entry in hatch_rates]
+    mortality_rates_percentage = [entry.mortality_rate_percentage for entry in mortality_rates]
+    maturity_percentage = [entry.maturity_percentage for entry in maturity_rates]
 
     # Calculate percentage change for grams feed given
     grams_feed_change = [0]  # Initial value is 0
@@ -237,69 +247,75 @@ def barchart_with_correlation(request, snail_bed_id):
         if hatch_rates_percentage[i - 1] != 0:
             percentage_change = ((hatch_rates_percentage[i] - hatch_rates_percentage[i - 1]) / hatch_rates_percentage[i - 1]) * 100
         else:
-            # Handle the case when the denominator is zero (optional)
+            # Handle the case when the denominator is zero
             percentage_change = 0  # Set percentage_change to 0 or another appropriate value
         hatch_rate_change.append(percentage_change)
 
-    # Ensure both arrays have the same length (truncate the longer one)
-    min_length = min(len(grams_feed_change), len(hatch_rate_change))
+    # Calculate percentage change for mortality rates
+    mortality_rate_change = [0]  # Initial value is 0
+    for i in range(1, len(mortality_rates_percentage)):
+        if mortality_rates_percentage[i - 1] != 0:
+            percentage_change = ((mortality_rates_percentage[i] - mortality_rates_percentage[i - 1]) / mortality_rates_percentage[i - 1]) * 100
+        else:
+            # Handle the case when the denominator is zero (optional)
+            percentage_change = 0  # Set percentage_change to 0 or another appropriate value
+        mortality_rate_change.append(percentage_change)
+
+    # Calculate percentage change for maturity rates
+    maturity_rate_change = [0]  # Initial value is 0
+    for i in range(1, len(maturity_percentage)):
+        if maturity_percentage[i - 1] is not None and maturity_percentage[i] is not None:
+            if maturity_percentage[i - 1] != 0:
+                percentage_change = ((maturity_percentage[i] - maturity_percentage[i - 1]) / maturity_percentage[i - 1]) * 100
+            else:
+                # Handle the case when the denominator is zero (optional)
+                percentage_change = 0  # Set percentage_change to 0 or another appropriate value
+            maturity_rate_change.append(percentage_change)
+
+    # Before plotting, all datasets must have the same lengths in terms of data points to avoid errors
+    # check which dataset is the shortest in length. Calculate the minimum length among the four data sets
+    min_length = min(len(grams_feed_change), len(hatch_rate_change), len(mortality_rate_change), len(maturity_rate_change))
+
+    # Trim each data set to the minimum length
     grams_feed_change = grams_feed_change[:min_length]
     hatch_rate_change = hatch_rate_change[:min_length]
+    mortality_rate_change = mortality_rate_change[:min_length]
+    maturity_rate_change = maturity_rate_change[:min_length]
+
+    # Create the overlapping bar chart
+    plt.figure(figsize=(8, 4))
+    plt.plot(snail_feeds.values_list('consumed_on', flat=True)[:min_length], grams_feed_change, alpha=0.5, label='Grams Feed Change (%)')
+    plt.plot(hatch_rates.values_list('datetime', flat=True)[:min_length], hatch_rate_change, alpha=0.5, label='Hatch Rate Change (%)')
+    plt.plot(mortality_rates.values_list('datetime', flat=True)[:min_length], mortality_rate_change, alpha=0.5, color='red', label='Mortality Rate (%)')
+    plt.plot(maturity_rates.values_list('snail_matured', flat=True)[:min_length], maturity_rate_change, alpha=0.5, color='green', label='Maturity Rate (%)')
 
     # Calculate the Pearson correlation coefficient
-    correlation_coefficient, _ = pearsonr(grams_feed_change, hatch_rate_change)
+    feed_hatch_correlation_coefficient, _ = pearsonr(grams_feed_change, hatch_rate_change)
+    feed_mortality_correlation_coefficient, _ = pearsonr(grams_feed_change, mortality_rate_change)
+    feed_maturity_correlation_coefficient, _ = pearsonr(grams_feed_change, maturity_rate_change)
+    maturity_mortality_correlation_coefficient, _ = pearsonr(maturity_rate_change, mortality_rate_change)
 
-    # Create the overlapping bar chart
-    plt.figure(figsize=(10, 6))
-    plt.bar(np.arange(min_length), grams_feed_change, alpha=0.5, label='Grams Feed Change (%)', width=0.4)
-    plt.bar(np.arange(min_length), hatch_rate_change, alpha=0.5, label='Hatch Rate Change (%)', width=0.4)
-    plt.xlabel('Date')
-    plt.ylabel('Percentage Change (%)')
-    plt.title(f'Overlapping Bar Chart of Percentage Change (Correlation: {correlation_coefficient:.2f})')  # Display correlation
-    plt.xticks(np.arange(min_length), snail_feeds.values_list('consumed_on', flat=True)[:min_length], rotation=45)
-    plt.legend()
+    # Prepare correlation objects to pass to template to render stats
+    correlation_coefficients = [
+        {
+        "name" : "Feed Given & Hatch Rate",
+        "coefficient": round(feed_hatch_correlation_coefficient,2)
+        },
+        {
+        "name" : "Feed Given & Mortality Rate",
+        "coefficient": round(feed_mortality_correlation_coefficient,2)
+        },
+        {
+        "name" : "Feed Given & Maturity Rate",
+        "coefficient": round(feed_maturity_correlation_coefficient,2)
+        },
+        {
+        "name" : "Maturity Rate & Mortality Rate",
+        "coefficient": round(maturity_mortality_correlation_coefficient,2)
+        },
+    ]
 
-    # Save the plot to a BytesIO object
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    plt.close()
-
-    # Convert the plot to base64 for embedding in HTML
-    plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-
-    context = {
-        'plot_base64': plot_base64,
-    }
-
-    return render(request, 'barchart.html', context)
-
-@login_required(login_url='login')
-def barchart(request):
-    # Retrieve the combined data
-    snail_feeds = SnailFeed.objects.all().order_by('consumed_on')
-    hatch_rates = SnailHatchRate.objects.all().order_by('datetime')
-
-    # Extract grams feed given and hatch rates
-    grams_feed_given = [entry.grams_feed_given for entry in snail_feeds]
-    hatch_rates_percentage = [entry.hatch_rate_percentage for entry in hatch_rates]
-
-    # Calculate percentage change for grams feed given
-    grams_feed_change = [0]  # Initial value is 0
-    for i in range(1, len(grams_feed_given)):
-        percentage_change = ((grams_feed_given[i] - grams_feed_given[i - 1]) / grams_feed_given[i - 1]) * 100
-        grams_feed_change.append(percentage_change)
-
-    # Calculate percentage change for hatch rates
-    hatch_rate_change = [0]  # Initial value is 0
-    for i in range(1, len(hatch_rates_percentage)):
-        percentage_change = ((hatch_rates_percentage[i] - hatch_rates_percentage[i - 1]) / hatch_rates_percentage[i - 1]) * 100
-        hatch_rate_change.append(percentage_change)
-
-    # Create the overlapping bar chart
-    plt.figure(figsize=(10, 6))
-    plt.bar(snail_feeds.values_list('consumed_on', flat=True), grams_feed_change, alpha=0.5, label='Grams Feed Change (%)', width=0.4)
-    plt.bar(hatch_rates.values_list('datetime', flat=True), hatch_rate_change, alpha=0.5, label='Hatch Rate Change (%)', width=0.4)
+    # Finish graph setup
     plt.xlabel('Date')
     plt.ylabel('Percentage Change (%)')
     plt.title('Overlapping Bar Chart of Percentage Change')
@@ -317,6 +333,7 @@ def barchart(request):
 
     context = {
         'plot_base64': plot_base64,
+        "correlations": correlation_coefficients,
     }
 
     return render(request, 'barchart.html', context)
@@ -324,7 +341,7 @@ def barchart(request):
 
 
 
-from django.shortcuts import get_object_or_404
+
 
 
 @login_required(login_url='login')

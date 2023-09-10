@@ -6,6 +6,29 @@
 
 {% block content %}
 <h1>Bar Chart with Trendline</h1>
+
+<ul>
+{% for correlation in correlations %}
+    <li>{{correlation.name}}: {{correlation.coefficient}}</li>
+{% endfor %}
+</ul>
+
+<div>
+    <h4>What is correlation coefficient?</h4>
+    <p>
+        The Pearson correlation coefficient, also known as Pearson's r, 
+        is a statistical measure used to quantify the strength and direction of 
+        the linear relationship between two continuous variables. 
+        It ranges from -1 to 1, where -1 indicates a perfect negative linear relationship, 
+        1 indicates a perfect positive linear relationship, and 0 indicates no linear relationship. 
+    </p>
+    <p>In practical terms, when you read a person's correlation coefficient, a value close to -1 
+        suggests that as one variable increases, the other tends to decrease, while a value close to 
+        1 implies that as one variable increases, the other tends to increase, and a value near 0 
+        indicates that there is no clear linear relationship between the variables.</p>
+</div>
+
+
 <div>
     <img src="data:image/png;base64,{{ plot_base64 }}" alt="Bar Chart with Trendline">
 </div>
