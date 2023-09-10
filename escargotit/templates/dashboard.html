@@ -119,7 +119,6 @@
         <h3>Selected Box Data</h3>
         <div id="box-name"></div>
         <div id="box-employee"></div>
-        <div id="box-id"></div>
         <div id="box-hatch"></div>
         <div id="box-mortality"></div>
         <div id="box-maturity"></div>
@@ -215,39 +214,40 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("box-name").innerText = "Name: " + boxName;
 
             if ( boxEmployees != "None") { 
-                
                 document.getElementById("box-employee").innerHTML = 
                 `<p id="box-employee-text"></p>
-                <a id="box-unassign-employee" class="btn btn-primary btn-sm">Unassign employee</a>
-                `
+                <a id="box-unassign-employee" class="btn btn-primary btn-sm">Unassign employee</a>`
                 document.getElementById("box-unassign-employee").href = "/unassign_employee/" + boxId;
                 document.getElementById("box-employee-text").innerText = "Assigned employee: " + boxEmployees;
-
             } else { document.getElementById("box-employee").innerText = "Assigned employee: Not assigned";}
 
-            document.getElementById("box-id").innerText = "id: " + boxId;
 
             if (boxHatch != "None") { 
-                document.getElementById("box-hatch").innerText = "Hatch rate: " + boxHatch;
-
                 document.getElementById("box-hatch").innerHTML = 
-                `<a id="box-hatch-history" class="btn btn-primary btn-sm">View Hatch Rate History</a>`
+                `<p id="box-hatch-text"></p>
+                <a id="box-hatch-history" class="btn btn-primary btn-sm">View Hatch Rate History</a>`
                 document.getElementById("box-hatch-history").href = "/view_hatch_rate_history/" + boxId;
-                
+                document.getElementById("box-hatch-text").innerText = "Hatch rate: " + boxHatch;
             } else { document.getElementById("box-hatch").innerText = "Hatch rate: No data available"; }
 
+
+
             if (boxMortality != "None") { 
-                document.getElementById("box-mortality").innerText = "Mortality rate: " + boxMortality; 
                 document.getElementById("box-mortality").innerHTML = 
-                `<a id="box-mortality-history" class="btn btn-primary btn-sm">View Mortality Rate History</a>`
+                `<p id="box-mortality-text"></p>
+                <a id="box-mortality-history" class="btn btn-primary btn-sm">View Mortality Rate History</a>`
                 document.getElementById("box-mortality-history").href = "/view_mortality_rate_history/" + boxId;
+                document.getElementById("box-mortality-text").innerText = "Mortality rate: " + boxMortality;
             } else { document.getElementById("box-mortality").innerText = "Hatch rate: No data available";}
 
+
+            
             if (boxMaturity != "None") { 
-                document.getElementById("box-maturity").innerText = "Maturity rate: " + boxMaturity; 
                 document.getElementById("box-maturity").innerHTML = 
-                `<a id="box-maturity-history" class="btn btn-primary btn-sm">View Maturity Rate History</a>`
+                `<p id="box-maturity-text"></p>
+                <a id="box-maturity-history" class="btn btn-primary btn-sm">View Maturity Rate History</a>`
                 document.getElementById("box-maturity-history").href = "/view_maturity_rate_history/" + boxId;
+                document.getElementById("box-maturity-text").innerText = "Maturity rate: " + boxMaturity; 
             } else { document.getElementById("box-maturity").innerText = "Maturity rate: No data available";}
 
 
