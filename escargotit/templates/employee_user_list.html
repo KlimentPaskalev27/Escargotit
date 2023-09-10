@@ -1,0 +1,43 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+    Employee Users List
+{% endblock %}
+
+{% block content %}
+    <h1>Employee Users List</h1>
+
+    <ul>
+        {% for employee in employees %}
+            <li>
+                {{ employee.user.username }} - {{ employee.user.email }}
+                <a href="{% url 'manage_employee' employee.id %}" class="btn btn-primary">Manage</a>
+            </li>
+        {% empty %}
+            <li>No employees found.</li>
+        {% endfor %}
+    </ul>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if employees.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ employees.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current-page">
+                Page {{ employees.number }} of {{ employees.paginator.num_pages }}.
+            </span>
+
+            {% if employees.has_next %}
+                <a href="?page={{ employees.next_page_number }}">next</a>
+                <a href="?page={{ employees.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+
+    <div class="button-container">
+        <button onclick="history.back()">Go Back</button>
+    </div>
+{% endblock %}

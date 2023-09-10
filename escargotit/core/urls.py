@@ -54,6 +54,10 @@ urlpatterns = [
 
     path('unassign_employee/<int:snail_bed_id>/', views.unassign_employee, name='unassign_employee'),
 
+    path('manage_employee/<int:employee_id>/', views.manage_employee, name='manage_employee'),
+
+    path('employees/', EmployeeUserListView.as_view(), name='employees'),
+
     # URL for logging data options
     path('log-data/<int:snail_bed_id>/', views.log_data_options, name='log_data_options'),
 

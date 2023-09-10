@@ -13,12 +13,17 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 
+
+from django.views.generic import ListView
+
 import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from scipy.stats import pearsonr  # For calculating correlation coefficient
 # https://scipy.org/install/
+
+from django.urls import reverse # used to redirect back to the request url 
 
 
 
@@ -368,6 +373,46 @@ def custom_admin_panel(request):
     return render(request, 'admin_panel.html', context)
 
 
+from django.http import JsonResponse
+
+@login_required(login_url='login')
+def manage_employee(request, employee_id):
+    employee = get_object_or_404(EmployeeUser, pk=employee_id)
+    snailbeds_assigned = SnailBed.objects.filter(employee=employee)
+
+
+    if request.method == 'POST':
+        form = EmployeeUserForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            # You can add a success message if needed
+            # Redirect back to the manage_employee page
+            return redirect('manage_employee', employee_id=employee.id)
+
+        # Handle unassigning SnailBeds
+        snailbed_id = request.POST.get('snailbed_id')
+        if snailbed_id:
+            snailbed_to_unassign = get_object_or_404(SnailBed, pk=snailbed_id)
+            snailbed_to_unassign.employee = None
+            snailbed_to_unassign.save()
+    else:
+        form = EmployeeUserForm(instance=employee)
+
+    context = {
+        'employee': employee,
+        'snailbeds_assigned': snailbeds_assigned,
+        'form': form,
+    }
+    return render(request, 'manage_employee.html', context)
+
+
+class EmployeeUserListView(ListView):
+    model = EmployeeUser
+    template_name = 'employee_user_list.html'  # Create this template
+    context_object_name = 'employees'  # Context variable name for the list of employees
+    ordering = ['user__username']  # Define your desired ordering
+    paginate_by = 10  # Set the number of items per page (adjust as needed)
+
 
 @login_required(login_url='login')
 def unassign_employee(request, snail_bed_id):
@@ -385,7 +430,9 @@ def unassign_employee(request, snail_bed_id):
         else:
             messages.error(request, f'There is no employee assigned to Snail Bed {snail_bed_to_unassign.bed_name}.')
 
-    return redirect('dashboard')
+    #return redirect('dashboard')
+    # Redirect back to the referring page or a default URL if 'HTTP_REFERER' is not available
+    return redirect(request.META.get('HTTP_REFERER', reverse('dashboard')))
 
 
 
@@ -540,7 +587,6 @@ def bed_performance(request, snail_bed_id):
 
 
 
-from django.views.generic import ListView
 
 class SnailHatchRateListView(ListView):
     model = SnailHatchRate

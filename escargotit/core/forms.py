@@ -178,3 +178,8 @@ class DeleteEmployeeForm(forms.Form):
             )
         
         return employee_to_delete
+
+class EmployeeUserForm(forms.ModelForm):
+    class Meta:
+        model = EmployeeUser
+        fields = ['can_create_snailbed']

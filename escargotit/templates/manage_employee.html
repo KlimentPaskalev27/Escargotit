@@ -1,0 +1,43 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+    Manage Employee: {{ employee.user.username }}
+{% endblock %}
+
+{% block content %}
+    <h1>Manage Employee: {{ employee.user.username }}</h1>
+
+    <h2>Employee Details</h2>
+    <p>Username: {{ employee.user.username }}</p>
+    <p>Email: {{ employee.user.email }}</p>
+    <p>Can create Snail Beds: {{ employee.can_create_snailbed }}</p>
+
+    <h2>Permissions</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="can_create_snailbed">Can Create SnailBeds:</label>
+        <input type="checkbox" id="can_create_snailbed" name="can_create_snailbed" {% if employee.can_create_snailbed %}checked{% endif %}>
+        <button type="submit">Save</button>
+    </form>
+
+    <h2>Assigned SnailBeds</h2>
+    <ul>
+        {% for snailbed in snailbeds_assigned %}
+            <li>
+                {{ snailbed.bed_name }}
+                <form method="post" class="unassign-form" action="/unassign_employee/{{ snailbed.id }}/">
+                    {% csrf_token %}
+                    <input type="hidden" name="snailbed_id" value="{{ snailbed.id }}">
+                    <button type="submit" class="btn btn-danger">Unassign</button>
+                </form>
+            </li>
+        {% empty %}
+            <li>No SnailBeds assigned.</li>
+        {% endfor %}
+    </ul>
+
+
+    <div class="button-container">
+        <button onclick="history.back()">Go Back</button>
+    </div>
+{% endblock %}
