@@ -35,18 +35,11 @@
             <ul>
                 <li>Full Name: {{ user.first_name }} {{ user.last_name }}</li>
                 <li>Email: {{ user.email }}</li>
-                <!-- Add more profile information here -->
             </ul>
 
             <h2>Settings</h2>
             <ul>
                 <li><a href="{% url 'user_settings' %}">User Settings</a></li>
-            </ul>
-
-            <h2>Access Forms</h2>
-            <ul>
-                <li><a href="{% url 'snail_data_form' %}">Snail Feed Form</a></li>
-                <!-- Add links for other forms -->
             </ul>
         </div>
         <div class="col">
