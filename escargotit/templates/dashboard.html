@@ -12,6 +12,11 @@
         <div class="col">
             <!-- Left side content -->
             <h1>Welcome, {{ user.username }}!</h1>
+            {% if is_admin %}
+                <h3>Account type: Admin</h3>
+            {% else %}
+                <h3>Account type: Employee</h3>
+            {% endif %}
             <p>User Profile Information:</p>
             <ul>
                 <li>Full Name: {{ user.first_name }} {{ user.last_name }}</li>

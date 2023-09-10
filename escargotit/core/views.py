@@ -80,8 +80,11 @@ def snail_data_form(request):
 @login_required(login_url='login')
 def dashboard(request):
 
+    is_admin=False #conditions for the template to render stuff
+
     current_user = AdminUser.objects.filter(user=request.user).first()
     if isinstance(current_user, AdminUser):
+        is_admin=True
         
         # Handle the POST request to add a new SnailBed object
         if request.method == 'POST':
@@ -107,6 +110,7 @@ def dashboard(request):
         'current_user': current_user,
         'snail_beds': snail_beds,
         'snail_bed_count': snail_bed_count,
+        'is_admin': is_admin,
     }
 
     return render(request, 'dashboard.html',context)
@@ -413,7 +417,7 @@ def manage_employee(request, employee_id):
             messages.success(request, 'Employee information updated successfully.')
             return redirect('manage_employee', employee_id=employee.id)
 
-            
+
             messages.success(request, 'Employee information updated successfully.')
             return redirect('manage_employee', employee_id=employee.id)
 
