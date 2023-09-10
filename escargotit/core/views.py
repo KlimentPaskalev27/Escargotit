@@ -13,6 +13,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 
+from django.contrib.auth import update_session_auth_hash # make possible to update passwords
+
 
 from django.views.generic import ListView
 
@@ -395,13 +397,37 @@ def manage_employee(request, employee_id):
             snailbed_to_unassign = get_object_or_404(SnailBed, pk=snailbed_id)
             snailbed_to_unassign.employee = None
             snailbed_to_unassign.save()
+
+
+        change_form = EmployeeChangeForm(request.POST, instance=employee)
+        if change_form.is_valid():
+            change_form.save()
+
+            # Check if a new password is provided
+            new_password = form.cleaned_data.get('new_password1')
+            if new_password:
+                employee.set_password(new_password)
+                employee.save()
+                update_session_auth_hash(request, employee)  # Keep the user logged in
+
+            messages.success(request, 'Employee information updated successfully.')
+            return redirect('manage_employee', employee_id=employee.id)
+
+            
+            messages.success(request, 'Employee information updated successfully.')
+            return redirect('manage_employee', employee_id=employee.id)
+
+            
+
     else:
         form = EmployeeUserForm(instance=employee)
+        change_form = EmployeeChangeForm(instance=employee)
 
     context = {
         'employee': employee,
         'snailbeds_assigned': snailbeds_assigned,
         'form': form,
+        'change_form': change_form,
     }
     return render(request, 'manage_employee.html', context)
 

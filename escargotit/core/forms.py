@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model  # Use get_user_model to reference the user model
 
-
+from django.contrib.auth.forms import UserChangeForm # for Employee CHange form
 
 class SnailHatchRateForm(forms.ModelForm):
     class Meta:
@@ -183,3 +183,19 @@ class EmployeeUserForm(forms.ModelForm):
     class Meta:
         model = EmployeeUser
         fields = ['can_create_snailbed']
+
+class EmployeeChangeForm(UserChangeForm):
+
+    new_password1 = forms.CharField(label='New Password', widget=forms.PasswordInput, required=False)
+    new_password2 = forms.CharField(label='Confirm New Password', widget=forms.PasswordInput, required=False)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def clean_new_password2(self):
+        new_password1 = self.cleaned_data.get('new_password1')
+        new_password2 = self.cleaned_data.get('new_password2')
+        if new_password1 and new_password2 and new_password1 != new_password2:
+            raise forms.ValidationError('The two password fields must match.')
+        return new_password2

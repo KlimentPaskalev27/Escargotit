@@ -12,6 +12,18 @@
     <p>Email: {{ employee.user.email }}</p>
     <p>Can create Snail Beds: {{ employee.can_create_snailbed }}</p>
 
+    <hr>
+
+    <h1>Edit Employee Information</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ change_form.as_p }}
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <hr>
+
     <h2>Permissions</h2>
     <form method="post">
         {% csrf_token %}
@@ -19,6 +31,8 @@
         <input type="checkbox" id="can_create_snailbed" name="can_create_snailbed" {% if employee.can_create_snailbed %}checked{% endif %}>
         <button type="submit">Save</button>
     </form>
+
+    <hr>
 
     <h2>Assigned SnailBeds</h2>
     <ul>
