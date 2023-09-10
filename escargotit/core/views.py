@@ -216,6 +216,11 @@ def barchart_with_correlation(request, snail_bed_id):
     snail_feeds = SnailFeed.objects.filter(snail_bed=snail_bed).order_by('consumed_on')
     hatch_rates = SnailHatchRate.objects.filter(snail_bed=snail_bed).order_by('datetime')
 
+    # Check if there are enough data points for correlation calculation
+    if len(snail_feeds) < 2 or len(hatch_rates) < 2:
+        messages.error(request, "There are not enough data points for correlation calculation. Snail Bed should have at least 2 logs for each data field.")
+        return redirect('dashboard')  # Redirect to a suitable page
+
     # Extract grams feed given and hatch rates
     grams_feed_given = [entry.grams_feed_given for entry in snail_feeds]
     hatch_rates_percentage = [entry.hatch_rate_percentage for entry in hatch_rates]

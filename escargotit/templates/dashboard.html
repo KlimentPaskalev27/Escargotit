@@ -8,6 +8,19 @@
 {% block content %}
 
 <div class="container">
+
+     <!-- Add the error messages section here -->
+     {% if messages %}
+     <div class="alert alert-danger">
+         <ul>
+             {% for message in messages %}
+                 <li>{{ message }}</li>
+             {% endfor %}
+         </ul>
+     </div>
+ {% endif %}
+
+ 
     <div class="row">
         <div class="col">
             <!-- Left side content -->
@@ -140,16 +153,18 @@
 <script>
 
     // Add click event listener to the "View Correlation Chart" button
-document.getElementById("view-correlation-button").addEventListener("click", function () {
-    const selectedBox = document.querySelector(".snail-box.expanded");
-    if (selectedBox) {
-        const selectedBoxId = selectedBox.getAttribute("data-bed-id");
-        // Redirect to the correlation chart view with the selected SnailBed ID
-        window.location.href = `/barchart_with_correlation/${selectedBoxId}`;
-    } else {
-        alert("Select a Snail Bed first");
-    }
-});
+    document.getElementById("view-correlation-button").addEventListener("click", function () {
+        const selectedBox = document.querySelector(".snail-box.expanded");
+        if (selectedBox) {
+            const selectedBoxId = selectedBox.getAttribute("data-bed-id");
+            // Redirect to the correlation chart view with the selected SnailBed ID
+            window.location.href = `/barchart_with_correlation/${selectedBoxId}`;
+        } else {
+            alert("Select a Snail Bed first");
+        }
+    });
+
+
 
 
 
