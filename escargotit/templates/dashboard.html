@@ -69,6 +69,9 @@
                     </button>
                 {% endif %}
 
+                <!-- Button to view correlation chart -->
+                <button id="view-correlation-button" class="btn btn-success">View Correlation Chart</button>
+
 
                 <!-- Conditional check to display the "Create Box" button for admins only -->
                 {% if current_user.can_create_snailbed %}
@@ -135,6 +138,21 @@
 
 
 <script>
+
+    // Add click event listener to the "View Correlation Chart" button
+document.getElementById("view-correlation-button").addEventListener("click", function () {
+    const selectedBox = document.querySelector(".snail-box.expanded");
+    if (selectedBox) {
+        const selectedBoxId = selectedBox.getAttribute("data-bed-id");
+        // Redirect to the correlation chart view with the selected SnailBed ID
+        window.location.href = `/barchart_with_correlation/${selectedBoxId}`;
+    } else {
+        alert("Select a Snail Bed first");
+    }
+});
+
+
+
 // make sure that a Snail Bed is selected when Log Data button is clicked
 document.addEventListener("DOMContentLoaded", function () {
     // Get the button element

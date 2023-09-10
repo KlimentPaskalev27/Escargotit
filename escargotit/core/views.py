@@ -208,10 +208,13 @@ def faqs(request):
 
 from scipy.stats import pearsonr  # Import Pearson correlation coefficient
 @login_required(login_url='login')
-def barchart_with_correlation(request):
+def barchart_with_correlation(request, snail_bed_id):
+
+    snail_bed = get_object_or_404(SnailBed, pk=snail_bed_id)
+
     # Retrieve the combined data
-    snail_feeds = SnailFeed.objects.all().order_by('consumed_on')
-    hatch_rates = SnailHatchRate.objects.all().order_by('datetime')
+    snail_feeds = SnailFeed.objects.filter(snail_bed=snail_bed).order_by('consumed_on')
+    hatch_rates = SnailHatchRate.objects.filter(snail_bed=snail_bed).order_by('datetime')
 
     # Extract grams feed given and hatch rates
     grams_feed_given = [entry.grams_feed_given for entry in snail_feeds]
@@ -226,7 +229,11 @@ def barchart_with_correlation(request):
     # Calculate percentage change for hatch rates
     hatch_rate_change = [0]  # Initial value is 0
     for i in range(1, len(hatch_rates_percentage)):
-        percentage_change = ((hatch_rates_percentage[i] - hatch_rates_percentage[i - 1]) / hatch_rates_percentage[i - 1]) * 100
+        if hatch_rates_percentage[i - 1] != 0:
+            percentage_change = ((hatch_rates_percentage[i] - hatch_rates_percentage[i - 1]) / hatch_rates_percentage[i - 1]) * 100
+        else:
+            # Handle the case when the denominator is zero (optional)
+            percentage_change = 0  # Set percentage_change to 0 or another appropriate value
         hatch_rate_change.append(percentage_change)
 
     # Ensure both arrays have the same length (truncate the longer one)
