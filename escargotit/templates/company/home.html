@@ -1,0 +1,134 @@
+{% extends "base/base.html" %}
+
+
+{% block title %}EscargotIT | Snail Farming App{% endblock %}
+
+{% block content %}
+
+
+
+<!-- Header Section -->
+<header class="container text-center py-5">
+    <h1>Welcome to Snail Farm Performance Management</h1>
+    <p class="lead">Your One-Stop Solution for Efficient Snail Farming</p>
+    <p>Are you a snail farm owner looking to boost productivity?</p>
+    <a href="{% url 'register' %}" class="btn btn-primary">Start for free</a>
+</header>
+
+<!-- Benefits Section -->
+<section id="benefits" class="container py-5">
+    <h2 class="text-center">Benefits of Using Software in Snail Farming</h2>
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Improved Efficiency</h3>
+                    <p class="card-text">Streamline farm operations and reduce manual work.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Enhanced Data Management</h3>
+                    <p class="card-text">Organize and access farm data effortlessly.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Precise Analytics</h3>
+                    <p class="card-text">Make data-driven decisions for better farm performance.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Add more benefit cards here -->
+    </div>
+</section>
+
+<!-- Awards Section -->
+<section id="awards" class="container py-5">
+    <h2 class="text-center">Awards and Recognition</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="award1.png" alt="Award 1 Icon" class="card-img-top">
+                <div class="card-body">
+                    <h3 class="card-title">SnailFarms Excellence Award</h3>
+                    <p class="card-text">We're proud to have received the SnailFarms Excellence Award, recognizing our commitment to advancing snail farming through innovative technology.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="award2.png" alt="Award 2 Icon" class="card-img-top">
+                <div class="card-body">
+                    <h3 class="card-title">FarmingTech Innovation Prize</h3>
+                    <p class="card-text">Our dedication to revolutionizing snail farming with cutting-edge software earned us the prestigious FarmingTech Innovation Prize.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="award3.png" alt="Award 3 Icon" class="card-img-top">
+                <div class="card-body">
+                    <h3 class="card-title">Sustainability Champion</h3>
+                    <p class="card-text">Our software has been honored with the Sustainability Champion award for its role in promoting eco-friendly snail farming practices.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Registration and Features Section -->
+<section id="registration" class="container py-5">
+    <h2 class="text-center">Getting Started</h2>
+    <p class="text-center">Registering and Managing Your Snail Farm</p>
+    
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>1. Owner Registration</h3>
+            <p>As a snail farm owner, the first step is to register your account:</p>
+            <ul>
+                <li>Click the "Sign Up" button at the top of the page.</li>
+                <li>Fill in your details, including farm name and contact information.</li>
+                <li>Once registered, you'll have full control over your snail farm's data.</li>
+            </ul>
+        </div>
+        <div class="col-lg-6">
+            <h3>2. Adding Employees</h3>
+            <p>Empower your team by creating accounts for your employees:</p>
+            <ul>
+                <li>Log in to your account as the owner.</li>
+                <li>Navigate to the "Employee Management" section.</li>
+                <li>Click "Add Employee" and provide their details.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>3. Granting Permissions</h3>
+            <p>Control who can edit snail bed data:</p>
+            <ul>
+                <li>For each employee, specify their role and permissions.</li>
+                <li>You can grant editing permissions for snail bed data selectively.</li>
+                <li>Ensure data security and streamline collaboration.</li>
+            </ul>
+        </div>
+        <div class="col-lg-6">
+            <h3>4. Statistical Insights</h3>
+            <p>Gain valuable insights with interactive graphs and performance tracking. Visualize your farm's performance and make data-driven improvements to maximize efficiency and profits.</p>
+        </div>
+    </div>
+
+    <p class="text-center">With our user-friendly interface, managing your snail farm and collaborating with your team has never been easier. Sign up today and optimize your farm's performance!</p>
+    <a href="{% url 'register' %}" class="btn btn-primary btn-lg d-block mx-auto">Sign Up</a>
+</section>
+
+<style>
+
+</style>
+
+{% endblock %}

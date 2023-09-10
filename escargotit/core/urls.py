@@ -13,6 +13,8 @@ urlpatterns = [
     # Main Features
     path('performance/', views.performance, name='performance'),
 
+    path('home/', views.home, name='home'),
+
     path('', views.index, name='index'),
 
     path('snail-data-form/', views.snail_data_form, name='snail_data_form'),

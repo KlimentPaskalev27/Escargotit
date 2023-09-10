@@ -210,6 +210,9 @@ def privacy(request):
 def faqs(request):
     return render(request, 'company/faqs.html', {'faq_data': faq_data})
 
+def home(request):
+    return render(request, 'company/home.html')
+
 
 
 
