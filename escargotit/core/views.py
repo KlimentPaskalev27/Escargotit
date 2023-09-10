@@ -490,3 +490,64 @@ def bed_performance(request, snail_bed_id):
     }
 
     return render(request, 'bed_performance.html', context)
+
+
+
+
+from django.views.generic import ListView
+
+class SnailHatchRateListView(ListView):
+    model = SnailHatchRate
+    template_name = 'history.html'
+    context_object_name = 'history_data'
+
+    def get_queryset(self):
+        snail_bed = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
+        return SnailHatchRate.objects.filter(snail_bed=snail_bed).order_by('-datetime')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['snail_bed'] = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
+        return context
+
+class SnailMortalityRateListView(ListView):
+    model = SnailMortalityRate
+    template_name = 'history.html'
+    context_object_name = 'history_data'
+
+    def get_queryset(self):
+        snail_bed = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
+        return SnailMortalityRate.objects.filter(snail_bed=snail_bed).order_by('-datetime')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['snail_bed'] = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
+        return context
+
+class SnailFeedListView(ListView):
+    model = SnailFeed
+    template_name = 'history.html'
+    context_object_name = 'history_data'
+
+    def get_queryset(self):
+        snail_bed = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
+        return SnailFeed.objects.filter(snail_bed=snail_bed).order_by('-consumed_on')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['snail_bed'] = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
+        return context
+
+class TimeTakenToMatureListView(ListView):
+    model = TimeTakenToMature
+    template_name = 'history.html'
+    context_object_name = 'history_data'
+
+    def get_queryset(self):
+        snail_bed = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
+        return TimeTakenToMature.objects.filter(snail_bed=snail_bed).order_by('-snail_matured')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['snail_bed'] = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
+        return context

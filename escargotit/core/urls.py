@@ -64,4 +64,9 @@ urlpatterns = [
     path('log_maturity_rate/<int:snail_bed_id>/', views.log_maturity_rate, name='log_maturity_rate'),
 
     path('bed_performance/<int:snail_bed_id>/', views.bed_performance, name='bed_performance'),
+
+    path('view_hatch_rate_history/<int:snail_bed_id>/', views.SnailHatchRateListView.as_view(), name='view_hatch_rate_history'),
+    path('view_mortality_rate_history/<int:snail_bed_id>/', views.SnailMortalityRateListView.as_view(), name='view_mortality_rate_history'),
+    path('view_maturity_rate_history/<int:snail_bed_id>/', views.TimeTakenToMatureListView.as_view(), name='view_maturity_rate_history'),
+    path('view_feed_history/<int:snail_bed_id>/', views.SnailFeedListView.as_view(), name='view_feed_history'),
 ]

@@ -342,6 +342,7 @@ class ForecastedHatchRate(models.Model):
     def calculate_forecast_pyaf(snail_bed):
         # Get all previous records for the specific snail_bed and annotate a date field
         previous_records = SnailHatchRate.objects.filter(snail_bed=snail_bed).annotate(date_only=models.ExpressionWrapper(models.F('datetime'), output_field=models.DateField()))
+        # turn the DateTime field data into a DateField data which NeuralProphet can use for training
 
         # Create a DataFrame from the annotated records
         data = pd.DataFrame(list(previous_records.values('date_only', 'newly_hatched_snails')))
@@ -350,10 +351,12 @@ class ForecastedHatchRate(models.Model):
         data.rename(columns={'date_only': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
 
         m = NeuralProphet()
-        m.fit(data, freq="D")
+        model = m.fit(data, freq='D', epochs=1000)
+        #epochs (number of passes that the algorithm has to complete during training)
         forecast1 = m.predict(data)
-        future = m.make_future_dataframe(data, periods=60)
+        future = m.make_future_dataframe(data, periods=60) # periods is days
         forecast2 = m.predict(future)
+        #https://medium.com/analytics-vidhya/neuralprophet-a-neural-network-based-time-series-model-3c74af3b0ec6
 
         # according to https://github.com/ourownstory/neural_prophet
         combined = pd.concat([forecast1, forecast2])

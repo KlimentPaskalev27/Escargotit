@@ -1,0 +1,54 @@
+{% extends "base/base.html" %}
+{% load filters %}
+
+{% block title %}
+    Success
+{% endblock %}
+
+{% block content %}
+
+    <h1>History Logs for {{ snail_bed.bed_name }}</h1>
+
+    {% if history_data %}
+        <ul>
+            {% for record in history_data %}
+
+                <!--  idea from https://stackoverflow.com/questions/5427809/django-template-object-type -->
+                {% with record|classname as modelclass %}
+                <!-- Check if record is an instance of SnailHatchRate -->
+                    {% if modelclass == "SnailHatchRate" %}
+                        <li>Date: {{ record.datetime }}, 
+                            Hatch Rate: {{ record.hatch_rate_percentage }}</li>
+
+                    {% elif modelclass == "SnailMortalityRate" %}
+                        <li>Date: {{ record.datetime }}, 
+                            Mortality Rate: {{ record.mortality_rate_percentage }}</li>
+
+                    {% elif modelclass == "SnailFeed" %}
+                        <li>Date Feed given: {{ record.consumed_on }}, 
+                            Grams of Feed given: {{ record.grams_feed_given }}</li>
+
+                    {% elif modelclass == "TimeTakenToMature" %}
+                        <li>
+                            Snails Hatched Date: {{ record.snail_hatched }}, 
+                            Snails Matured Date: {{ record.snail_matured }},
+                            Amount of Snails Matured: {{ record.snails_matured_count }}, 
+                            Days taken to Mature: {{ record.days_to_mature }},
+                            Period of growing: {{ record.period }}, 
+                            Maturity Percentage: {{ record.maturity_percentage }}
+                        
+                        </li>
+
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h3> No data available </h3>
+    {% endif %}
+
+    <div class="button-container">
+        <button onclick="history.back()">Go Back</button>
+     </div>
+
+{% endblock %}
