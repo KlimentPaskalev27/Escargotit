@@ -58,31 +58,6 @@ def performance(request):
     return render(request, 'performance.html', context)
 
 
-@login_required(login_url='login')
-def snail_data_form(request):
-    if request.method == 'POST':
-        form = SnailDataForm(request.POST)
-        if form.is_valid():
-            # Process and save the form data to the appropriate models
-            form.save()
-            return redirect('success_page')  # Redirect to a success page
-    else:
-        # Create forms for all models
-        snail_feed_form = SnailFeedForm()
-        snail_hatch_rate_form = SnailHatchRateForm()
-        snail_mortality_rate_form = SnailMortalityRateForm()
-        time_taken_to_mature_form = TimeTakenToMatureForm()
-        snail_bed_performance_form = SnailBedPerformanceForm()
-
-    return render(request, 'snail_data_form.html', {
-        'snail_feed_form': snail_feed_form,
-        'snail_hatch_rate_form': snail_hatch_rate_form,
-        'snail_mortality_rate_form': snail_mortality_rate_form,
-        'time_taken_to_mature_form': time_taken_to_mature_form,
-        'snail_bed_performance_form': snail_bed_performance_form,
-    })
-
-
 
 @login_required(login_url='login')
 def dashboard(request):
