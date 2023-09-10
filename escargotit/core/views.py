@@ -35,27 +35,7 @@ from django.urls import reverse # used to redirect back to the request url
 from django.shortcuts import get_object_or_404 # allows to return 404 when searching for object in database
 
 
-
-
 from .faq_data import faq_data  # Import the faq_data from the module
-
-@login_required(login_url='login')
-def performance(request):
-    first_snail_bed_performance = SnailBedPerformance.objects.first()
-    forecasts = ForecastedHatchRate.objects.first()
-
-    a = first_snail_bed_performance
-
-    # Convert DataFrame to HTML
-    html_table = forecasts.forecasted_value_pyaf.to_html()
-
-    context = {
-        'snail_bed_performance': a,
-        'forecasts': forecasts,
-        'html_table': html_table,
-    }
-
-    return render(request, 'performance.html', context)
 
 
 
