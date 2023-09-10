@@ -1,23 +1,31 @@
+{% extends "base/base.html" %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Employee User</title>
-</head>
-<body>
-    <h1>Create a New Employee User</h1>
+{% block title %}
+    Admin panel
+{% endblock %}
+
+
+{% block content %}
+
+    <h1>Admin panel</h1>
+
+    <hr>
+
+    <h2>Create a New Employee User</h2>
 
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
 
-        <button type="submit">Create Employee User</button>
+        <button type="submit" name="register_employee">Create Employee User</button>
     </form>
 
-    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+    <hr>
 
 
-    <h1>Assign Employee to Snail Bed</h1>
+
+
+    <h2>Assign Employee to Snail Bed</h2>
 
     <form method="post">
         {% csrf_token %}
@@ -37,5 +45,35 @@
 
         <button type="submit" name="assign_employee">Assign Employee</button>
     </form>
-</body>
-</html>
+
+    <hr>
+
+
+
+    <h2>Unassign Employee from Snail Bed</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="snail_bed_to_unassign">Select Snail Bed:</label>
+        <select name="snail_bed_id_to_unassign" id="snail_bed_to_unassign">
+            {% for snail_bed in snail_beds %}
+                <option value="{{ snail_bed.id }}">{{ snail_bed.bed_name }}</option>
+            {% endfor %}
+        </select>
+    
+        {% if assigned_employee %}
+            <p>Currently Assigned Employee: {{ assigned_employee.user.username }}</p>
+        {% else %}
+            <p>No Currently Assigned Employee</p>
+        {% endif %}
+        
+        <button type="submit" name="unassign_employee">Unassign Employee</button>
+    </form>
+
+    <hr>
+
+
+    <a class="btn btn-primary" href="{% url 'dashboard' %}">Back to Dashboard</a>
+
+
+{% endblock %}

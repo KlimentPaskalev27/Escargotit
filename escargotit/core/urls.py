@@ -52,7 +52,7 @@ urlpatterns = [
     path('custom_admin_panel/', views.custom_admin_panel, name='custom_admin_panel'),
 
 
-    #path('assign_employee/', views.custom_admin_panel, name='assign_employee'),
+    path('unassign_employee/<int:snail_bed_id>/', views.unassign_employee, name='unassign_employee'),
 
     # URL for logging data options
     path('log-data/<int:snail_bed_id>/', views.log_data_options, name='log_data_options'),

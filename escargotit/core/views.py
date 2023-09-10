@@ -309,7 +309,7 @@ def custom_admin_panel(request):
 
     current_user = AdminUser.objects.filter(user=request.user).first()
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'register_employee' in request.POST:
         form = EmployeeCreationForm(request.POST)
         #form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -323,7 +323,7 @@ def custom_admin_panel(request):
     snail_beds = SnailBed.objects.filter(user=current_user)
     employees = EmployeeUser.objects.all()
 
-     # Add code to handle the assignment of existing employees to snail beds
+    # Add code to handle the assignment of existing employees to snail beds
     if request.method == 'POST' and 'assign_employee' in request.POST:
         snail_bed_id = request.POST.get('snail_bed_id')
         employee_id = request.POST.get('employee_id')
@@ -335,11 +335,32 @@ def custom_admin_panel(request):
 
     context = {
         'snail_beds': snail_beds,
-        'employee': employee,
-        'form': form
+        'employees': employees,
+        'form': form,
         }
 
+
     return render(request, 'admin_panel.html', context)
+
+
+
+@login_required(login_url='login')
+def unassign_employee(request, snail_bed_id):
+
+    current_user = AdminUser.objects.filter(user=request.user).first()
+    if isinstance(current_user, AdminUser):
+        snail_bed_to_unassign = get_object_or_404(SnailBed, pk=snail_bed_id)
+        
+        # Check if there is an employee assigned to the selected snail bed
+        if snail_bed_to_unassign.employee:
+            employee_to_unassign = snail_bed_to_unassign.employee
+            snail_bed_to_unassign.employee = None
+            snail_bed_to_unassign.save()
+            messages.success(request, f'Employee {employee_to_unassign.user.username} has been unassigned from Snail Bed {snail_bed_to_unassign.bed_name}.')
+        else:
+            messages.error(request, f'There is no employee assigned to Snail Bed {snail_bed_to_unassign.bed_name}.')
+
+    return redirect('dashboard')
 
 
 

@@ -64,7 +64,7 @@
                     </button>
                 {% endif %}
 
-                
+
                 <!-- Conditional check to display the "Create Box" button for admins only -->
                 {% if current_user.can_create_snailbed %}
                     <form method="POST" action="{% url 'dashboard' %}">
@@ -171,7 +171,14 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("box-name").innerText = "Name: " + boxName;
 
             if ( boxEmployees != "None") { 
-                document.getElementById("box-employee").innerText = "Assigned employee: " + boxEmployees;
+                
+                document.getElementById("box-employee").innerHTML = 
+                `<p id="box-employee-text"></p>
+                <a id="box-unassign-employee" class="btn btn-primary btn-sm">Unassign employee</a>
+                `
+                document.getElementById("box-unassign-employee").href = "/unassign_employee/" + boxId;
+                document.getElementById("box-employee-text").innerText = "Assigned employee: " + boxEmployees;
+
             } else { document.getElementById("box-employee").innerText = "Assigned employee: Not assigned";}
 
             document.getElementById("box-id").innerText = "id: " + boxId;
