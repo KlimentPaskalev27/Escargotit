@@ -73,7 +73,13 @@
             </ul>
         </div>
     {% endif %}
+    <hr>
 
+
+    <h2>Snail Beds and Employees</h2>
+    {% for bed in snail_beds %}
+        <p>{{ bed.bed_name }} =>  Employee assigned: {{bed.employee}}</p> 
+    {% endfor %}
     <hr>
 
 
