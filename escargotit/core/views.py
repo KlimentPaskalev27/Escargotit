@@ -309,6 +309,7 @@ def custom_admin_panel(request):
 
     current_user = AdminUser.objects.filter(user=request.user).first()
 
+
     if request.method == 'POST' and 'register_employee' in request.POST:
         form = EmployeeCreationForm(request.POST)
         #form = UserCreationForm(request.POST)
@@ -318,10 +319,7 @@ def custom_admin_panel(request):
             messages.success(request, f'Employee user {username} has been created.')
             return redirect('custom_admin_panel')
     else:
-        form = UserCreationForm()
-
-    snail_beds = SnailBed.objects.filter(user=current_user)
-    employees = EmployeeUser.objects.all()
+        form = EmployeeCreationForm()
 
     # Add code to handle the assignment of existing employees to snail beds
     if request.method == 'POST' and 'assign_employee' in request.POST:
@@ -333,10 +331,37 @@ def custom_admin_panel(request):
         snail_bed.save()
         messages.success(request, f'Employee {employee.user.username} has been assigned to Snail Bed {snail_bed.bed_name}.')
 
+    # Check if the "Delete Employee" button was clicked
+    if request.method == 'POST' and 'delete_employee' in request.POST:
+
+        delete_form = DeleteEmployeeForm(request.POST)
+        if delete_form.is_valid():
+            employee_to_delete = delete_form.cleaned_data['employee_to_delete']
+            #employee_id_to_delete = request.POST.get('employee_id_to_delete')
+            #employee_to_delete = get_object_or_404(EmployeeUser, pk=employee_id_to_delete)
+            user_to_delete = employee_to_delete.user
+            username = employee_to_delete.user.username
+
+            # Check if the employee is assigned to any snail bed before deletion
+            if SnailBed.objects.filter(employee=employee_to_delete).exists():
+                messages.error(request, f'Employee {username} is assigned to one or more Snail Beds. Unassign them first before deleting.')
+            else:
+                employee_to_delete.delete()
+                user_to_delete.delete()
+                messages.success(request, f'Employee {username} has been deleted.')
+
+    else:
+        delete_form = DeleteEmployeeForm()
+
+
+    snail_beds = SnailBed.objects.filter(user=current_user)
+    employees = EmployeeUser.objects.all()
+
     context = {
         'snail_beds': snail_beds,
         'employees': employees,
         'form': form,
+        'delete_form': delete_form,
         }
 
 

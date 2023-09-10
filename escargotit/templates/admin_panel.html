@@ -50,25 +50,29 @@
 
 
 
-    <h2>Unassign Employee from Snail Bed</h2>
+    <h2>Delete Employee Account</h2>
 
     <form method="post">
         {% csrf_token %}
-        <label for="snail_bed_to_unassign">Select Snail Bed:</label>
-        <select name="snail_bed_id_to_unassign" id="snail_bed_to_unassign">
-            {% for snail_bed in snail_beds %}
-                <option value="{{ snail_bed.id }}">{{ snail_bed.bed_name }}</option>
-            {% endfor %}
-        </select>
-    
-        {% if assigned_employee %}
-            <p>Currently Assigned Employee: {{ assigned_employee.user.username }}</p>
-        {% else %}
-            <p>No Currently Assigned Employee</p>
-        {% endif %}
-        
-        <button type="submit" name="unassign_employee">Unassign Employee</button>
+        {{ delete_form.employee_to_delete.label_tag }}
+        {{ delete_form.employee_to_delete }}
+     
+        <button type="submit" name="delete_employee">Delete Employee</button>
     </form>
+    
+    <!-- Display form errors -->
+    {% if delete_form.errors %}
+        <div class="alert alert-danger">
+            <strong>Error(s) in the form:</strong>
+            <ul>
+                {% for field, errors in delete_form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
     <hr>
 

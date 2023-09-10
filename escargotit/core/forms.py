@@ -159,3 +159,22 @@ class SnailFeedForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['grams_feed_given'].label = 'Grams of Feed Given'
         self.fields['consumed_on'].label = 'Date'
+
+
+class DeleteEmployeeForm(forms.Form):
+    employee_to_delete = forms.ModelChoiceField(
+        queryset=EmployeeUser.objects.all(),
+        label='Select Employee to Delete'
+    )
+
+    def clean_employee_to_delete(self):
+        employee_to_delete = self.cleaned_data.get('employee_to_delete')
+        
+        assigned_beds = SnailBed.objects.filter(employee=employee_to_delete)
+        if assigned_beds.exists():
+            bed_names = ', '.join([bed.bed_name for bed in assigned_beds])
+            raise forms.ValidationError(
+                f'Employee is assigned to one or more Snail Beds. Unassign them first before deleting. Here is a list of the beds: {bed_names}.'
+            )
+        
+        return employee_to_delete
