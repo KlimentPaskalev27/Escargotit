@@ -7,6 +7,10 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
+# APIs
+router.register(r'admin-users', AdminUserViewSet)
+router.register(r'employee-users', EmployeeUserViewSet)
+router.register(r'snail-beds', SnailBedViewSet)
 
 
 urlpatterns = [
@@ -66,4 +70,7 @@ urlpatterns = [
     path('view_mortality_rate_history/<int:snail_bed_id>/', views.SnailMortalityRateListView.as_view(), name='view_mortality_rate_history'),
     path('view_maturity_rate_history/<int:snail_bed_id>/', views.TimeTakenToMatureListView.as_view(), name='view_maturity_rate_history'),
     path('view_feed_history/<int:snail_bed_id>/', views.SnailFeedListView.as_view(), name='view_feed_history'),
+
+
+    path('', include(router.urls)), #API
 ]

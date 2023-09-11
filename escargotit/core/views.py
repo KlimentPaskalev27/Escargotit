@@ -23,10 +23,12 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy  # used to redirect back to the request URL
 from django.views.generic import CreateView, ListView
+from rest_framework import viewsets
 
 # custom forms, models, and other local modules
 from .forms import *
 from .models import *
+from .serializers import *
 from .faq_data import faq_data  # Import the faq_data from the module
 
 
@@ -667,3 +669,18 @@ class TimeTakenToMatureListView(ListView):
         context = super().get_context_data(**kwargs)
         context['snail_bed'] = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
         return context
+
+
+# API endpoints down from here
+
+class AdminUserViewSet(viewsets.ModelViewSet):
+    queryset = AdminUser.objects.all()
+    serializer_class = AdminUserSerializer
+
+class EmployeeUserViewSet(viewsets.ModelViewSet):
+    queryset = EmployeeUser.objects.all()
+    serializer_class = EmployeeUserSerializer
+
+class SnailBedViewSet(viewsets.ModelViewSet):
+    queryset = SnailBed.objects.all()
+    serializer_class = SnailBedSerializer
