@@ -594,6 +594,26 @@ def bed_performance(request, snail_bed_id):
 
 
 
+@login_required(login_url='login')
+def delete_snailbed(request, snail_bed_id):
+    # Fetch the SnailBed object to be deleted
+    snail_bed_to_delete = get_object_or_404(SnailBed, id=snail_bed_id)
+    current_user = AdminUser.objects.filter(user=request.user).first()
+    # Check if the user has the permission to delete this snail bed
+    if isinstance(current_user, AdminUser):
+        # Delete the SnailBed object and let user know it's done
+        messages.success(request, f"You have successfully deleted: {snail_bed_to_delete.bed_name}")
+        snail_bed_to_delete.delete()
+        # Redirect to the dashboard or another appropriate page
+        return redirect('dashboard')
+    else:
+        # If the user doesn't have permission, you can show an error message or handle it as needed
+        messages.error(request, "You must be an Admin user to delete a Snail Bed.")
+        return redirect('dashboard')  # Redirect to a suitable page
+
+
+
+
 
 class SnailHatchRateListView(ListView):
     model = SnailHatchRate

@@ -106,6 +106,10 @@
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
                                 </form>
+
+                                <!-- Add a button to delete the selected snail bed -->
+                                <button type="button" class="btn btn-danger" id="delete-snail-bed-button">Delete Selected Snail Bed</button>
+
                             {% endif %}
                             
                         {% endif %}
@@ -115,7 +119,7 @@
             {% endif %}
         </div>
     </div>
-    <!-- Container to display selected box data -->
+    <!-- Container to display selected snail bed data stats -->
     <div id="selected-box-data" class="container" style="display: none;">
         <h3>Selected Box Data</h3>
         <div id="box-name"></div>
@@ -131,7 +135,7 @@
 
 
 
-
+<!-- this is the pop up with the options to log data for the selected snail bed. This pops up on screen when "Log data" is clicked -->
 <div class="modal fade" id="logDataModal" tabindex="-1" aria-labelledby="logDataModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -193,6 +197,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Toggle the selected snail bed. Unselect the previously selected, then select the clicked on.
+// get all its object fields and repopulate the stats box
 document.addEventListener("DOMContentLoaded", function () {
     const rectangle = document.querySelector(".rectangle");
 
@@ -282,6 +288,28 @@ document.addEventListener("DOMContentLoaded", function () {
         box.addEventListener("click", function () {
             toggleBox(box);
         });
+    });
+});
+
+
+//  handle the Delete selected snail bed button
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the delete button element
+    var deleteButton = document.getElementById("delete-snail-bed-button");
+
+    // Add a click event listener to the delete button
+    deleteButton.addEventListener("click", function () {
+        const selectedBox = document.querySelector(".snail-box.expanded");
+        if (selectedBox) {
+            const selectedBoxId = selectedBox.getAttribute("data-bed-id");
+            // Confirm the deletion with a confirmation dialog
+            if (confirm("Are you sure you want to delete this Snail Bed?")) {
+                // Redirect to the delete view with the selected SnailBed ID
+                window.location.href = `/delete_snailbed/${selectedBoxId}`;
+            }
+        } else {
+            alert("Select a Snail Bed first");
+        }
     });
 });
 </script>
