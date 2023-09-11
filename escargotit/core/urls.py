@@ -24,7 +24,9 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
 
     # User Settings
-    path('user/settings/', views.user_settings, name='user_settings'),
+    path('account-settings/', views.user_settings, name='user_settings'),
+
+    path('delete_account/', views.delete_account, name='delete_account'),
 
     # API endpoints
     path('api/', include(router.urls)),

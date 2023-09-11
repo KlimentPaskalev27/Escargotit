@@ -20,6 +20,10 @@
     {% for error in password_form.non_field_errors %}
         <p class="alert alert-danger">{{ error }}</p>
     {% endfor %}
+
+    <div >
+        <a class="btn btn-sml btn-danger" href="{% url 'delete_account' %}">Delete account</a>
+    </div>
     
     <p><a href="{% url 'dashboard' %}" class="btn btn-link">Back to Dashboard</a></p>
 </div>

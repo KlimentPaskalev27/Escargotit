@@ -80,16 +80,6 @@ def delete_all_snailbeds(request):
     SnailBed.objects.filter(user=current_user).delete()
     return redirect('dashboard')  # Redirect back to the dashboard 
 
-class RegisterFormView(CreateView):
-    form_class = RegisterForm 
-    template_name = 'registration/register.html'
-    success_url = reverse_lazy('login')  # Use reverse_lazy to specify the URL for the login page
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, self.success_message)
-        return response
-
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -144,6 +134,21 @@ def user_settings(request):
         password_form = PasswordChangeForm(user)
 
     return render(request, 'registration/user_settings.html', {'user_form': user_form, 'password_form': password_form})
+
+@login_required(login_url='login')
+def delete_account(request):
+    if request.method == 'POST':
+        form = AccountDeletionForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            # Delete the user's account
+            request.user.delete()
+            logout(request)  # Log out the user after deleting their account
+            return redirect('login')  # Redirect to the login page or another suitable URL
+    else:
+        form = AccountDeletionForm()
+    
+    return render(request, 'registration/delete_account.html', {'form': form})
+
 
 def contact(request):
     return render(request, 'company/contact.html')

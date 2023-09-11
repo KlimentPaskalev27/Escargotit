@@ -240,3 +240,12 @@ class LoginForm(AuthenticationForm):
 
         if username and password and self.user_cache is not None and not self.user_cache.check_password(password):
             raise ValidationError("Invalid password. Please try again.")
+
+
+class AccountDeletionForm(forms.Form):
+    confirm = forms.BooleanField(
+        required=True,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+    )
+
+    
