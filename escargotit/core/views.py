@@ -105,7 +105,6 @@ class LoginFormView(LoginView):
     template_name = 'registration/login.html'
     success_url = ' '
 
-
 def logout_view(request):
     logout(request)
     # Redirect to a logout success page or login page
@@ -151,7 +150,6 @@ def delete_account(request):
     
     return render(request, 'registration/delete_account.html', {'form': form})
 
-
 def contact(request):
     return render(request, 'company/contact.html')
 
@@ -184,7 +182,7 @@ def barchart(request, snail_bed_id):
     maturity_rates = TimeTakenToMature.objects.filter(snail_bed=snail_bed).order_by('snail_matured')
 
     # Check if there are enough data points for correlation calculation
-    if len(snail_feeds) < 2 or len(hatch_rates) < 2 or len(mortality_rates) < 2 or len(maturity_rates) < 2:
+    if len(snail_feeds) < 3 or len(hatch_rates) < 3 or len(mortality_rates) < 3 or len(maturity_rates) < 3:
         messages.error(request, "There are not enough data points for correlation calculation. Snail Bed should have at least 2 logs for each data field.")
         return redirect('dashboard')  # Redirect to a suitable page
 
@@ -297,7 +295,6 @@ def barchart(request, snail_bed_id):
 
     return render(request, 'barchart.html', context)
 
-
 @login_required(login_url='login')
 def custom_admin_panel(request):
     current_user = AdminUser.objects.filter(user=request.user).first()
@@ -329,8 +326,6 @@ def custom_admin_panel(request):
         delete_form = DeleteEmployeeForm(request.POST)
         if delete_form.is_valid():
             employee_to_delete = delete_form.cleaned_data['employee_to_delete']
-            #employee_id_to_delete = request.POST.get('employee_id_to_delete')
-            #employee_to_delete = get_object_or_404(EmployeeUser, pk=employee_id_to_delete)
             user_to_delete = employee_to_delete.user
             username = employee_to_delete.user.username
 
@@ -500,26 +495,49 @@ def log_maturity_rate(request, snail_bed_id):
 def bed_performance(request, snail_bed_id):
     snail_bed = get_object_or_404(SnailBed, pk=snail_bed_id)
 
+    # Retrieve the combined data
+    snail_feeds = SnailFeed.objects.filter(snail_bed=snail_bed).order_by('consumed_on')
+    hatch_rates = SnailHatchRate.objects.filter(snail_bed=snail_bed).order_by('datetime')
+    mortality_rates = SnailMortalityRate.objects.filter(snail_bed=snail_bed).order_by('datetime')
+    maturity_rates = TimeTakenToMature.objects.filter(snail_bed=snail_bed).order_by('snail_matured')
+
+    # Check if there are enough data points for correlation calculation
+    if len(snail_feeds) < 3 or len(hatch_rates) < 3 or len(mortality_rates) < 3 or len(maturity_rates) < 3:
+        messages.error(request, "There are not enough data points for correlation calculation. Snail Bed should have at least 2 logs for each data field.")
+        return redirect('dashboard')  # Redirect to a suitable page
+
     # Calculate the average hatch rate
     summed_hatch_rates = 0
     iteration_counter = 0
     hatch_rates_for_snail_bed = SnailHatchRate.objects.filter(snail_bed=snail_bed)
-    for hatch_rate in hatch_rates_for_snail_bed:
-        if hatch_rate.hatch_rate_percentage is not 0: # dont count initial snail population of bed which results in 0 rate
-            summed_hatch_rates += hatch_rate.hatch_rate_percentage
-            iteration_counter += 1
-    average_hatch_rate_for_snail_bed = summed_hatch_rates / iteration_counter
+    if len(hatch_rates_for_snail_bed) > 0:
+        for hatch_rate in hatch_rates_for_snail_bed:
+            if hatch_rate.hatch_rate_percentage is not 0: # dont count initial snail population of bed which results in 0 rate
+                summed_hatch_rates += hatch_rate.hatch_rate_percentage
+                iteration_counter += 1
+        # in case that there was a record but it was 0, counter will remain zero and division by zero will occurr as error
+        if iteration_counter is 0:
+            iteration_counter = 1
+        average_hatch_rate_for_snail_bed = summed_hatch_rates / iteration_counter
+    else:
+        average_hatch_rate_for_snail_bed = 0
 
 
     # Calculate the average mortality rate
     summed_mortality_rates = 0
     iteration_counter = 0
     mortality_rates_for_snail_bed = SnailMortalityRate.objects.filter(snail_bed=snail_bed)
-    for mortality_rate in mortality_rates_for_snail_bed:
-        if mortality_rate.mortality_rate_percentage is not 0: # dont count initial snail population of bed which results in 0 rate
-            summed_mortality_rates += mortality_rate.mortality_rate_percentage
-            iteration_counter += 1
-    average_mortality_rate_for_snail_bed = summed_mortality_rates / iteration_counter
+    if len(mortality_rates_for_snail_bed) > 0:
+        for mortality_rate in mortality_rates_for_snail_bed:
+            if mortality_rate.mortality_rate_percentage is not 0: # dont count initial snail population of bed which results in 0 rate
+                summed_mortality_rates += mortality_rate.mortality_rate_percentage
+                iteration_counter += 1
+        # in case that there was a record but it was 0, counter will remain zero and division by zero will occurr as error
+        if iteration_counter is 0:
+            iteration_counter = 1
+        average_mortality_rate_for_snail_bed = summed_mortality_rates / iteration_counter
+    else:
+        average_mortality_rate_for_snail_bed = 0
 
 
 
@@ -528,14 +546,21 @@ def bed_performance(request, snail_bed_id):
     summed_days_to_mature = 0
     iteration_counter = 0
     maturity_rates_for_snail_bed = TimeTakenToMature.objects.filter(snail_bed=snail_bed)
-    for maturity_rate in maturity_rates_for_snail_bed:
-        if maturity_rate.maturity_percentage is not None: # dont count initial snail population of bed which results in 0 rate
-            summed_maturity_rates += maturity_rate.maturity_percentage
-        if maturity_rate.days_to_mature > 0:
-            summed_days_to_mature += maturity_rate.days_to_mature
-        iteration_counter += 1
-    average_maturity_rate_for_snail_bed = summed_maturity_rates / iteration_counter
-    average_days_to_mature_for_snail_bed = summed_days_to_mature / iteration_counter
+    if len(maturity_rates_for_snail_bed) > 0:
+        for maturity_rate in maturity_rates_for_snail_bed:
+            if maturity_rate.maturity_percentage is not None: # dont count initial snail population of bed which results in 0 rate
+                summed_maturity_rates += maturity_rate.maturity_percentage
+            if maturity_rate.days_to_mature is not None and maturity_rate.days_to_mature > 0:
+                summed_days_to_mature += maturity_rate.days_to_mature
+            iteration_counter += 1
+        # in case that there was a record but it was 0, counter will remain zero and division by zero will occurr as error
+        if iteration_counter is 0:
+            iteration_counter = 1
+        average_maturity_rate_for_snail_bed = summed_maturity_rates / iteration_counter
+        average_days_to_mature_for_snail_bed = summed_days_to_mature / iteration_counter
+    else:
+        average_maturity_rate_for_snail_bed = 0
+        average_days_to_mature_for_snail_bed = 0
 
    
     # Get the existing SnailBedPerformance object related to this SnailBed

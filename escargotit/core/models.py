@@ -289,7 +289,7 @@ class SnailBedPerformance(models.Model):
             normalized_reproduction_rate = normalized_hatch_rate - normalized_mortality_rate
             reproduction_rate_factor = round(normalized_reproduction_rate / 100, 2)
             return reproduction_rate_factor
-        return None
+        return 0
 
     @property
     def net_growth_amount(self):
@@ -315,7 +315,10 @@ class SnailBedPerformance(models.Model):
         else:
             adjusted_reproduction_rate = 1 - (int(self.reproduction_rate) / 100) # if it's a negative number then multiply by 0.30 which will decrease bed growth
         
-        maturity_factor = (self.expected_average_time_to_maturity / self.actual_average_time_to_maturity) * ( int(self.average_maturity_rate) / 100 )
+        if self.actual_average_time_to_maturity > 0:
+            maturity_factor = (self.expected_average_time_to_maturity / self.actual_average_time_to_maturity) * ( int(self.average_maturity_rate) / 100 )
+        else: 
+            maturity_factor = self.expected_average_time_to_maturity * int(self.average_maturity_rate) / 100
         performance = adjusted_reproduction_rate * maturity_factor * int(self.net_growth_amount)
         return round(performance, 2)
 
