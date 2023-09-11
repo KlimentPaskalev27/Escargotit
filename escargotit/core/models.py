@@ -23,13 +23,14 @@ class AdminUser(models.Model):
 
 class EmployeeUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    admin = models.ForeignKey(AdminUser, on_delete=models.CASCADE)
     can_create_snailbed = models.BooleanField(default=False)
     def __str__(self):
         return self.user.username
 
 class SnailBed(models.Model):
     bed_name = models.CharField(max_length=100, unique=False, null=True, blank=True)
-    user = models.ForeignKey(AdminUser, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
+    user = models.ForeignKey(AdminUser, on_delete=models.CASCADE, null=True, blank=True, db_constraint=False)
     employee = models.ForeignKey(EmployeeUser, on_delete=models.SET_NULL, null=True, blank=True, db_constraint=False)
     snail_amount = models.IntegerField(null=True, blank=True)
     hatch_rate = models.ForeignKey('SnailHatchRate', on_delete=models.SET_NULL, null=True, blank=True)

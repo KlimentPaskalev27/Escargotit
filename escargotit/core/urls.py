@@ -2,16 +2,8 @@ from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from .views import *
-
-from rest_framework.routers import DefaultRouter
 from . import views
-
-router = DefaultRouter()
-# APIs
-router.register(r'admin-users', AdminUserViewSet)
-router.register(r'employee-users', EmployeeUserViewSet)
-router.register(r'snail-beds', SnailBedViewSet)
-
+from . import api
 
 urlpatterns = [
     path('', views.home, name='index'),
@@ -31,9 +23,6 @@ urlpatterns = [
     path('account-settings/', views.user_settings, name='user_settings'),
 
     path('delete_account/', views.delete_account, name='delete_account'),
-
-    # API endpoints
-    path('api/', include(router.urls)),
 
     path('delete_all_snailbeds/', views.delete_all_snailbeds, name='delete_all_snailbeds'),
     path('delete_snailbed/<int:snail_bed_id>/', views.delete_snailbed, name='delete_snailbed'),
@@ -71,6 +60,8 @@ urlpatterns = [
     path('view_maturity_rate_history/<int:snail_bed_id>/', views.TimeTakenToMatureListView.as_view(), name='view_maturity_rate_history'),
     path('view_feed_history/<int:snail_bed_id>/', views.SnailFeedListView.as_view(), name='view_feed_history'),
 
-
-    path('', include(router.urls)), #API
+    # APIs
+    path('api/admin-users/', api.AdminUserViewSet.as_view(), name='view-admin-users'),
+    path('api/employee-users/', api.EmployeeUserViewSet.as_view(), name='view-employee-users'),
+    path('api/snail-beds/', api.SnailBedViewSet.as_view(), name='view-snail-beds'),
 ]

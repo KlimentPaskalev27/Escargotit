@@ -96,12 +96,12 @@ class RegisterForm(UserCreationForm):
 
 
 
-class EmployeeCreationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
+# class EmployeeCreationForm(forms.ModelForm):
+#     password = forms.CharField(widget=forms.PasswordInput)
 
-    class Meta:
-        model = User
-        fields = ['username', 'password', 'email']
+#     class Meta:
+#         model = User
+#         fields = ['username', 'password', 'email']
 
 class EmployeePermissionForm(forms.ModelForm):
     class Meta:
@@ -248,4 +248,3 @@ class AccountDeletionForm(forms.Form):
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
     )
 
-    
