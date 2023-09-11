@@ -95,14 +95,6 @@ class RegisterForm(UserCreationForm):
         fields = ['username', 'email', 'first_name', 'last_name', 'business_name', 'company_tax_code'] #password is added as field by default + pass confirmation
 
 
-
-class EmployeeCreationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-
-    class Meta:
-        model = User
-        fields = ['username', 'password', 'email']
-
 class EmployeePermissionForm(forms.ModelForm):
     class Meta:
         model = User
