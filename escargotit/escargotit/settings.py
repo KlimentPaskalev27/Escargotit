@@ -156,3 +156,8 @@ LOGIN_URL = 'login'
 #AUTH_USER_MODEL = 'core.AdminUser'
 # register auth User model to get rido of this conflict
 # HINT: Add or change a related_name argument to the definition for 'core.CustomUser.user_permissions' or 'auth.User.user_permissions'.
+
+# make urls without ending slash work
+APPEND_SLASH = False
+# http://url/snail-beds/ will work.
+# http://url/snail-beds (without a trailing slash) will also work.
