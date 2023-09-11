@@ -93,8 +93,10 @@ class RegisterFormView(SuccessMessageMixin, CreateView):
         return response
 
 class LoginFormView(LoginView):
+    form_class = LoginForm
     template_name = 'registration/login.html'
     success_url = ' '
+
 
 def logout_view(request):
     logout(request)

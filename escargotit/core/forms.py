@@ -201,3 +201,26 @@ class EmployeeChangeForm(UserChangeForm):
         if new_password1 and new_password2 and new_password1 != new_password2:
             raise forms.ValidationError('The two password fields must match.')
         return new_password2
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(
+        max_length=254,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}),
+    )
+    password = forms.CharField(
+        label="Password",
+        strip=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+
+        if username and not self.user_cache:
+            raise ValidationError("Invalid username. Please try again.")
+
+        if username and password and self.user_cache is not None and not self.user_cache.check_password(password):
+            raise ValidationError("Invalid password. Please try again.")
