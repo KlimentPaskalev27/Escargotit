@@ -1,11 +1,9 @@
 from django import forms
 from .models import *
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model  # Use get_user_model to reference the user model
-
-from django.contrib.auth.forms import UserChangeForm # for Employee CHange form
 
 class SnailHatchRateForm(forms.ModelForm):
     class Meta:
@@ -72,9 +70,13 @@ class RegisterForm(UserCreationForm):
         profile.save()
         return user
 
+    # Define extra fields
+    business_name = forms.CharField(label='business_name', required=True)
+    company_tax_code = forms.CharField(label='company_tax_code', required=False)
+
     class Meta:
         model = User
-        fields = ['username', 'email'] #password is added as field by default + pass confirmation
+        fields = ['username', 'email', 'first_name', 'last_name', 'business_name', 'company_tax_code'] #password is added as field by default + pass confirmation
 
 
 

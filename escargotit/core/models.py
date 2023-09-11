@@ -11,8 +11,12 @@ from django.utils import timezone
 from decimal import Decimal
 
 class AdminUser(models.Model):
-    can_create_snailbed = models.BooleanField(default=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100, unique=False, null=True, blank=True)
+    last_name = models.CharField(max_length=100, unique=False, null=True, blank=True)
+    business_name = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    company_tax_code = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    can_create_snailbed = models.BooleanField(default=True)
 
     def __str__(self):
         return self.user.username
