@@ -55,7 +55,14 @@
                 <div class="rectangle">
                     <!-- Existing SnailBed boxes -->
                     {% for snail_bed in snail_beds %}
-                        <div class="snail-box {% if snail_bed.is_empty %}empty{% else %}solid{% endif %}"
+                        <div class="snail-box {% if snail_bed.is_empty %}empty{% else %}solid{% endif %}
+                        {% if snail_bed.snailbedperformance.bed_performance < 20 %}
+                            red-bg
+                        {% elif snail_bed.snailbedperformance.bed_performance >= 20 and snail_bed.snailbedperformance.bed_performance <= 70 %}
+                            yellow-bg
+                        {% elif snail_bed.snailbedperformance.bed_performance > 70 %}
+                            green-bg
+                        {% endif %}"
                                 data-bed-name="{{ snail_bed.bed_name }}"
                                 data-bed-employee="{{ snail_bed.employee }}"
                                 data-bed-id="{{ snail_bed.id }}"
@@ -64,6 +71,7 @@
                                 data-bed-maturity="{{ snail_bed.maturity_rate }}"
                                 data-bed-snails="{{ snail_bed.snail_amount }}">
                             <span>{{ snail_bed.name }}</span>
+                            <p>Performance: {{ snail_bed.snailbedperformance.bed_performance }}%</p>
                         </div>
                     {% endfor %}
                 </div>
@@ -304,6 +312,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     .snail-box.expanded {
         border: 2px solid #000;
+    }
+
+    /* Add conditional background color to each snail bed based on performance % */
+    .snail-box.red-bg {
+        background-color: rgba(255, 0, 0, 0.486);
+    }
+
+    .snail-box.yellow-bg {
+        background-color: rgba(255, 196, 0, 0.561);
+    }
+
+    .snail-box.green-bg {
+        background-color: rgba(0, 255, 0, 0.5);
     }
 </style>
 {% endblock %}
