@@ -53,6 +53,8 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+        'rest_framework.authentication.SessionAuthentication', # so only logged in users can access api endpoints for their business
+        'rest_framework.authentication.BasicAuthentication',# so only logged in users can access api endpoints for their business
     ]
 }
 
