@@ -235,7 +235,6 @@ class TimeTakenToMature(models.Model):
             return str(self.maturity_percentage) + "% of snail bed has reached maturity in " + str(self.days_to_mature) + " days"
         return "N/A"
 
-
 @receiver(post_save, sender=TimeTakenToMature)
 def update_snailbed_maturity_rate(sender, instance, **kwargs):
     # When a TimeTakenToMature object is created or saved,
@@ -248,8 +247,6 @@ def update_snailbed_maturity_rate(sender, instance, **kwargs):
         if latest_maturity_object:
             instance.snail_bed.maturity_rate = latest_maturity_object
             instance.snail_bed.save()
-
-
 
 class SnailBedPerformance(models.Model):
     snail_bed = models.OneToOneField(SnailBed, on_delete=models.CASCADE)
@@ -314,10 +311,6 @@ class SnailBedPerformance(models.Model):
         status = str( self.bed_performance ) + "%"
         return status
 
-
-
-
-
 class ForecastedHatchRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
     forecasted_value = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
@@ -381,3 +374,135 @@ class ForecastedHatchRate(models.Model):
         status = str(self.forecasted_value) + "%"
         return status
 
+class ForecastedMortalityRate(models.Model):
+    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
+    forecasted_value = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    forecasted_value_pyaf = PickledObjectField()
+
+    @staticmethod
+    def calculate_forecast(snail_bed):
+        # Get all previous records for the specific snail_bed
+        previous_records = SnailMortalityRate.objects.filter(snail_bed=snail_bed)
+
+        # Calculate the forecasted value based on previous records (example: average)
+        total_records = previous_records.count()
+        if total_records > 0:
+            sum_mortality_rate = sum([record.mortality_rate_percentage for record in previous_records])
+            forecasted_value = sum_mortality_rate / total_records
+        else:
+            forecasted_value = 0
+
+        return forecasted_value
+
+    @staticmethod
+    def calculate_forecast_pyaf(snail_bed):
+        # Get all previous records for the specific snail_bed and annotate a date field
+        previous_records = SnailMortalityRate.objects.filter(snail_bed=snail_bed).annotate(date_only=models.ExpressionWrapper(models.F('datetime'), output_field=models.DateField()))
+        # turn the DateTime field data into a DateField data which NeuralProphet can use for training
+
+        # Create a DataFrame from the annotated records
+        data = pd.DataFrame(list(previous_records.values('date_only', 'expired_snail_amount')))
+
+        # Rename columns to match PyAF input requirements
+        data.rename(columns={'date_only': 'ds', 'expired_snail_amount': 'y'}, inplace=True)
+
+        m = NeuralProphet()
+        model = m.fit(data, freq='D', epochs=1000)
+        #epochs (number of passes that the algorithm has to complete during training)
+        forecast1 = m.predict(data)
+        future = m.make_future_dataframe(data, periods=60) # periods is days
+        forecast2 = m.predict(future)
+        #https://medium.com/analytics-vidhya/neuralprophet-a-neural-network-based-time-series-model-3c74af3b0ec6
+
+        # according to https://github.com/ourownstory/neural_prophet
+        combined = pd.concat([forecast1, forecast2])
+        fig_forecast = m.plot(combined)
+        forecasted_value_pyaf = fig_forecast
+        return forecasted_value_pyaf
+
+    def save(self, *args, **kwargs):
+        self.forecasted_value = self.calculate_forecast(self.snail_bed)
+        self.forecasted_value_pyaf = self.calculate_forecast_pyaf(self.snail_bed)
+        super().save(*args, **kwargs)
+
+    def __float__(self):
+        status = self.forecasted_value
+        return status
+
+    def __int__(self):
+        status = int(self.forecasted_value)
+        return status
+
+    def __str__(self):
+        status = str(self.forecasted_value) + "%"
+        return status
+
+class ForecastedMaturityRate(models.Model):
+    snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
+    forecasted_value = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    forecasted_value_pyaf = PickledObjectField()
+
+    @staticmethod
+    def calculate_forecast(snail_bed):
+        # Get all previous records for the specific snail_bed
+        previous_records = TimeTakenToMature.objects.filter(snail_bed=snail_bed)
+
+        # Calculate the forecasted value based on previous records (example: average)
+        total_records = previous_records.count()
+        if total_records > 0:
+            #sum_maturity_rate = sum([record.maturity_percentage for record in previous_records])
+            # use a conditional expression to replace None with 0
+            maturity_percentages = [record.maturity_percentage if record.maturity_percentage is not None else 0 for record in previous_records]
+            sum_maturity_rate = sum(maturity_percentages)
+            forecasted_value = sum_maturity_rate / total_records
+        else:
+            forecasted_value = 0
+
+        return forecasted_value
+
+    @staticmethod
+    def calculate_forecast_pyaf(snail_bed):
+        # Get all previous records for the specific snail_bed and annotate a date field
+        previous_records = TimeTakenToMature.objects.filter(snail_bed=snail_bed).annotate(date_only=models.ExpressionWrapper(models.F('snail_matured'), output_field=models.DateField()))
+        # turn the DateTime field data into a DateField data which NeuralProphet can use for training
+
+        # Create a DataFrame from the annotated records
+        data = pd.DataFrame(list(previous_records.values('date_only', 'snails_matured_count')))
+
+        # Rename columns to match PyAF input requirements
+        data.rename(columns={'date_only': 'ds', 'snails_matured_count': 'y'}, inplace=True)
+
+        # avoid error for NeuralProphet trying to train with duplicate date. Drop duplicates.
+        # in real world scenario duplicate data is a sign for user error anyway as this shouldn't occur.
+        data.drop_duplicates(subset=['ds'], keep='first', inplace=True)
+
+        m = NeuralProphet()
+        model = m.fit(data, freq='D', epochs=1000)
+        #epochs (number of passes that the algorithm has to complete during training)
+        forecast1 = m.predict(data)
+        future = m.make_future_dataframe(data, periods=60) # periods is days
+        forecast2 = m.predict(future)
+        #https://medium.com/analytics-vidhya/neuralprophet-a-neural-network-based-time-series-model-3c74af3b0ec6
+
+        # according to https://github.com/ourownstory/neural_prophet
+        combined = pd.concat([forecast1, forecast2])
+        fig_forecast = m.plot(combined)
+        forecasted_value_pyaf = fig_forecast
+        return forecasted_value_pyaf
+
+    def save(self, *args, **kwargs):
+        self.forecasted_value = self.calculate_forecast(self.snail_bed)
+        self.forecasted_value_pyaf = self.calculate_forecast_pyaf(self.snail_bed)
+        super().save(*args, **kwargs)
+
+    def __float__(self):
+        status = self.forecasted_value
+        return status
+
+    def __int__(self):
+        status = int(self.forecasted_value)
+        return status
+
+    def __str__(self):
+        status = str(self.forecasted_value) + "%"
+        return status

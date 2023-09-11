@@ -1,88 +1,153 @@
 {% extends "base/base.html" %}
 
 {% block title %}
-    Dashboard
+Snail Bed Performance for {{ bed_performance.snail_bed.bed_name }}
 {% endblock %}
 
 
 {% block content %}
 
-<div class="dashboard-container">
-    <div class="dashboard">
-        <h1>Snail Bed Performance Dashboard</h1>
+<div class="container mt-4">
+
+    <div class="outside-container">
+        <h1>Snail Bed Performance for {{ bed_performance.snail_bed.bed_name }}</h1>
     </div>
 
-    <div class="dashboard">
-        <!-- <div class="metric-box">
-            <h2 class="metric-title">Snail Feed</h2>
-            <span class="metric-value label feed" data-start="0" data-end="{{ snail_bed_performance.snail_feed }}" data-duration="2000"></span>
-        </div> -->
-        <div class="metric-box">
-            <h2 class="metric-title">Snail hatch Rate</h2>
-            <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.average_hatch_rate }}" data-duration="1500"></span>
+    <!-- Performance statistics -->
+    <div class="dashboard-container">
+        <h2>Bed Growth and Performance</h2>
+        <div class="dashboard d-flex flex-row gap-3">
+            
+            <div class="metric-box half">
+                <h2 class="metric-title">Net Snail Bed Growth</h2>
+                <p>How many snails has the bed gained/lost since it was established.</p>
+                <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.net_growth_amount }}" data-duration="3500"></span>
+            </div>
+            <div class="metric-box half">
+                <h2 class="metric-title">Average Reproduction rate</h2>
+                <p>Hatch rate minus Mortality rate</p>
+                <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.reproduction_rate }}" data-duration="4000"></span>
+            </div>
         </div>
-        <div class="metric-box">
-            <h2 class="metric-title">Mortality Rate</h2>
-            <span class="metric-value label percentage mortality" data-start="0" data-end="{{ bed_performance.average_mortality_rate }}" data-duration="2000"></span>
-        </div>
-    </div>
-
-    <div class="dashboard">
-        <div class="metric-box">
-           <h2 class="metric-title">Maturity Rate</h2>
-           <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.average_maturity_rate }}" data-duration="3000"></span>
-        </div>
-        <div class="metric-box">
-            <h2 class="metric-title">Average Days for Maturity</h2>
-            <span class="metric-value label" data-start="0" data-end="{{ bed_performance.actual_average_time_to_maturity }}" data-duration="3000"></span>
-        </div>
-        <div class="metric-box">
-            <h2 class="metric-title">Net Snail Bed Growth</h2>
-            <p>How many snails has the bed gained/lost since it was established.</p>
-            <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.net_growth_amount }}" data-duration="3500"></span>
-         </div>
-        <div class="metric-box">
-            <h2 class="metric-title">Average Reproduction rate</h2>
-            <p>Hatch rate minus Mortality rate</p>
-            <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.reproduction_rate }}" data-duration="4000"></span>
-         </div>
-        <div class="metric-box">
-           <h2 class="metric-title">Bed Performance</h2>
-           <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.bed_performance }}" data-duration="4500"></span>
+        <div class="dashboard">
+            <div class="metric-box">
+                <h2 class="metric-title">Bed Performance</h2>
+                <p>It is normal to have performance above 100% as snail growth is often exponential. An example value of 300% means that the snail bed is producing x3 times more snails than the expected x1 multiplier given reproduction and maturity period expectations.</p>
+                <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.bed_performance }}" data-duration="4500"></span>
+            </div>
         </div>
     </div>
 
-    <div class="dashboard">
-        <div class="metric-box">
-           <h2 class="metric-title">Forecasted Average hatch Rate</h2>
-           {% if forecast %}
-                <span class="metric-value label days" data-start="0" data-end="{{ forecast.forecasted_value }}" data-duration="3500"></span>
-                <div class="dataframe-table">
-                    {{ html_table | safe }}
-                </div>
-            {% else %}
-                <div id="myModal" class="modal">
-                    <div class="modal-content">
-                        <div class="loader"></div>
-                        <p>We are using Machine Learning to generate forecasts for you. Please wait until the page reloads.</p>
+    <!-- Hatch statistics -->
+    <div class="dashboard-container">
+        <div class="dashboard">
+            <h2>Hatch rate</h2>
+            <!-- <div class="metric-box">
+                <h2 class="metric-title">Snail Feed</h2>
+                <span class="metric-value label feed" data-start="0" data-end="{{ snail_bed_performance.snail_feed }}" data-duration="2000"></span>
+            </div> -->
+            <div class="metric-box">
+                <h2 class="metric-title">Snail hatch Rate</h2>
+                <span class="metric-value label percentage" data-start="0" 
+                    data-end="{{ bed_performance.average_hatch_rate }}" data-duration="1500"></span>
+            </div>
+
+            <div class="metric-box">
+                <h2 class="metric-title">Forecasted Average Hatch Rate</h2>
+                {% if forecast_hatch %}
+                    <span class="metric-value label days" data-start="0" 
+                        data-end="{{ forecast_hatch.forecasted_value }}" data-duration="3500"></span>
                     </div>
-                </div>
 
+                    <div class="metric-box">
+                        <h3>Forecasted amount of new snails hatched</h3>
+                        <div class="dataframe-table">
+                            {{ html_table_hatch | safe }}
+                        </div>
+                {% else %}
+                    <div id="myModal" class="modal">
+                        <div class="modal-content">
+                            <div class="loader"></div>
+                            <p>We are using Machine Learning to generate forecasts for you. Please wait until the page reloads.</p>
+                        </div>
+                    </div>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <button id="generateForecastButton" name="forecast_hatch">Generate Forecast</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Mortality statistics -->
+    <div class="dashboard-container">
+        <div class="dashboard">
+            <div class="metric-box">
+                <h2 class="metric-title">Mortality Rate</h2>
+                <span class="metric-value label percentage mortality" data-start="0" data-end="{{ bed_performance.average_mortality_rate }}" data-duration="2000"></span>
+            </div>
+        </div>
+        <div class="metric-box">
+            <h2 class="metric-title">Forecasted Mortality Rate</h2>
+            {% if forecast_mortality %}
+                <span class="metric-value label days" data-start="0" 
+                    data-end="{{ forecast_mortality.forecasted_value }}" data-duration="3500"></span>
+                </div>
+                
+                <div class="metric-box">
+                    <h3>Forecasted amount of expired snails</h3>
+                    <div class="dataframe-table">
+                        {{ html_table_mortality | safe }}
+                    </div>
+            {% else %}
                 <form method="POST" action="">
                     {% csrf_token %}
-                    <button id="generateForecastButton">Generate Forecast</button>
+                    <button id="generateForecastButton" name="forecast_mortality">Generate Forecast</button>
                 </form>
             {% endif %}
         </div>
-        
-     </div>
-     <div class="button-container">
+    </div>
+
+    <!-- Maturity / TimeTakenToMature statistics -->
+    <div class="dashboard-container">
+        <div class="dashboard d-flex flex-row gap-3">
+            <div class="metric-box half">
+            <h2 class="metric-title">Maturity Rate</h2>
+            <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.average_maturity_rate }}" data-duration="3000"></span>
+            </div>
+            <div class="metric-box half">
+                <h2 class="metric-title">Average Days for Maturity</h2>
+                <span class="metric-value label" data-start="0" data-end="{{ bed_performance.actual_average_time_to_maturity }}" data-duration="3000"></span>
+            </div>
+        </div>
+        <div class="dashboard">
+            <div class="metric-box">
+                <h2 class="metric-title">Forecasted Maturity Rate</h2>
+                {% if forecast_maturity %}
+                    <span class="metric-value label days" data-start="0" 
+                        data-end="{{ forecast_maturity.forecasted_value }}" data-duration="3500"></span>
+                    </div>
+                    
+                    <div class="metric-box">
+                        <h3>Forecasted snails to reach maturity (marketable age)</h3>
+                        <div class="dataframe-table">
+                            {{ html_table_maturity | safe }}
+                        </div>
+                {% else %}
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <button id="generateForecastButton" name="forecast_maturity">Generate Forecast</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="button-container outside-container">
         <button onclick="history.back()">Go Back</button>
-     </div>
+    </div>
 </div>
-
-
-
 
 <script>
 
@@ -144,14 +209,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style>
     .dashboard-container {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .dashboard {
-    margin-bottom: 30px;
+        margin-bottom: 30px;
     }
+
+    .outside-container {
+        margin: 50px auto;
+        color: #f9f9f9;
+        max-width: 800px;
+    }
+
+
     .metric {
     display: inline-block;
     margin-right: 20px;
@@ -309,6 +382,12 @@ document.addEventListener('DOMContentLoaded', function() {
     margin-bottom: 20px;
     animation: fadeIn 1s ease-in-out;
     }
+
+    .metric-box.half {
+        flex: 1;
+
+    }
+
     /* Log Out and Go Back Buttons */
     .button-container {
     text-align: right;

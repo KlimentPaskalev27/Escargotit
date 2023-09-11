@@ -578,27 +578,48 @@ def bed_performance(request, snail_bed_id):
     bed_performance.save()
 
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'forecast_hatch' in request.POST:
         # Get the existing SnailBedPerformance object related to this SnailBed
         # if there is a forecast use that, or create new one
-        forecast, created = ForecastedHatchRate.objects.get_or_create(snail_bed=snail_bed)
+        forecast_hatch, created = ForecastedHatchRate.objects.get_or_create(snail_bed=snail_bed)
     else:
         # Check if a forecast exists for the SnailBed
-        forecast = ForecastedHatchRate.objects.filter(snail_bed=snail_bed).first()
+        forecast_hatch = ForecastedHatchRate.objects.filter(snail_bed=snail_bed).first()
 
-    if forecast:
-        # Convert DataFrame to HTML
-        html_table = forecast.forecasted_value_pyaf.to_html()
-
-        context = {
-            'bed_performance': bed_performance,
-            'forecast': forecast,
-            'html_table': html_table,
-        }
+    if request.method == 'POST' and 'forecast_mortality' in request.POST:
+        forecast_mortality, created = ForecastedMortalityRate.objects.get_or_create(snail_bed=snail_bed)
     else:
-        context = {
-            'bed_performance': bed_performance,
-        }
+        forecast_mortality = ForecastedMortalityRate.objects.filter(snail_bed=snail_bed).first()
+
+    if request.method == 'POST' and 'forecast_maturity' in request.POST:
+        forecast_maturity, created = ForecastedMaturityRate.objects.get_or_create(snail_bed=snail_bed)
+    else:
+        forecast_maturity = ForecastedMaturityRate.objects.filter(snail_bed=snail_bed).first()
+
+    context = {
+        'bed_performance': bed_performance,
+        'forecast_hatch': None,
+        'html_table_hatch': None,
+        'forecast_mortality': None,
+        'html_table_mortality': None,
+        'forecast_maturity': None,
+        'html_table_maturity': None,
+    }
+
+    if forecast_hatch:
+        html_table_hatch = forecast_hatch.forecasted_value_pyaf.to_html() # Convert DataFrame to HTML
+        context['forecast_hatch'] = forecast_hatch
+        context['html_table_hatch'] = html_table_hatch
+
+    if forecast_mortality:
+        html_table_mortality = forecast_mortality.forecasted_value_pyaf.to_html() # Convert DataFrame to HTML
+        context['forecast_mortality'] = forecast_mortality
+        context['html_table_mortality'] = html_table_mortality
+
+    if forecast_maturity:
+        html_table_maturity = forecast_maturity.forecasted_value_pyaf.to_html()
+        context['forecast_maturity'] = forecast_maturity
+        context['html_table_maturity'] = html_table_maturity
 
     return render(request, 'bed_performance.html', context)
 
