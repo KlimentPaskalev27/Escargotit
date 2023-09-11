@@ -21,12 +21,23 @@ class AdminUser(models.Model):
     def __str__(self):
         return self.user.username
 
+    def delete(self, *args, **kwargs):
+        # Delete the associated User instance when deleted
+        self.user.delete()
+        super(EmployeeUser, self).delete(*args, **kwargs)
+
 class EmployeeUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    admin = models.ForeignKey(AdminUser, on_delete=models.CASCADE)
+    admin = models.ForeignKey(AdminUser, on_delete=models.CASCADE, null=True, blank=True)
     can_create_snailbed = models.BooleanField(default=False)
+    
     def __str__(self):
         return self.user.username
+
+    def delete(self, *args, **kwargs):
+        # Delete the associated User instance when deleted
+        self.user.delete()
+        super(EmployeeUser, self).delete(*args, **kwargs)
 
 class SnailBed(models.Model):
     bed_name = models.CharField(max_length=100, unique=False, null=True, blank=True)

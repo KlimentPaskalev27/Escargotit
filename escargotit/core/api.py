@@ -8,11 +8,12 @@ from rest_framework import generics
 class AdminUserViewSet(generics.ListAPIView):
     queryset = AdminUser.objects.all()
     serializer_class = AdminUserSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 class EmployeeUserViewSet(generics.ListAPIView):
     queryset = EmployeeUser.objects.all()
     serializer_class = EmployeeUserSerializer
+    #permission_classes = [IsAuthenticated]
 
 class SnailBedViewSet(generics.ListAPIView):
     queryset = SnailBed.objects.all()

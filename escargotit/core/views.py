@@ -300,12 +300,10 @@ def barchart(request, snail_bed_id):
 
 @login_required(login_url='login')
 def custom_admin_panel(request):
-
     current_user = AdminUser.objects.filter(user=request.user).first()
 
-
     if request.method == 'POST' and 'register_employee' in request.POST:
-        form = EmployeeCreationForm(request.POST)
+        form = EmployeeCreationForm(admin=current_user, data=request.POST) # pass current admin
         #form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -313,7 +311,7 @@ def custom_admin_panel(request):
             messages.success(request, f'Employee user {username} has been created.')
             return redirect('custom_admin_panel')
     else:
-        form = EmployeeCreationForm()
+        form = EmployeeCreationForm(admin=current_user)
 
     # Add code to handle the assignment of existing employees to snail beds
     if request.method == 'POST' and 'assign_employee' in request.POST:
@@ -365,7 +363,6 @@ def custom_admin_panel(request):
 def manage_employee(request, employee_id):
     employee = get_object_or_404(EmployeeUser, pk=employee_id)
     snailbeds_assigned = SnailBed.objects.filter(employee=employee)
-
 
     if request.method == 'POST':
         form = EmployeeUserForm(request.POST, instance=employee)
@@ -670,17 +667,3 @@ class TimeTakenToMatureListView(ListView):
         context['snail_bed'] = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
         return context
 
-
-# API endpoints down from here
-
-class AdminUserViewSet(viewsets.ModelViewSet):
-    queryset = AdminUser.objects.all()
-    serializer_class = AdminUserSerializer
-
-class EmployeeUserViewSet(viewsets.ModelViewSet):
-    queryset = EmployeeUser.objects.all()
-    serializer_class = EmployeeUserSerializer
-
-class SnailBedViewSet(viewsets.ModelViewSet):
-    queryset = SnailBed.objects.all()
-    serializer_class = SnailBedSerializer

@@ -96,12 +96,12 @@ class RegisterForm(UserCreationForm):
 
 
 
-# class EmployeeCreationForm(forms.ModelForm):
-#     password = forms.CharField(widget=forms.PasswordInput)
+class EmployeeCreationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
 
-#     class Meta:
-#         model = User
-#         fields = ['username', 'password', 'email']
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'email']
 
 class EmployeePermissionForm(forms.ModelForm):
     class Meta:
@@ -111,6 +111,10 @@ class EmployeePermissionForm(forms.ModelForm):
 
 
 class EmployeeCreationForm(UserCreationForm):
+    def __init__(self, admin, *args, **kwargs):
+        super(EmployeeCreationForm, self).__init__(*args, **kwargs)
+        self.admin = admin  # Store the admin object that is passed by our view
+    
     class Meta:
         model = User
         fields = ['username', 'email'] #password is added as field by default + pass confirmation
@@ -140,7 +144,7 @@ class EmployeeCreationForm(UserCreationForm):
             user.save()
         # now create employee
         user = super().save(*args, **kwargs)
-        employee = EmployeeUser.objects.create(user = user)
+        employee = EmployeeUser.objects.create(user = user, admin=self.admin)
         employee.save()
         return user
 
