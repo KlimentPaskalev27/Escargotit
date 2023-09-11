@@ -36,9 +36,6 @@ urlpatterns = [
     path('delete_all_snailbeds/', views.delete_all_snailbeds, name='delete_all_snailbeds'),
     path('delete_snailbed/<int:snail_bed_id>/', views.delete_snailbed, name='delete_snailbed'),
 
-
-    
-
     # Company pages
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),

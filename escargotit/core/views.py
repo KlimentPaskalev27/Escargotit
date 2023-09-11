@@ -578,20 +578,55 @@ def bed_performance(request, snail_bed_id):
     bed_performance.save()
 
 
-    # Get the existing SnailBedPerformance object related to this SnailBed
-    forecast, created = ForecastedHatchRate.objects.get_or_create(snail_bed=snail_bed)
-    # Convert DataFrame to HTML
-    html_table = forecast.forecasted_value_pyaf.to_html()
+    if request.method == 'POST':
+        # Get the existing SnailBedPerformance object related to this SnailBed
+        # if there is a forecast use that, or create new one
+        forecast, created = ForecastedHatchRate.objects.get_or_create(snail_bed=snail_bed)
+    else:
+        # Check if a forecast exists for the SnailBed
+        forecast = ForecastedHatchRate.objects.filter(snail_bed=snail_bed).first()
 
-    context = {
-        'bed_performance': bed_performance,
-        'forecast': forecast,
-        'html_table': html_table,
-    }
+    if forecast:
+        # Convert DataFrame to HTML
+        html_table = forecast.forecasted_value_pyaf.to_html()
+
+        context = {
+            'bed_performance': bed_performance,
+            'forecast': forecast,
+            'html_table': html_table,
+        }
+    else:
+        context = {
+            'bed_performance': bed_performance,
+        }
 
     return render(request, 'bed_performance.html', context)
 
 
+
+def generate_forecast(request):
+    if request.method == 'POST':
+        snail_bed_id = request.POST.get('snail_bed_id')  # Get the SnailBed ID from the POST request
+
+        try:
+            snail_bed = SnailBed.objects.get(pk=snail_bed_id)  # Retrieve the SnailBed object
+        except SnailBed.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'SnailBed not found.'}, status=404)
+
+        # Generate the forecast for the given SnailBed (You need to implement this)
+        forecast_data = generate_forecast_for_snail_bed(snail_bed)
+
+        if forecast_data is not None:
+            # Save the forecast data to the database
+            forecast, created = ForecastedHatchRate.objects.get_or_create(snail_bed=snail_bed)
+            forecast.forecasted_value = forecast_data  # Replace with the actual forecast data
+            forecast.save()
+
+            return JsonResponse({'success': True, 'message': 'Forecast generated successfully.'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Failed to generate forecast.'}, status=500)
+
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)
 
 
 @login_required(login_url='login')

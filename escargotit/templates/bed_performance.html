@@ -55,11 +55,26 @@
     <div class="dashboard">
         <div class="metric-box">
            <h2 class="metric-title">Forecasted Average hatch Rate</h2>
-           <span class="metric-value label days" data-start="0" data-end="{{ forecasts.forecasted_value }}" data-duration="3500"></span>
+           {% if forecast %}
+                <span class="metric-value label days" data-start="0" data-end="{{ forecast.forecasted_value }}" data-duration="3500"></span>
+                <div class="dataframe-table">
+                    {{ html_table | safe }}
+                </div>
+            {% else %}
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <div class="loader"></div>
+                        <p>We are using Machine Learning to generate forecasts for you. Please wait until the page reloads.</p>
+                    </div>
+                </div>
+
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <button id="generateForecastButton">Generate Forecast</button>
+                </form>
+            {% endif %}
         </div>
-        <div class="dataframe-table">
-           {{ html_table | safe }}
-        </div>
+        
      </div>
      <div class="button-container">
         <button onclick="history.back()">Go Back</button>
@@ -67,7 +82,37 @@
 </div>
 
 
+
+
 <script>
+
+//  this handles the animation of the Loading pop up when Generate Forecast button is clicked
+document.addEventListener('DOMContentLoaded', function() {
+    const generateForecastForm = document.getElementById('generateForecastForm');
+    const generateForecastButton = document.getElementById('generateForecastButton');
+    const modal = document.getElementById('myModal');
+
+    generateForecastButton.addEventListener('click', function() {
+        // Show the modal
+        modal.style.display = 'block';
+
+        // Create a hidden input element to store the action URL
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action_url';
+        actionInput.value = window.location.pathname;
+
+        // Append the hidden input to the form
+        generateForecastForm.appendChild(actionInput);
+
+        // Submit the form after a short delay to allow the modal to display
+        setTimeout(function() {
+            generateForecastForm.submit();
+        }, 1000); // Adjust the delay as needed
+    });
+});
+
+
     // Function to animate numbers incrementally
     function animateNumbers(element, startValue, endValue, duration) {
     let range = endValue - startValue;
@@ -185,6 +230,48 @@
     opacity: 1;
     }
     }
+
+
+
+    /* this is the modal loading circle pop up when the Generate Forecast button is clicked */
+    /* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    text-align: center;
+}
+
+/* Loading animation styles */
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 </style>
 
 <style>
