@@ -31,7 +31,6 @@ from .models import *
 from .faq_data import faq_data  # Import the faq_data from the module
 
 
-
 @login_required(login_url='login')
 def dashboard(request):
 
@@ -82,7 +81,6 @@ def delete_all_snailbeds(request):
     SnailBed.objects.filter(user=current_user).delete()
     return redirect('dashboard')  # Redirect back to the dashboard 
 
-
 class RegisterFormView(SuccessMessageMixin, CreateView):
     form_class = RegisterForm 
     template_name = 'registration/register.html'
@@ -94,18 +92,14 @@ class RegisterFormView(SuccessMessageMixin, CreateView):
         messages.success(self.request, self.success_message)
         return response
 
-
 class LoginFormView(LoginView):
     template_name = 'registration/login.html'
     success_url = ' '
-
-
 
 def logout_view(request):
     logout(request)
     # Redirect to a logout success page or login page
     return redirect('login')
-
 
 @login_required(login_url='login')
 def user_settings(request):
@@ -133,9 +127,6 @@ def user_settings(request):
 
     return render(request, 'registration/user_settings.html', {'user_form': user_form, 'password_form': password_form})
 
-
-
-
 def contact(request):
     return render(request, 'company/contact.html')
 
@@ -144,7 +135,6 @@ def about(request):
 
 def terms(request):
     return render(request, 'company/terms.html')
-
 
 def cookies(request):
     return render(request, 'company/cookies.html')
@@ -157,10 +147,6 @@ def faqs(request):
 
 def home(request):
     return render(request, 'company/home.html')
-
-
-
-
 
 @login_required(login_url='login')
 def barchart(request, snail_bed_id):
@@ -287,11 +273,6 @@ def barchart(request, snail_bed_id):
     return render(request, 'barchart.html', context)
 
 
-
-
-
-
-
 @login_required(login_url='login')
 def custom_admin_panel(request):
 
@@ -355,9 +336,6 @@ def custom_admin_panel(request):
 
     return render(request, 'admin_panel.html', context)
 
-
-
-
 @login_required(login_url='login')
 def manage_employee(request, employee_id):
     employee = get_object_or_404(EmployeeUser, pk=employee_id)
@@ -412,14 +390,12 @@ def manage_employee(request, employee_id):
     }
     return render(request, 'manage_employee.html', context)
 
-
 class EmployeeUserListView(ListView):
     model = EmployeeUser
     template_name = 'employee_user_list.html'  # Create this template
     context_object_name = 'employees'  # Context variable name for the list of employees
     ordering = ['user__username']  # Define your desired ordering
     paginate_by = 10  # Set the number of items per page (adjust as needed)
-
 
 @login_required(login_url='login')
 def unassign_employee(request, snail_bed_id):
@@ -437,34 +413,8 @@ def unassign_employee(request, snail_bed_id):
         else:
             messages.error(request, f'There is no employee assigned to Snail Bed {snail_bed_to_unassign.bed_name}.')
 
-    #return redirect('dashboard')
     # Redirect back to the referring page or a default URL if 'HTTP_REFERER' is not available
     return redirect(request.META.get('HTTP_REFERER', reverse('dashboard')))
-
-
-
-
-
-
-def log_data_options(request, snail_bed_id, data_type):
-    snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
-    print(snail_bed_id)
-    print(snail_bed)
-
-    if data_type == 'snail_feed':
-        form = SnailFeedForm(initial={'snail_bed': snail_bed})
-    elif data_type == 'hatch_rate':
-        form = SnailHatchRateForm(initial={'snail_bed': snail_bed})
-    elif data_type == 'mortality_rate':
-        form = SnailMortalityRateForm(initial={'snail_bed': snail_bed})
-    else:
-        # Handle the case when an invalid data_type is provided
-        return JsonResponse({'error': 'Invalid data type'})
-
-    # Render the form as a string
-    form_html = render_to_string('form_template.html', {'form': form})
-
-    return JsonResponse({'form_html': form_html})
 
 def log_snail_feed(request, snail_bed_id):
     snail_bed = get_object_or_404(SnailBed, id=snail_bed_id)
@@ -523,7 +473,6 @@ def log_maturity_rate(request, snail_bed_id):
         form = TimeTakenToMatureForm()
     
     return render(request, 'form_template.html', {'form': form, 'snail_bed': snail_bed})
-
 
 @login_required(login_url='login')
 def bed_performance(request, snail_bed_id):
@@ -623,33 +572,6 @@ def bed_performance(request, snail_bed_id):
 
     return render(request, 'bed_performance.html', context)
 
-
-
-def generate_forecast(request):
-    if request.method == 'POST':
-        snail_bed_id = request.POST.get('snail_bed_id')  # Get the SnailBed ID from the POST request
-
-        try:
-            snail_bed = SnailBed.objects.get(pk=snail_bed_id)  # Retrieve the SnailBed object
-        except SnailBed.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'SnailBed not found.'}, status=404)
-
-        # Generate the forecast for the given SnailBed (You need to implement this)
-        forecast_data = generate_forecast_for_snail_bed(snail_bed)
-
-        if forecast_data is not None:
-            # Save the forecast data to the database
-            forecast, created = ForecastedHatchRate.objects.get_or_create(snail_bed=snail_bed)
-            forecast.forecasted_value = forecast_data  # Replace with the actual forecast data
-            forecast.save()
-
-            return JsonResponse({'success': True, 'message': 'Forecast generated successfully.'})
-        else:
-            return JsonResponse({'success': False, 'message': 'Failed to generate forecast.'}, status=500)
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=400)
-
-
 @login_required(login_url='login')
 def delete_snailbed(request, snail_bed_id):
     # Fetch the SnailBed object to be deleted
@@ -666,10 +588,6 @@ def delete_snailbed(request, snail_bed_id):
         # If the user doesn't have permission, you can show an error message or handle it as needed
         messages.error(request, "You must be an Admin user to delete a Snail Bed.")
         return redirect('dashboard')  # Redirect to a suitable page
-
-
-
-
 
 class SnailHatchRateListView(ListView):
     model = SnailHatchRate
