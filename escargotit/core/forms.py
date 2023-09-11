@@ -5,21 +5,11 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model  # Use get_user_model to reference the user model
 
-class SnailHatchRateForm(forms.ModelForm):
-    class Meta:
-        model = SnailHatchRate
-        fields = ['snail_bed', 'newly_hatched_snails', 'datetime']
-
-class SnailMortalityRateForm(forms.ModelForm):
-    class Meta:
-        model = SnailMortalityRate
-        fields = ['snail_bed', 'expired_snail_amount', 'datetime']
 
 class TimeTakenToMatureForm(forms.ModelForm):
     class Meta:
         model = TimeTakenToMature
         fields = ['snail_hatched', 'snail_matured', 'snails_matured_count']
-
 
 class SnailBedForm(forms.ModelForm):
     class Meta:
