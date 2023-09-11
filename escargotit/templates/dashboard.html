@@ -34,6 +34,24 @@
                 <li>Business name: {{ current_user.business_name }}</li>
                 <li>Company tax code: {{ current_user.company_tax_code }}</li>
             </ul>
+
+
+            <!-- Container to display selected snail bed data stats -->
+            <div id="selected-box-data" class="container" style="display: none;">
+                <h3>Selected Box Data</h3>
+                <div id="box-name"></div>
+                <div id="box-employee"></div>
+                <div id="box-hatch"></div>
+                <div id="box-mortality"></div>
+                <div id="box-maturity"></div>
+                <div id="box-snails"></div>
+                <div id="box-details"></div>
+                <div id="box-feed"></div>
+            </div>
+
+
+
+
         </div>
         <div class="col">
             <!-- Right side content -->
@@ -112,18 +130,7 @@
             {% endif %}
         </div>
     </div>
-    <!-- Container to display selected snail bed data stats -->
-    <div id="selected-box-data" class="container" style="display: none;">
-        <h3>Selected Box Data</h3>
-        <div id="box-name"></div>
-        <div id="box-employee"></div>
-        <div id="box-hatch"></div>
-        <div id="box-mortality"></div>
-        <div id="box-maturity"></div>
-        <div id="box-snails"></div>
-        <div id="box-details"></div>
-        <div id="box-feed"></div>
-    </div>
+    
 </div>
 
 

@@ -1,6 +1,9 @@
 #Import standard library modules first
 from io import BytesIO
 import base64
+import random # generate data for dummy data population
+import datetime
+from datetime import timedelta # turn integers into days, weeks.. 
 
 #Import third-party libraries 
 import matplotlib
@@ -24,6 +27,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy  # used to redirect back to the request URL
 from django.views.generic import CreateView, ListView
 from rest_framework import viewsets
+
 
 # custom forms, models, and other local modules
 from .forms import *
@@ -691,4 +695,58 @@ class TimeTakenToMatureListView(ListView):
         context = super().get_context_data(**kwargs)
         context['snail_bed'] = get_object_or_404(SnailBed, id=self.kwargs['snail_bed_id'])
         return context
+
+
+@login_required
+def create_snailbeds(request):
+    # Get the logged-in user's AdminUser object
+    current_user = AdminUser.objects.filter(user=request.user).first()
+    current_time = timezone.now()
+
+    # Create a list to store SnailBed instances
+    snail_beds = []
+
+    # Create 10 SnailBed instances
+    for j in range(1):
+        bed_name = f'Snail Bed #{j}'
+        snail_bed = SnailBed.objects.create(bed_name=bed_name, user=current_user)
+
+        # Create SnailHatchRate instances
+        for i in range(100):
+            SnailHatchRate.objects.create(
+                snail_bed=snail_bed,
+                newly_hatched_snails=random.randint(100, 1000),
+                datetime=current_time + timedelta(weeks=i),# increment to occur each week
+            )
+
+        # Create SnailMortalityRate instances
+        for i in range(100):
+            SnailMortalityRate.objects.create(
+                snail_bed=snail_bed,
+                expired_snail_amount=random.randint(100, 1000),
+                datetime=current_time + timedelta(weeks=i),# increment to occur each week
+            )
+
+        # Create SnailFeed instances
+        for i in range(100):
+            SnailFeed.objects.create(
+                snail_bed=snail_bed,
+                consumed_on=current_time + timedelta(weeks=i), # increment to occur each week
+                grams_feed_given=random.randint(100, 1000)
+            )
+
+        # Create TimeTakenToMature instances
+        for i in range(100):
+            days_to_mature = random.randint(20, 40)
+            snails_matured_count = random.randint(100, 1000)
+            snail_hatched = current_time + timedelta(weeks=i) # increment to occur each week
+            snail_matured = snail_hatched + timedelta(days=days_to_mature) # should occur 20-40 days after hatch
+            TimeTakenToMature.objects.create(
+                snail_bed=snail_bed,
+                snail_hatched=snail_hatched,
+                snail_matured=snail_matured,
+                snails_matured_count=snails_matured_count,
+            )
+
+    return HttpResponseRedirect(reverse('dashboard'))
 

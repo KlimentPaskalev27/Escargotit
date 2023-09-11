@@ -68,7 +68,7 @@ Snail Bed Performance for {{ bed_performance.snail_bed.bed_name }}
                     <div id="myModal" class="modal">
                         <div class="modal-content">
                             <div class="loader"></div>
-                            <p>We are using Machine Learning to generate forecasts for you. Please wait until the page reloads.</p>
+                            <p>We are using Machine Learning to generate forecasts for you. Please wait until your data insights are ready.</p>
                         </div>
                     </div>
                     <form method="POST" action="">
@@ -101,6 +101,12 @@ Snail Bed Performance for {{ bed_performance.snail_bed.bed_name }}
                         {{ html_table_mortality | safe }}
                     </div>
             {% else %}
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <div class="loader"></div>
+                        <p>We are using Machine Learning to generate forecasts for you. Please wait until your data insights are ready.</p>
+                    </div>
+                </div>
                 <form method="POST" action="">
                     {% csrf_token %}
                     <button id="generateForecastButton" name="forecast_mortality">Generate Forecast</button>
@@ -135,6 +141,12 @@ Snail Bed Performance for {{ bed_performance.snail_bed.bed_name }}
                             {{ html_table_maturity | safe }}
                         </div>
                 {% else %}
+                    <div id="myModal" class="modal">
+                        <div class="modal-content">
+                            <div class="loader"></div>
+                            <p>We are using Machine Learning to generate forecasts for you. Please wait until your data insights are ready.</p>
+                        </div>
+                    </div>
                     <form method="POST" action="">
                         {% csrf_token %}
                         <button id="generateForecastButton" name="forecast_maturity">Generate Forecast</button>
