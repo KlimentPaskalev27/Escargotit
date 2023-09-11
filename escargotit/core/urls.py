@@ -10,19 +10,15 @@ router = DefaultRouter()
 
 
 urlpatterns = [
-
-    path('home/', views.home, name='home'),
-
     path('', views.home, name='index'),
 
     path('dashboard/', views.dashboard, name='dashboard'),
 
-
     # Registration
-    path('register/', views.RegisterFormView.as_view() , name='register'),
+    path('register/', views.register , name='register'),
 
     # Login
-    path('login', views.LoginFormView.as_view() , name='login'),
+    path('login/', views.LoginFormView.as_view() , name='login'),
 
     # Logout
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),

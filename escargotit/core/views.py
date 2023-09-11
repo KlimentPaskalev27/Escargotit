@@ -19,7 +19,6 @@ from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash  # auth_hash makes it possible to update passwords
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy  # used to redirect back to the request URL
@@ -81,16 +80,33 @@ def delete_all_snailbeds(request):
     SnailBed.objects.filter(user=current_user).delete()
     return redirect('dashboard')  # Redirect back to the dashboard 
 
-class RegisterFormView(SuccessMessageMixin, CreateView):
+class RegisterFormView(CreateView):
     form_class = RegisterForm 
     template_name = 'registration/register.html'
     success_url = reverse_lazy('login')  # Use reverse_lazy to specify the URL for the login page
-    success_message = "Your profile was created successfully"
 
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, self.success_message)
         return response
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+
+            # Check if a user with the same username already exists
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Username already exists. Please choose a different username.')
+            else:
+                form.save()
+                messages.success(request, 'Registration successful. You can now log in.')
+                return redirect('login')
+    else:
+        form = RegisterForm()
+    
+    return render(request, 'registration/register.html', {'form': form})
 
 class LoginFormView(LoginView):
     form_class = LoginForm

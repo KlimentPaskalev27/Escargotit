@@ -64,15 +64,31 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class RegisterForm(UserCreationForm):
-    def save(self, *args, **kwargs):
-        user = super().save(*args, **kwargs)
-        profile = AdminUser.objects.create(user = user)
-        profile.save()
-        return user
-
     # Define extra fields
     business_name = forms.CharField(label='business_name', required=True)
-    company_tax_code = forms.CharField(label='company_tax_code', required=False)
+    company_tax_code = forms.CharField(label='company_tax_code', required=True)
+
+    def save(self, *args, **kwargs):
+        user = super().save(*args, **kwargs)
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
+        user.save()  # Save the User object
+
+        # get the values from the extra fields and clean them
+        business_name = self.cleaned_data.get('business_name')
+        company_tax_code = self.cleaned_data.get('company_tax_code')
+
+        # create a new AdminUser object with this data
+        profile = AdminUser.objects.create(
+            user=user,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            business_name = business_name,
+            company_tax_code=company_tax_code,
+            )
+        profile.save()  # Save the AdminUser object to the database
+
+        return user
 
     class Meta:
         model = User

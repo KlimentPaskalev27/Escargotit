@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container main">
 
      <!-- Add the error messages section here -->
      {% if messages %}
@@ -33,13 +33,8 @@
             {% endif %}
             <p>User Profile Information:</p>
             <ul>
-                <li>Full Name: {{ user.first_name }} {{ user.last_name }}</li>
-                <li>Email: {{ user.email }}</li>
-            </ul>
-
-            <h2>Settings</h2>
-            <ul>
-                <li><a href="{% url 'user_settings' %}">User Settings</a></li>
+                <li>Business name: {{ current_user.business_name }}</li>
+                <li>Company tax code: {{ current_user.company_tax_code }}</li>
             </ul>
         </div>
         <div class="col">
@@ -316,6 +311,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <style>
+    .main.container{
+        min-height: 20rem;
+    }
+
     .rectangle {
         width: 50%; /* Takes the right half of the screen */
         border: 2px solid #ccc;
