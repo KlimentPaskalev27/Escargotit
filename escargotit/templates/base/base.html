@@ -93,14 +93,62 @@
         </div>
     </nav>
     {% endif %}
+
+    <!--  loading spinner  -->
+    <div id="loading-spinner" class="text-center" style="display: none;">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get a reference to the loading spinner element
+            const spinner = document.getElementById("loading-spinner");
+    
+            // Get a reference to the "Generate Dummy Data" link
+            const generateDummyDataLink = document.querySelector('a[href="{% url "create_snailbeds" %}"]');
+    
+            // Add a click event listener to the link
+            generateDummyDataLink.addEventListener("click", function (event) {
+                // Prevent the default link behavior (page navigation)
+                event.preventDefault();
+    
+                // Show the loading spinner
+                spinner.style.display = "inline-block";
+    
+                // Redirect the user after a short delay (simulating a delay)
+                setTimeout(function () {
+                    window.location.href = generateDummyDataLink.href;
+                }, 2000); // Adjust the delay time as needed
+            });
+        });
+    </script>
     
 
     <style>
+
+
         nav.navbar.second {
             background-color: rgb(222, 221, 221) !important;
         }
         nav.navbar.second > div.container > div.collapse {
             flex-direction: row-reverse !important;
+        }
+
+
+
+        /* style the loading circle of Generate Dummy Data  */
+        #loading-spinner {
+            position: absolute;
+            left: 0; 
+            right: 0; 
+            margin-left: auto; 
+            margin-right: auto;
+            top: 40%;
+        }
+        .spinner-border {
+            width: 10rem;
+            height: 10rem;
         }
     </style>
 
