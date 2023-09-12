@@ -83,7 +83,11 @@
                                 data-bed-maturity="{{ snail_bed.maturity_rate }}"
                                 data-bed-snails="{{ snail_bed.snail_amount }}">
                             <span>{{ snail_bed.name }}</span>
-                            <p>{{ snail_bed.snailbedperformance.bed_performance|floatformat:"0" }}%</p>
+                            {% if snail_bed.snailbedperformance.bed_performance %}
+                                <p>{{ snail_bed.snailbedperformance.bed_performance|floatformat:"0" }}%</p>
+                            {% else %}
+                                <a class="btn" href="/bed_performance/{{ snail_bed.id }}">Generate Performance</a>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
@@ -322,21 +326,25 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     .rectangle {
-        width: 50%; /* Takes the right half of the screen */
+        /*width: 50%; /* Takes the right half of the screen */
+        width: 30rem;
         border: 2px solid #ccc;
         padding: 10px;
         display: flex;
         flex-wrap: wrap;
+        border-radius: 5%;
     }
 
     .snail-box {
-        width: calc(25% - 20px); /* 25% of the rectangle width with some spacing */
+        width: calc(50% - 20px); /* 25% of the rectangle width with some spacing */
+        height: 10rem;
         border: 2px dashed #ccc;
         margin: 10px;
         padding: 10px;
         box-sizing: border-box;
         transition: border 0.3s ease-in-out;
         cursor: pointer;
+        border-radius: 5%;
     }
 
     .snail-box.empty {
@@ -358,6 +366,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     .snail-box.green-bg {
         background-color: rgba(0, 255, 0, 0.5);
+    }
+
+    .snail-box a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
     }
 </style>
 {% endblock %}
