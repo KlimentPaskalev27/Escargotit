@@ -709,7 +709,14 @@ def create_snailbeds(request):
     # Create 10 SnailBed instances
     for j in range(1):
         bed_name = f'Snail Bed #{j}'
+
+        # Ensure bed_name is unique
+        while SnailBed.objects.filter(bed_name=bed_name).exists():
+            j += 1
+            bed_name = f'Snail Bed #{j}'
+        
         snail_bed = SnailBed.objects.create(bed_name=bed_name, user=current_user)
+        snail_beds.append(snail_bed)
 
         # Create SnailHatchRate instances
         for i in range(100):
