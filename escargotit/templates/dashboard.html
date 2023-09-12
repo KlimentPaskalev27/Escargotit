@@ -47,6 +47,7 @@
                 <div id="box-snails"></div>
                 <div id="box-details"></div>
                 <div id="box-feed"></div>
+                <div id="box-api"></div>
             </div>
 
 
@@ -270,8 +271,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             //  generate Bed Performance button
             document.getElementById("box-details").innerHTML = 
-            `<a class="btn btn-success" id="box-details-link">Inspect Snail Bed</a>`;
+            `<a class="btn btn-secondary" id="box-details-link">Inspect Snail Bed</a>`;
             document.getElementById("box-details-link").href = "/bed_performance/" + boxId;
+
+            // generate API button for snail bed details
+             document.getElementById("box-api").innerHTML = 
+            `<a class="btn btn-warning" id="box-api-link" target="_blank">API for Specific Snail Bed</a>`;
+            document.getElementById("box-api-link").href = "/api/specific-snail-bed/" + boxId;
             
             
             document.getElementById("box-snails").innerText = "Snails: " + boxSnails;

@@ -63,6 +63,7 @@ urlpatterns = [
     # APIs
     path('api/employee-users/', api.EmployeeUserViewSet.as_view(), name='view-employee-users'),
     path('api/snail-beds/', api.SnailBedViewSet.as_view(), name='view-snail-beds'),
+    path('api/specific-snail-bed/<int:snail_bed_id>/', api.SpecificSnailBedView.as_view(), name='specific-snail-bed'),
 
     # populate dummy database
     path('create_snailbeds/', views.create_snailbeds, name='create_snailbeds'),
