@@ -755,5 +755,6 @@ def create_snailbeds(request):
                 snails_matured_count=snails_matured_count,
             )
 
+    messages.success(request, "We've successfully created Snail Bed dummy data and added it to your dashboard!")
     return HttpResponseRedirect(reverse('dashboard'))
 
