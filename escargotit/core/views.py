@@ -507,7 +507,7 @@ def bed_performance(request, snail_bed_id):
 
     # Check if there are enough data points for correlation calculation
     if len(snail_feeds) < 3 or len(hatch_rates) < 3 or len(mortality_rates) < 3 or len(maturity_rates) < 3:
-        messages.error(request, "There are not enough data points for correlation calculation. Snail Bed should have at least 2 logs for each data field.")
+        messages.error(request, "There is not enough for performance estimation. Snail Bed should have at least 3 logs for each data field.")
         return redirect('dashboard')  # Redirect to a suitable page
 
     # Calculate the average hatch rate

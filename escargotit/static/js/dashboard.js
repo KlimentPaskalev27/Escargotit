@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             //  generate Bed Performance button
             document.getElementById("box-details").innerHTML = 
-            `<a class="btn btn-secondary" id="box-details-link">Inspect Snail Bed</a>`;
+            `<a class="btn btn-secondary" id="box-details-link">See Performance</a>`;
             document.getElementById("box-details-link").href = "/bed_performance/" + boxId;
 
             // generate API button for snail bed details

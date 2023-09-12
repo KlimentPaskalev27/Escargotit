@@ -42,8 +42,8 @@
 
 
             <!-- Container to display selected snail bed data stats -->
-            <div id="selected-box-data" class="container" style="display: none;">
-                <h3>Selected Box Data</h3>
+            <h3>Select a Snail Bed to see information</h3>
+            <div id="selected-box-data" style="display: none;">
                 <div id="box-name"></div>
                 <div id="box-employee"></div>
                 <div id="box-hatch"></div>
@@ -92,7 +92,8 @@
                             {% if snail_bed.snailbedperformance.bed_performance %}
                                 <p>{{ snail_bed.snailbedperformance.bed_performance|floatformat:"0" }}%</p>
                             {% else %}
-                                <a class="btn" href="/bed_performance/{{ snail_bed.id }}">Generate Performance</a>
+                                <p>No Performance data available yet</p>
+                                <p>Click on this bed and then "See Performance" to generate</p>
                             {% endif %}
                         </div>
                     {% endfor %}
