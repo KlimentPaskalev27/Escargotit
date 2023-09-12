@@ -42,7 +42,7 @@
 
 
             <!-- Container to display selected snail bed data stats -->
-            <h3>Select a Snail Bed to see information</h3>
+            <h3 id="selected-box-data-title">Select a Snail Bed to see information</h3>
             <div id="selected-box-data" style="display: none;">
                 <div id="box-name"></div>
                 <div id="box-employee"></div>
@@ -177,6 +177,7 @@
 
 
 <style>
+
     .main.container{
         min-height: 20rem;
     }
@@ -189,6 +190,28 @@
         display: flex;
         flex-wrap: wrap;
         border-radius: 5%;
+    }
+
+    /*  make the snail box data container become sticky on scroll */
+    #selected-box-data-title, 
+    #selected-box-data {
+        position: sticky;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        z-index: 1; /* Ensure the sticky element is on top of other content */
+        -webkit-box-shadow: 2px 1px 32px -10px rgba(0,0,0,0.75);
+        -moz-box-shadow: 2px 1px 32px -10px rgba(0,0,0,0.75);
+        box-shadow: 2px 1px 32px -10px rgba(0,0,0,0.75);
+    }
+
+    #selected-box-data-title {
+        top: 1rem;
+    }
+
+    #selected-box-data {
+        top: 5rem;
+        margin-bottom: 1rem;
     }
 
     .snail-box {
