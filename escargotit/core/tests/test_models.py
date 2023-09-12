@@ -5,6 +5,12 @@ from django.contrib.auth.models import User
 from ..models import *
 from ..factories import *
 
+# run with command:
+# python manage.py test core
+# must be in outer escargotit directory, children directories are core and escargotit
+
+
+# sources used
 #https://docs.python.org/3/library/unittest.html#assert-methods
 #https://docs.djangoproject.com/en/4.2/topics/testing/overview/
 

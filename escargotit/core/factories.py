@@ -2,7 +2,11 @@ import factory
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from .models import *
+# run with command:
+# python manage.py test core
+# must be in outer escargotit directory, children directories are core and escargotit
 
+# source
 #https://factoryboy.readthedocs.io/en/stable/orms.html 
 
 class UserFactory(factory.django.DjangoModelFactory):
