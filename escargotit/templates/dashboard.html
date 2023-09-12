@@ -64,12 +64,13 @@
                 <h3>Number of Snail Beds: {{ snail_bed_count }}</h3>
 
                 <div class="rectangle">
+                    <h5>Bed Performance visible for each snail bed</h5>
                     <!-- Existing SnailBed boxes -->
                     {% for snail_bed in snail_beds %}
                         <div class="snail-box {% if snail_bed.is_empty %}empty{% else %}solid{% endif %}
-                        {% if snail_bed.snailbedperformance.bed_performance < 20 %}
+                        {% if snail_bed.snailbedperformance.bed_performance < 30 %}
                             red-bg
-                        {% elif snail_bed.snailbedperformance.bed_performance >= 20 and snail_bed.snailbedperformance.bed_performance <= 70 %}
+                        {% elif snail_bed.snailbedperformance.bed_performance >= 30 and snail_bed.snailbedperformance.bed_performance <= 70 %}
                             yellow-bg
                         {% elif snail_bed.snailbedperformance.bed_performance > 70 %}
                             green-bg
@@ -82,7 +83,7 @@
                                 data-bed-maturity="{{ snail_bed.maturity_rate }}"
                                 data-bed-snails="{{ snail_bed.snail_amount }}">
                             <span>{{ snail_bed.name }}</span>
-                            <p>Performance: {{ snail_bed.snailbedperformance.bed_performance }}%</p>
+                            <p>{{ snail_bed.snailbedperformance.bed_performance|floatformat:"0" }}%</p>
                         </div>
                     {% endfor %}
                 </div>
