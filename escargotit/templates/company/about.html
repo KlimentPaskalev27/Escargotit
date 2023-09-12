@@ -1,7 +1,17 @@
 {% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+    About Us
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'js/about.js' %}" defer></script>
+{% endblock %}
 
 
-{% block title %}About Us{% endblock %}
+
+
 
 {% block content %}
 <div class="container mt-5">
@@ -89,15 +99,9 @@
 
 
 
-<!-- Initialize the carousel -->
-<script>
-    $(document).ready(function() {
-        $('#teamCarousel').carousel();
-    });
-</script>
-
 
 <style>
+
     /* Custom CSS Styles */
     h2 {
         color: #007BFF; /* Change heading text color */

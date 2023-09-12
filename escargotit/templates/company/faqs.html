@@ -1,10 +1,17 @@
 {% extends "base/base.html" %}
+{% load static %}
 
-{% block title %}Frequently Asked Questions{% endblock %}
+{% block title %}
+    Frequently Asked Questions
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'js/faqs.js' %}" defer></script>
+{% endblock %}
 
 {% block content %}
 <!-- FAQs Accordion Dropdowns -->
-<div class="mt-5">
+<div class="container mt-5">
     <h2>Frequently Asked Questions</h2>
     <div class="accordion" id="faqAccordion">
 
@@ -26,15 +33,5 @@
     </div>
 </div>
 
-<script>
-    // Initialize the accordion
-    var accordions = document.querySelectorAll('.accordion-item');
-
-    accordions.forEach(function (accordion) {
-        accordion.addEventListener('click', function () {
-            this.classList.toggle('show');
-        });
-    });
-</script>
 
 {% endblock %}

@@ -1,7 +1,17 @@
 {% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+    Contact Us
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'js/contact.js' %}" defer></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" defer></script>
+{% endblock %}
 
 
-{% block title %}Contact Us{% endblock %}
+
 
 {% block content %}
 <div class="container mt-5">
@@ -174,21 +184,8 @@
 
 
 
-<!-- Load Bootstrap JavaScript and jQuery (required for accordion) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-    // Initialize the accordion
-    $(document).ready(function() {
-        // Add the 'show' class to the first FAQ item to expand it by default
-        $('.accordion .card:first').addClass('show');
 
-        // Handle accordion toggle
-        $('.accordion .btn-link').click(function() {
-            $(this).closest('.card').toggleClass('show');
-            $(this).closest('.card').siblings().removeClass('show');
-        });
-    });
-</script>
+<
+
 {% endblock %}
