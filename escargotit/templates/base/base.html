@@ -62,6 +62,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'create_snailbeds' %}">Generate Dummy Data</a>
                     </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user-circle"></i> APIs <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="{% url 'view-snail-beds' %}">Snail beds</a>
+                            <a class="dropdown-item" href="{% url 'view-employee-users' %}">Employees</a>
+                        </div>
+                    </li>
                 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

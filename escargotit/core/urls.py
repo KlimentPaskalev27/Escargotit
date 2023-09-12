@@ -61,7 +61,6 @@ urlpatterns = [
     path('view_feed_history/<int:snail_bed_id>/', views.SnailFeedListView.as_view(), name='view_feed_history'),
 
     # APIs
-    path('api/admin-users/', api.AdminUserViewSet.as_view(), name='view-admin-users'),
     path('api/employee-users/', api.EmployeeUserViewSet.as_view(), name='view-employee-users'),
     path('api/snail-beds/', api.SnailBedViewSet.as_view(), name='view-snail-beds'),
 
