@@ -5,39 +5,106 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Employee Users List</h1>
+<div class="main container mt-4">
+    <h1>Employees User Accounts</h1>
+    <hr>
 
     <ul>
         {% for employee in employees %}
             <li>
-                {{ employee.user.username }} - {{ employee.user.email }}
-                <a href="{% url 'manage_employee' employee.id %}" class="btn btn-primary">Manage</a>
+                <p>{{ employee.user.username }} - {{ employee.user.email }}  
+                <a href="{% url 'manage_employee' employee.id %}" class="btn btn-primary btn-sm">Manage</a>
             </li>
         {% empty %}
             <li>No employees found.</li>
         {% endfor %}
     </ul>
+    <hr>
 
-    <div class="pagination">
-        <span class="step-links">
-            {% if employees.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ employees.previous_page_number }}">previous</a>
-            {% endif %}
+    
+        <div class="pagination">
+            <span class="step-links">
+                {% if employees.has_previous and employees.has_next %}
+                    {% if employees.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ employees.previous_page_number }}">previous</a>
+                    {% endif %}
+                    
+                    <span class="current-page">
+                        Page {{ employees.number }} of {{ employees.paginator.num_pages }}
+                    </span>
 
-            <span class="current-page">
-                Page {{ employees.number }} of {{ employees.paginator.num_pages }}.
+                    {% if employees.has_next %}
+                        <a href="?page={{ employees.next_page_number }}">next</a>
+                        <a href="?page={{ employees.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                {% else %}
+                    <span class="current-page">
+                        Page 1 of 1
+                    </span>
+                {% endif %}
             </span>
-
-            {% if employees.has_next %}
-                <a href="?page={{ employees.next_page_number }}">next</a>
-                <a href="?page={{ employees.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
+        </div>
 
 
-    <div class="button-container">
+    <div id="button-container">
         <a class="btn btn-secondary" href="{% url 'custom_admin_panel' %}">Go Back</a>
     </div>
+</div>
+
+
+<style>
+    body {
+        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
+    }
+
+    .main.container {
+        background-color: white;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    h1 {
+        color: #6c63ff;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    ul {
+        padding-left: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    li {
+        list-style-type: none;
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    li p {
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+
+    li a {
+        margin-left: 15px;
+    }
+    
+    .pagination {
+        justify-content: center;
+    }
+
+    #button-container {
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+
+</style>
+
 {% endblock %}
