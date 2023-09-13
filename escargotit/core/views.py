@@ -55,13 +55,13 @@ def dashboard(request):
             return HttpResponseRedirect(request.path_info)  # Redirect to the same page (GET request)
 
         # Retrieve all SnailBeds for the logged-in user
-        snail_beds = SnailBed.objects.filter(user=current_user)
+        snail_beds = SnailBed.objects.filter(user=current_user).order_by('-id') # reverse id is to show the newest on top of the page
 
     elif isinstance(EmployeeUser.objects.filter(user=request.user).first(), EmployeeUser):
         current_user = EmployeeUser.objects.filter(user=request.user).first()
-        snail_beds = SnailBed.objects.filter(employee=current_user)
+        snail_beds = SnailBed.objects.filter(employee=current_user).order_by('-id')
     else:
-        snail_beds = SnailBed.objects.filter(user=current_user)
+        snail_beds = SnailBed.objects.filter(user=current_user).order_by('-id')
 
     snail_bed_count = snail_beds.count()
 
