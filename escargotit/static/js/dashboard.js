@@ -134,6 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
     // Get the delete button element
     var deleteButton = document.getElementById("delete-snail-bed-button");
+    var deleteAllButton = document.getElementById("delete-all-boxes-button");
 
     // Add a click event listener to the delete button
     deleteButton.addEventListener("click", function () {
@@ -147,6 +148,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else {
             alert("Select a Snail Bed first");
+        }
+    });
+
+    // Add a click event listener to the delete button
+    deleteAllButton.addEventListener("click", function () {
+        // Confirm the deletion with a confirmation dialog
+        if (confirm("Are you sure you want to delete all Snail Beds?")) {
+            // Redirect to the delete view with the selected SnailBed ID
+            window.location.href = `/delete_all_snailbeds/`;
         }
     });
 });
