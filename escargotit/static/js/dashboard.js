@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (boxHatch != "None") { 
                 document.getElementById("box-hatch").innerHTML = 
                 `<p id="box-hatch-text"></p>
-                <a id="box-hatch-history" class="btn btn-primary btn-sm">View Hatch Rate History</a>`
+                <a id="box-hatch-history" class="btn btn-primary btn-sm">View Hatch History</a>`
                 document.getElementById("box-hatch-history").href = "/view_hatch_rate_history/" + boxId;
                 document.getElementById("box-hatch-text").innerText = "Hatch rate: " + boxHatch;
             } else { document.getElementById("box-hatch").innerText = "Hatch rate: No data available"; }
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (boxMortality != "None") { 
                 document.getElementById("box-mortality").innerHTML = 
                 `<p id="box-mortality-text"></p>
-                <a id="box-mortality-history" class="btn btn-primary btn-sm">View Mortality Rate History</a>`
+                <a id="box-mortality-history" class="btn btn-primary btn-sm">View Mortality History</a>`
                 document.getElementById("box-mortality-history").href = "/view_mortality_rate_history/" + boxId;
                 document.getElementById("box-mortality-text").innerText = "Mortality rate: " + boxMortality;
             } else { document.getElementById("box-mortality").innerText = "Hatch rate: No data available";}
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (boxMaturity != "None") { 
                 document.getElementById("box-maturity").innerHTML = 
                 `<p id="box-maturity-text"></p>
-                <a id="box-maturity-history" class="btn btn-primary btn-sm">View Maturity Rate History</a>`
+                <a id="box-maturity-history" class="btn btn-primary btn-sm">View Maturity History</a>`
                 document.getElementById("box-maturity-history").href = "/view_maturity_rate_history/" + boxId;
                 document.getElementById("box-maturity-text").innerText = "Maturity rate: " + boxMaturity; 
             } else { document.getElementById("box-maturity").innerText = "Maturity rate: No data available";}
@@ -93,17 +93,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
             //  Generate Snail Feed History button
             document.getElementById("box-feed").innerHTML = 
-            `<a class="btn btn-success" id="box-feed-history">Snail Feed History</a>`;
+            `<a class="btn btn-success" id="box-feed-history">View Feed History</a>`;
             document.getElementById("box-feed-history").href = "/view_feed_history/" + boxId;
 
             //  generate Bed Performance button
             document.getElementById("box-details").innerHTML = 
-            `<a class="btn btn-secondary" id="box-details-link">See Performance</a>`;
+            `<a class="btn btn-secondary" id="box-details-link">View Performance</a>`;
             document.getElementById("box-details-link").href = "/bed_performance/" + boxId;
 
             // generate API button for snail bed details
              document.getElementById("box-api").innerHTML = 
-            `<a class="btn btn-warning" id="box-api-link" target="_blank">API for Specific Snail Bed</a>`;
+            `<a class="btn btn-warning" id="box-api-link" target="_blank">Export as JSON</a>`;
             document.getElementById("box-api-link").href = "/api/specific-snail-bed/" + boxId;
             
             
