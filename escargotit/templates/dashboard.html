@@ -12,7 +12,6 @@
 
 
 {% block content %}
-
 <div class="container main">
 
     <!-- Add messages section here -->
@@ -40,23 +39,68 @@
                 <li>Company tax code: {{ current_user.company_tax_code }}</li>
             </ul>
 
+           
+
 
             <!-- Container to display selected snail bed data stats -->
-            <h3 id="selected-box-data-title">Select a Snail Bed to see information</h3>
+            <div id="selected-box-data-title">
+                {% if snail_bed_count > 0 %}
+                    <h3>Select a Snail Bed to see information</h3>
+                {% else %}
+                    <h3>Click "Create Snail Bed" to get started</h3>
+                {% endif %}
+                 <!-- check to display the "Create Box" button for admins and employees with permission only -->
+                {% if current_user.can_create_snailbed %}
+                    <form method="POST" action="{% url 'dashboard' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" name="add-box-button">Create Snail Bed</button>
+                    </form>
+                {% endif %}
+            </div>
+
+
+
             <div id="selected-box-data" style="display: none;">
+                {% if snail_bed_count > 0 %}
+                    <button type="button" class="btn btn-primary" 
+                            id="logDataButton"
+                            data-snail-bed-id="{{ snail_bed.id }}">
+                        Log Data
+                    </button>
+                {% endif %}
+
                 <div id="box-name"></div>
                 <div id="box-employee"></div>
                 <div id="box-hatch"></div>
                 <div id="box-mortality"></div>
                 <div id="box-maturity"></div>
                 <div id="box-snails"></div>
+                <div id="box-log-data"></div>
                 <div id="box-details"></div>
                 <div id="box-feed"></div>
+
+                {% with current_user|classname as modelclass %}
+                    {% if modelclass == "AdminUser" %}
+                        {% if snail_bed_count > 0 %}
+                            <!-- Button to view barchart -->
+                            <button id="view-barchart-button" class="btn btn-success">View Barchart & Correlations</button>
+                        
+                        
+                        
+                            <!-- Button to delete all SnailBed objects for this user -->
+                            <form method="POST" action="{% url 'delete_all_snailbeds' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
+                            </form>
+
+                            <!-- Add a button to delete the selected snail bed -->
+                        {% endif %}
+                    {% endif %}
+                {% endwith %}
+
+
                 <div id="box-api"></div>
             </div>
-
-
-
 
         </div>
         <div class="col">
@@ -88,57 +132,17 @@
                                 data-bed-mortality="{{ snail_bed.mortality_rate }}"
                                 data-bed-maturity="{{ snail_bed.maturity_rate }}"
                                 data-bed-snails="{{ snail_bed.snail_amount }}">
-                            <span>{{ snail_bed.name }}</span>
+                            <span>{{ snail_bed.bed_name }}</span>
                             {% if snail_bed.snailbedperformance.bed_performance %}
                                 <p>{{ snail_bed.snailbedperformance.bed_performance|floatformat:"0" }}%</p>
                             {% else %}
                                 <p>No Performance data available yet</p>
-                                <p>Click on this bed and then "See Performance" to generate</p>
+                                <p>Click "See Performance" to generate</p>
                             {% endif %}
                         </div>
                     {% endfor %}
                 </div>
 
-                {% if snail_bed_count > 0 %}
-                    <button type="button" class="btn btn-primary" 
-                            id="logDataButton"
-                            data-snail-bed-id="{{ snail_bed.id }}">
-                        Log Data
-                    </button>
-                {% endif %}
-
-                {% with current_user|classname as modelclass %}
-                    {% if modelclass == "AdminUser" %}
-                        <!-- Button to view barchart -->
-                        <button id="view-barchart-button" class="btn btn-success">View Barchart & Correlations</button>
-                    {% endif %}
-                
-
-                    <!-- Conditional check to display the "Create Box" button for admins only -->
-                    {% if current_user.can_create_snailbed %}
-                        <form method="POST" action="{% url 'dashboard' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary" name="add-box-button">Add Box</button>
-                        </form>
-
-                        {% if snail_bed_count > 0 %}
-                        
-                            {% if modelclass == "AdminUser" %}
-                                <!-- Button to delete all SnailBed objects for this user -->
-                                <form method="POST" action="{% url 'delete_all_snailbeds' %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger" name="delete-all-boxes-button">Delete All Boxes</button>
-                                </form>
-
-                                <!-- Add a button to delete the selected snail bed -->
-                                <button type="button" class="btn btn-danger" id="delete-snail-bed-button">Delete Selected Snail Bed</button>
-
-                            {% endif %}
-                            
-                        {% endif %}
-                    {% endif %}
-                {% endwith %}
-                
             {% endif %}
         </div>
     </div>
@@ -183,7 +187,6 @@
     }
 
     .rectangle {
-        /*width: 50%; /* Takes the right half of the screen */
         width: 30rem;
         border: 2px solid #ccc;
         padding: 10px;
@@ -203,15 +206,18 @@
         -webkit-box-shadow: 2px 1px 32px -10px rgba(0,0,0,0.75);
         -moz-box-shadow: 2px 1px 32px -10px rgba(0,0,0,0.75);
         box-shadow: 2px 1px 32px -10px rgba(0,0,0,0.75);
+        background-color: #ffffff;
+        margin-bottom: 2rem;
     }
 
     #selected-box-data-title {
         top: 1rem;
+        z-index: 1;
     }
 
     #selected-box-data {
         top: 5rem;
-        margin-bottom: 1rem;
+        z-index: 2;
     }
 
     .snail-box {
