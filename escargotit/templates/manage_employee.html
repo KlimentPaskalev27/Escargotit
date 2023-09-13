@@ -5,33 +5,22 @@
 {% endblock %}
 
 {% block content %}
+<div class="main container mt-4">
     <h1>Manage Employee: {{ employee.user.username }}</h1>
 
     <h2>Employee Details</h2>
     <p>Username: {{ employee.user.username }}</p>
     <p>Email: {{ employee.user.email }}</p>
     <p>Can create Snail Beds: {{ employee.can_create_snailbed }}</p>
-
-    <hr>
-
-    <h1>Edit Employee Information</h1>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ change_form.as_p }}
-        <button type="submit">Save Changes</button>
-    </form>
-
     <hr>
 
     <h2>Permissions</h2>
-    <form method="post">
+    <form id="permissions" method="post">
         {% csrf_token %}
         <label for="can_create_snailbed">Can Create SnailBeds:</label>
         <input type="checkbox" id="can_create_snailbed" name="can_create_snailbed" {% if employee.can_create_snailbed %}checked{% endif %}>
         <button type="submit">Save</button>
     </form>
-
     <hr>
 
     <h2>Assigned SnailBeds</h2>
@@ -49,9 +38,150 @@
             <li>No SnailBeds assigned.</li>
         {% endfor %}
     </ul>
+    <hr>
 
 
-    <div class="button-container">
+    <h2 id="employee-account-form-title">Edit Employee Account Information</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ change_form.as_p }}
+        <button type="submit">Save Changes</button>
+    </form>
+    <hr>
+
+    <div id="button-container">
         <a class="btn btn-secondary" href="{% url 'employees' %}">Go Back</a>
     </div>
+</div>
+
+    
+<style>
+    body {
+        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
+    }
+
+    .main.container {
+        background-color: white;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding: 1rem 3rem;
+    }
+
+    h1 {
+        color: #6c63ff;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .main ul {
+        padding-left: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .main li {
+        list-style-type: none;
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .main li p {
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+
+    .main li a {
+        margin-left: 15px;
+    }
+    
+    .pagination {
+        justify-content: center;
+    }
+
+    #button-container {
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    
+    form {
+        max-width: 40rem;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center
+    }
+
+    form#permissions {
+        flex-direction: row;
+        max-width: 100%;
+    }
+
+    #permissions #can_create_snailbed{
+        width: 20px;
+        height: 20px;
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 10px;
+        margin-right: 20px;    
+    }
+
+    form p {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+    }
+
+    form label {
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+    }
+
+    form input {    
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2); 
+        margin-bottom: 1rem;
+        background: linear-gradient(to bottom left, #6b63ff7f, #ffa659a8);
+        color: white;
+    }
+
+    form button {
+        font-size: 1rem !important;
+        align-self: center;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        padding: 5px 14px;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        background-color: #6b63ff;
+        font-weight: 400;
+        color: white;
+    }
+
+    form button:hover {
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    form select {
+        font-size: 1rem !important;
+        align-self: center;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        padding: 5px 14px;
+        color: #6b63ff;
+        background-color: white;
+    }
+
+    #employee-account-form-title {
+        text-align: center;
+    }
+
+</style>
+
+
 {% endblock %}
