@@ -7,8 +7,6 @@
 {% block content %}
 <div class="main container mt-4">
     <h1>Employees User Accounts</h1>
-    <hr>
-
     <ul>
         {% for employee in employees %}
             <li>
@@ -19,32 +17,31 @@
             <li>No employees found.</li>
         {% endfor %}
     </ul>
-    <hr>
 
-    
-        <div class="pagination">
-            <span class="step-links">
-                {% if employees.has_previous and employees.has_next %}
-                    {% if employees.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ employees.previous_page_number }}">previous</a>
-                    {% endif %}
-                    
-                    <span class="current-page">
-                        Page {{ employees.number }} of {{ employees.paginator.num_pages }}
-                    </span>
 
-                    {% if employees.has_next %}
-                        <a href="?page={{ employees.next_page_number }}">next</a>
-                        <a href="?page={{ employees.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                {% else %}
-                    <span class="current-page">
-                        Page 1 of 1
-                    </span>
+    <div class="pagination">
+        <span class="step-links">
+            {% if employees.has_previous and employees.has_next %}
+                {% if employees.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ employees.previous_page_number }}">previous</a>
                 {% endif %}
-            </span>
-        </div>
+                
+                <span class="current-page">
+                    Page {{ employees.number }} of {{ employees.paginator.num_pages }}
+                </span>
+
+                {% if employees.has_next %}
+                    <a href="?page={{ employees.next_page_number }}">next</a>
+                    <a href="?page={{ employees.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            {% else %}
+                <span class="current-page">
+                    Page 1 of 1
+                </span>
+            {% endif %}
+        </span>
+    </div>
 
 
     <div id="button-container">
@@ -64,6 +61,7 @@
         border-radius: 10px;
         margin-top: 2rem;
         margin-bottom: 2rem;
+        padding: 1rem 3rem;
     }
 
     h1 {
@@ -72,13 +70,13 @@
         text-align: center;
     }
 
-    ul {
+    .main ul {
         padding-left: 0;
         display: flex;
         justify-content: center;
     }
 
-    li {
+    .main li {
         list-style-type: none;
         display: flex;
         flex-direction: row;
@@ -87,12 +85,12 @@
         justify-content: space-between;
     }
 
-    li p {
+    .main li p {
         margin-bottom: 5px;
         margin-top: 5px;
     }
 
-    li a {
+    .main li a {
         margin-left: 15px;
     }
     
