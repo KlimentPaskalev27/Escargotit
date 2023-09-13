@@ -6,11 +6,11 @@
 
 
 {% block content %}
-<div class="container mt-4">
+<div class="main container mt-4">
 
     <h1>Admin panel</h1>
-
     <hr>
+
     <h2>Create a New Employee User</h2>
     <!-- catch successful employee creation message here -->
     {% if messages %}
@@ -28,37 +28,36 @@
         {{ form.as_p }}
         <button type="submit" name="register_employee">Create Employee User</button>
     </form>
-
     <hr>
 
-
     <h2>Assign Employee to Snail Bed</h2>
-
     <form method="post">
         {% csrf_token %}
         <label for="snail_bed">Select Snail Bed:</label>
-        <select name="snail_bed_id" id="snail_bed">
-            {% for snail_bed in snail_beds %}
-                <option value="{{ snail_bed.id }}">{{ snail_bed.bed_name }}</option>
-            {% endfor %}
-        </select>
-
+        {% if snail_beds|length > 0 %}
+            <select name="snail_bed_id" id="snail_bed">
+                {% for snail_bed in snail_beds %}
+                    <option value="{{ snail_bed.id }}">{{ snail_bed.bed_name }}</option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <p>You have no Snail Beds created yet.</p>
+        {% endif %}
         <label for="employee">Select Employee:</label>
-        <select name="employee_id" id="employee">
-            {% for employee in employees %}
-                <option value="{{ employee.id }}">{{ employee.user.username }}</option>
-            {% endfor %}
-        </select>
-
+        {% if employees|length > 0 %}
+            <select name="employee_id" id="employee">
+                {% for employee in employees %}
+                    <option value="{{ employee.id }}">{{ employee.user.username }}</option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <p>You have no Employee accounts created yet.</p>
+        {% endif %}
         <button type="submit" name="assign_employee">Assign Employee</button>
     </form>
-
     <hr>
 
-
-
     <h2>Delete Employee Account</h2>
-
     <form method="post">
         {% csrf_token %}
         {{ delete_form.employee_to_delete.label_tag }}
@@ -66,7 +65,6 @@
      
         <button type="submit" name="delete_employee">Delete Employee</button>
     </form>
-    
     <!-- Display form errors -->
     {% if delete_form.errors %}
         <div class="alert alert-danger">
@@ -82,17 +80,108 @@
     {% endif %}
     <hr>
 
-
     <h2>Snail Beds and Employees</h2>
-    {% for bed in snail_beds %}
-        <p>{{ bed.bed_name }} =>  Employee assigned: {{bed.employee}}</p> 
-    {% endfor %}
+    {% if snail_beds|length > 0 %}
+        {% for bed in snail_beds %}
+            <p>{{ bed.bed_name }} =>  Employee assigned: {{bed.employee}}</p> 
+        {% endfor %}
+    {% else %}
+        <p>You have no Snail Beds created yet.</p> 
+    {% endif %}
     <hr>
-
-
-    <a class="btn btn-success" href="{% url 'employees' %}">Manage Employees</a>
-
-    <a class="btn btn-primary" href="{% url 'dashboard' %}">Back to Dashboard</a>
-
+    
+    <div id="buttons-container">
+        <a class="btn btn-primary" href="{% url 'employees' %}">Edit Employees Accounts</a>
+        <a class="btn btn-secondary" href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </div>
 </div>
+
+<style>
+    body {
+        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
+    }
+
+    .main.container {
+        background-color: white;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    h1 {
+        color: #6c63ff;
+        padding: 1rem;
+    }
+
+
+    h1, h2, p {
+        text-align: center;
+    }
+
+    .login a {
+        text-decoration: none;
+    }
+
+    form {
+        max-width: 40rem;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center
+    }
+
+    form p {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+    }
+
+    form label {
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+    }
+
+    form input {    
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2); 
+        margin-bottom: 1rem;
+        background: linear-gradient(to bottom left, #6b63ff7f, #ffa659a8);
+        color: white;
+    }
+
+    form button {
+        font-size: 1rem !important;
+        align-self: center;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        padding: 5px 14px;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        background-color: #6b63ff;
+        font-weight: 400;
+        color: white;
+    }
+
+    form button:hover {
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    form select {
+        font-size: 1rem !important;
+        align-self: center;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        padding: 5px 14px;
+        color: #6b63ff;
+        background-color: white;
+    }
+
+    #buttons-container {
+        padding-bottom: 1rem;
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+</style>
 {% endblock %}
