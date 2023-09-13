@@ -248,7 +248,7 @@ class TimeTakenToMature(models.Model):
     
     def __str__(self):
         if self.maturity_percentage and self.days_to_mature:
-            return str(self.maturity_percentage) + "% of snail bed has reached maturity in " + str(self.days_to_mature) + " days"
+            return str(self.maturity_percentage) + "% of snails have reached maturity in " + str(self.days_to_mature) + " days"
         return "N/A"
 
 @receiver(post_save, sender=TimeTakenToMature)
