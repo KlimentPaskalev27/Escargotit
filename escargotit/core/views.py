@@ -706,7 +706,7 @@ def create_snailbeds(request):
     # Create a list to store SnailBed instances
     snail_beds = []
 
-    # Create 10 SnailBed instances
+    # Create SnailBed instances
     for j in range(1):
         bed_name = f'Snail Bed #{j}'
 
@@ -719,23 +719,30 @@ def create_snailbeds(request):
         snail_beds.append(snail_bed)
 
         # Create SnailHatchRate instances
-        for i in range(100):
+        for i in range(30):
             SnailHatchRate.objects.create(
                 snail_bed=snail_bed,
-                newly_hatched_snails=random.randint(100, 1000),
+                newly_hatched_snails=random.randint(200, 1200), # hatch rate should in theory be much larger than mortality
                 datetime=current_time + timedelta(weeks=i),# increment to occur each week
             )
 
         # Create SnailMortalityRate instances
-        for i in range(100):
-            SnailMortalityRate.objects.create(
-                snail_bed=snail_bed,
-                expired_snail_amount=random.randint(100, 1000),
-                datetime=current_time + timedelta(weeks=i),# increment to occur each week
-            )
+        for i in range(30):
+            if snail_bed.snail_amount <= 0:
+                SnailMortalityRate.objects.create(
+                    snail_bed=snail_bed,
+                    expired_snail_amount=0,
+                    datetime=current_time + timedelta(weeks=i),# increment to occur each week
+                )
+            else:
+                SnailMortalityRate.objects.create(
+                    snail_bed=snail_bed,
+                    expired_snail_amount=random.randint(100, 1000),
+                    datetime=current_time + timedelta(weeks=i),
+                )
 
         # Create SnailFeed instances
-        for i in range(100):
+        for i in range(30):
             SnailFeed.objects.create(
                 snail_bed=snail_bed,
                 consumed_on=current_time + timedelta(weeks=i), # increment to occur each week
@@ -743,7 +750,7 @@ def create_snailbeds(request):
             )
 
         # Create TimeTakenToMature instances
-        for i in range(100):
+        for i in range(30):
             days_to_mature = random.randint(20, 40)
             snails_matured_count = random.randint(100, 1000)
             snail_hatched = current_time + timedelta(weeks=i) # increment to occur each week
