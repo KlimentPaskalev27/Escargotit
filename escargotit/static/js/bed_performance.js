@@ -1,28 +1,70 @@
 //  this handles the animation of the Loading pop up when Generate Forecast button is clicked
 document.addEventListener('DOMContentLoaded', function() {
-    const generateForecastForm = document.getElementById('generateForecastForm');
-    const generateForecastButton = document.getElementById('generateForecastButton');
     const modal = document.getElementById('myModal');
+    const generateHatchForecastButton = document.getElementById('generateHatchForecastButton');
+    const generateMortalityForecastButton = document.getElementById('generateMortalityForecastButton');
+    const generateMaturityForecastButton = document.getElementById('generateMaturityForecastButton');
 
-    generateForecastButton.addEventListener('click', function() {
-        // Show the modal
+    const loadingBar = document.getElementById('loadingBar');
+
+    generateHatchForecastButton.addEventListener('click', function(event) {
         modal.style.display = 'block';
+    });
 
-        // Create a hidden input element to store the action URL
-        const actionInput = document.createElement('input');
-        actionInput.type = 'hidden';
-        actionInput.name = 'action_url';
-        actionInput.value = window.location.pathname;
+    generateHatchForecastButton.addEventListener('click', function(event) {
+        let width = 0;
+        const interval = 200; // Interval in milliseconds
+        const step = 1; // Increase width by 1% per step
 
-        // Append the hidden input to the form
-        generateForecastForm.appendChild(actionInput);
+        const animation = setInterval(function() {
+            if (width >= 100) {
+                clearInterval(animation);
+            } else {
+                width += step;
+                loadingBar.style.width = width + '%';
+            }
+        }, interval);
+    });
 
-        // Submit the form after a short delay to allow the modal to display
-        setTimeout(function() {
-            generateForecastForm.submit();
-        }, 1000); // Adjust the delay as needed
+    generateMortalityForecastButton.addEventListener('click', function(event) {
+        modal.style.display = 'block';
+    });
+
+    generateMortalityForecastButton.addEventListener('click', function(event) {
+        let width = 0;
+        const interval = 200; // Interval in milliseconds
+        const step = 1; // Increase width by 1% per step
+
+        const animation = setInterval(function() {
+            if (width >= 100) {
+                clearInterval(animation);
+            } else {
+                width += step;
+                loadingBar.style.width = width + '%';
+            }
+        }, interval);
+    });
+
+    generateMaturityForecastButton.addEventListener('click', function(event) {
+        modal.style.display = 'block';
+    });
+
+    generateMaturityForecastButton.addEventListener('click', function(event) {
+        let width = 0;
+        const interval = 200; // Interval in milliseconds
+        const step = 1; // Increase width by 1% per step
+
+        const animation = setInterval(function() {
+            if (width >= 100) {
+                clearInterval(animation);
+            } else {
+                width += step;
+                loadingBar.style.width = width + '%';
+            }
+        }, interval);
     });
 });
+
 
 
 // Function to animate numbers incrementally
@@ -41,12 +83,11 @@ function animateNumbers(element, startValue, endValue, duration) {
 }
 
 
-// Get all elements with class "label"
+// get all elements with class "label" and then
+// animate each label element
 const labels = document.querySelectorAll(".label");
-
-// Animate each label element
 labels.forEach(function(label) {
-    // Get the data attributes for startValue, endValue, and duration
+    // get the data attributes for startValue, endValue, and duration
     let startValue = parseInt(label.dataset.start);
     let endValue = parseInt(label.dataset.end);
     let duration = parseInt(label.dataset.duration);
