@@ -14,7 +14,7 @@
 
 
 {% block content %}
-<div class="container mt-5">
+<div class="contact container mt-5">
     <div class="row">
         <!-- Contact Information -->
         <div class="col-md-6">
@@ -24,13 +24,21 @@
                 <li><strong>Email:</strong> example@example.com</li>
                 <li><strong>Phone:</strong> +1 123-456-7890</li>
             </ul>
+
+
+            <!-- Raise a Support Ticket -->
+            <div class="mt-5">
+                <h2>Raise a Technical Support Ticket</h2>
+                <p>If you are experiencing technical issues, you can raise a support ticket for assistance.</p>
+                <a href="#" class="btn btn-primary">Raise Support Ticket</a>
+            </div>
         </div>
 
+        
         <!-- Webchat and Email Options -->
-        <div class="col-md-6">
+        <div class="get-in-touch col-md-6">
             <h2>Get in Touch</h2>
             <div class="card mb-3">
-                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Webchat">
                 <div class="card-body">
                     <h5 class="card-title">Webchat Support</h5>
                     <p class="card-text">Chat with our support team in real-time for assistance.</p>
@@ -38,7 +46,6 @@
                 </div>
             </div>
             <div class="card">
-                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Email">
                 <div class="card-body">
                     <h5 class="card-title">Email Support</h5>
                     <p class="card-text">Send us an email, and we'll get back to you as soon as possible.</p>
@@ -49,143 +56,166 @@
     </div>
 
     <!-- FAQs Accordion Dropdowns -->
-<div class="mt-5">
-    <h2>Frequently Asked Questions</h2>
-    <div class="accordion" id="faqAccordion">
+    <div class="mt-5">
+        <h2>Frequently Asked Questions</h2>
+        <div class="accordion" id="faqAccordion">
 
-        <!-- Registration FAQs -->
-        <div class="card">
-            <div class="card-header" id="faqHeading1">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
-                        Q: How do I register on the Snail Farm Management Web App?
-                    </button>
-                </h5>
-            </div>
-            <div id="faqCollapse1" class="collapse show" aria-labelledby="faqHeading1" data-parent="#faqAccordion">
-                <div class="card-body">
-                    A: To register, click the "Register" link at the top right corner of the website. Fill out the registration form with your details and submit it.
+            <!-- Registration FAQs -->
+            <div class="card">
+                <div class="card-header" id="faqHeading1">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
+                            How do I register on the Snail Farm Management Web App?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapse1" class="collapse show" aria-labelledby="faqHeading1" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        To register, click the "Register" link at the top right corner of the website. Fill out the registration form with your details and submit it.
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Support and Contact FAQs -->
-        <div class="card">
-            <div class="card-header" id="faqHeading2">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
-                        Q: What are the support and contact options available?
-                    </button>
-                </h5>
-            </div>
-            <div id="faqCollapse2" class="collapse" aria-labelledby="faqHeading2" data-parent="#faqAccordion">
-                <div class="card-body">
-                    A: We offer 24/7 webchat support. You can also reach our call center at +1 123-456-7890 during business hours (Mon-Fri, 9 AM - 5 PM). For email support, contact us at support@example.com, and we aim to respond within 24 hours.
+            <!-- Support and Contact FAQs -->
+            <div class="card">
+                <div class="card-header" id="faqHeading2">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
+                            What are the support and contact options available?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapse2" class="collapse" aria-labelledby="faqHeading2" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        We offer 24/7 webchat support. You can also reach our call center at +1 123-456-7890 during business hours (Mon-Fri, 9 AM - 5 PM). For email support, contact us at support@example.com, and we aim to respond within 24 hours.
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Refunds and Policies FAQs -->
-        <div class="card">
-            <div class="card-header" id="faqHeading3">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
-                        Q: What is your refund policy?
-                    </button>
-                </h5>
-            </div>
-            <div id="faqCollapse3" class="collapse" aria-labelledby="faqHeading3" data-parent="#faqAccordion">
-                <div class="card-body">
-                    A: We have a 30-day refund policy. If you are not satisfied with our service, please contact our support team, and we will initiate the refund process.
+            <!-- Refunds and Policies FAQs -->
+            <div class="card">
+                <div class="card-header" id="faqHeading3">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
+                            What is your refund policy?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapse3" class="collapse" aria-labelledby="faqHeading3" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        We have a 30-day refund policy. If you are not satisfied with our service, please contact our support team, and we will initiate the refund process.
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Technical Enquiries FAQs -->
-        <div class="card">
-            <div class="card-header" id="faqHeading4">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
-                        Q: How can I submit a technical inquiry?
-                    </button>
-                </h5>
-            </div>
-            <div id="faqCollapse4" class="collapse" aria-labelledby="faqHeading4" data-parent="#faqAccordion">
-                <div class="card-body">
-                    A: If you have technical questions or issues, you can raise a support ticket by clicking the "Raise Support Ticket" button on this page. Our technical team will assist you promptly.
+            <!-- Technical Enquiries FAQs -->
+            <div class="card">
+                <div class="card-header" id="faqHeading4">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
+                            How can I submit a technical inquiry?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapse4" class="collapse" aria-labelledby="faqHeading4" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        If you have technical questions or issues, you can raise a support ticket by clicking the "Raise Support Ticket" button on this page. Our technical team will assist you promptly.
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card">
-            <div class="card-header" id="faqHeading5">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5">
-                        Q: How do I reset my password?
-                    </button>
-                </h5>
-            </div>
-            <div id="faqCollapse5" class="collapse" aria-labelledby="faqHeading5" data-parent="#faqAccordion">
-                <div class="card-body">
-                    A: To reset your password, visit the login page and click the "Forgot Password" link. Follow the instructions sent to your email to create a new password.
+            <div class="card">
+                <div class="card-header" id="faqHeading5">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5">
+                            How do I reset my password?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapse5" class="collapse" aria-labelledby="faqHeading5" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        To reset your password, visit the login page and click the "Forgot Password" link. Follow the instructions sent to your email to create a new password.
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header" id="faqHeading6">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse6" aria-expanded="false" aria-controls="faqCollapse6">
-                        Q: Is my data secure?
-                    </button>
-                </h5>
-            </div>
-            <div id="faqCollapse6" class="collapse" aria-labelledby="faqHeading6" data-parent="#faqAccordion">
-                <div class="card-body">
-                    A: Yes, we take data security seriously. Our platform employs advanced encryption and security measures to protect your data. You can read more about our security practices in our <a href="#">Security Policy</a>.
+            
+            <div class="card">
+                <div class="card-header" id="faqHeading6">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse6" aria-expanded="false" aria-controls="faqCollapse6">
+                            Is my data secure?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapse6" class="collapse" aria-labelledby="faqHeading6" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Yes, we take data security seriously. Our platform employs advanced encryption and security measures to protect your data. You can read more about our security practices in our <a href="#">Security Policy</a>.
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header" id="faqHeading7">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#faqCollapse7" aria-expanded="false" aria-controls="faqCollapse7">
-                        Q: What are the system requirements?
-                    </button>
-                </h5>
-            </div>
-            <div id="faqCollapse7" class="collapse" aria-labelledby="faqHeading7" data-parent="#faqAccordion">
-                <div class="card-body">
-                    A: Our software is compatible with the following operating systems: Windows 10, macOS 10.14+, and Linux (latest versions). For mobile devices, we support Android 7+ and iOS 12+.
+            
+            <div class="card">
+                <div class="card-header" id="faqHeading7">
+                    <h5 class="mb-0">
+                        <button class="btn" type="button" data-toggle="collapse" data-target="#faqCollapse7" aria-expanded="false" aria-controls="faqCollapse7">
+                            What are the system requirements?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapse7" class="collapse" aria-labelledby="faqHeading7" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Our software is compatible with the following operating systems: Windows 10, macOS 10.14+, and Linux (latest versions). For mobile devices, we support Android 7+ and iOS 12+.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-    <!-- Accreditations and Awards -->
-    <div class="mt-5">
-        <h2>Accreditations and Awards</h2>
-        <p>We are proud to have received several accolades for our excellent customer support:</p>
-        <ul>
-            <li>Customer Support Excellence Award</li>
-            <li>Gold Accreditation for Customer Satisfaction</li>
-        </ul>
-    </div>
 
-    <!-- Raise a Support Ticket -->
-    <div class="mt-5">
-        <h2>Raise a Technical Support Ticket</h2>
-        <p>If you are experiencing technical issues, you can raise a support ticket for assistance.</p>
-        <a href="#" class="btn btn-primary">Raise Support Ticket</a>
-    </div>
-</div>
+<style>
+    .contact.container{
+        margin-bottom: 2rem;
+    }
+
+    .get-in-touch .card{
+        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
+        border-radius: 10px;
+        color: white;
+    }
+
+    /* Customize accordion headers */
+    .card {
+        background: linear-gradient(to bottom right, #6c63ff, #ffa659);
+        color: white; /* Set header text color to white */
+        margin: 1rem;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); 
+    }
 
 
+    /* Customize accordion headers */
+    .card-header {
+        background: transparent;
+        color: white; /* Set header text color to white */
+    }
 
+    /* Style accordion buttons */
+    .card-header h5 button {
+        
+        text-decoration: none; 
+        color: white;
+    }
 
+    .card-header h5 button:hover {
+        text-decoration: none; 
+        color: rgba(255, 255, 255, 0.601);
+    }
 
-<
+    /* Customize active accordion header */
+    .card-header.active {
+        color:white;
+    }
+</style>
 
 {% endblock %}
