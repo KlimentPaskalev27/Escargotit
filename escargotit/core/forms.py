@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model  # Use get_user_model to reference the user model
 
-
 class TimeTakenToMatureForm(forms.ModelForm):
     class Meta:
         model = TimeTakenToMature
@@ -15,7 +14,6 @@ class SnailBedForm(forms.ModelForm):
     class Meta:
         model = SnailBed
         fields = ['bed_name']
-
 
 class RegisterForm(UserCreationForm):
     # Define extra fields
@@ -48,13 +46,10 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'business_name', 'company_tax_code'] #password is added as field by default + pass confirmation
 
-
 class EmployeePermissionForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['user_permissions']
-
-
 
 class EmployeeCreationForm(UserCreationForm):
     def __init__(self, admin, *args, **kwargs):
@@ -94,7 +89,6 @@ class EmployeeCreationForm(UserCreationForm):
         employee.save()
         return user
 
-
 class SnailHatchRateForm(forms.ModelForm):
     class Meta:
         model = SnailHatchRate
@@ -105,7 +99,6 @@ class SnailHatchRateForm(forms.ModelForm):
         self.fields['newly_hatched_snails'].label = 'Newly Hatched Snails'
         self.fields['datetime'].label = 'Date and Time'
         #self.fields['datetime'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
-
 
 class SnailMortalityRateForm(forms.ModelForm):
     class Meta:
@@ -127,7 +120,6 @@ class SnailFeedForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['grams_feed_given'].label = 'Grams of Feed Given'
         self.fields['consumed_on'].label = 'Date'
-
 
 class DeleteEmployeeForm(forms.Form):
     employee_to_delete = forms.ModelChoiceField(
@@ -167,30 +159,6 @@ class EmployeeChangeForm(UserChangeForm):
         if new_password1 and new_password2 and new_password1 != new_password2:
             raise forms.ValidationError('The two password fields must match.')
         return new_password2
-
-
-class LoginForm(AuthenticationForm):
-    username = forms.CharField(
-        max_length=254,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}),
-    )
-    password = forms.CharField(
-        label="Password",
-        strip=False,
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
-    )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        username = cleaned_data.get('username')
-        password = cleaned_data.get('password')
-
-        if username and not self.user_cache:
-            raise ValidationError("Invalid username. Please try again.")
-
-        if username and password and self.user_cache is not None and not self.user_cache.check_password(password):
-            raise ValidationError("Invalid password. Please try again.")
-
 
 class AccountDeletionForm(forms.Form):
     confirm = forms.BooleanField(

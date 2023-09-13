@@ -28,7 +28,6 @@ from django.urls import reverse, reverse_lazy  # used to redirect back to the re
 from django.views.generic import CreateView, ListView
 from rest_framework import viewsets
 
-
 # custom forms, models, and other local modules
 from .forms import *
 from .models import *
@@ -104,10 +103,12 @@ def register(request):
     
     return render(request, 'registration/register.html', {'form': form})
 
+# use DJango LoginView ready form class
 class LoginFormView(LoginView):
-    form_class = LoginForm
     template_name = 'registration/login.html'
-    success_url = ' '
+    def form_valid(self, form):
+        super().form_valid(form)
+        return redirect(reverse_lazy('dashboard'))
 
 def logout_view(request):
     logout(request)
