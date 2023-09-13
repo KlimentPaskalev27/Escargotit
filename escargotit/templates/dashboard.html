@@ -72,7 +72,7 @@
                     <div id="box-hatch" class="stat-and-button"></div>
                     <div id="box-mortality" class="stat-and-button"></div>
                     <div id="box-maturity" class="stat-and-button"></div>
-                    <div id="box-feed"></div>
+                    <div id="box-feed" class="stat-and-button"></div>
                     <hr>
 
                     <!-- Performance, Deletions and API -->
@@ -144,13 +144,14 @@
                                     data-bed-hatch="{{ snail_bed.hatch_rate }}"
                                     data-bed-mortality="{{ snail_bed.mortality_rate }}"
                                     data-bed-maturity="{{ snail_bed.maturity_rate }}"
+                                    data-bed-feed="{{ snail_bed.snail_feed }}"
                                     data-bed-snails="{{ snail_bed.snail_amount }}">
                                 <span>{{ snail_bed.bed_name }}</span>
                                 {% if snail_bed.snailbedperformance.bed_performance %}
                                     <p class="performance-text">Performance {{ snail_bed.snailbedperformance.bed_performance|floatformat:"0" }}%</p>
                                 {% else %}
                                     <p>No Performance data available yet</p>
-                                    <p>Click "See Performance" to generate</p>
+                                    <p>Click "View Performance" to generate</p>
                                 {% endif %}
                             </div>
                         {% endfor %}

@@ -47,6 +47,7 @@ class SnailBed(models.Model):
     hatch_rate = models.ForeignKey('SnailHatchRate', on_delete=models.SET_NULL, null=True, blank=True)
     mortality_rate = models.ForeignKey('SnailMortalityRate', on_delete=models.SET_NULL, null=True, blank=True)
     maturity_rate = models.ForeignKey('TimeTakenToMature', on_delete=models.SET_NULL, null=True, blank=True)
+    snail_feed = models.ForeignKey('SnailFeed', on_delete=models.SET_NULL, null=True, blank=True)
 
     def can_create(self, user):
         return user.has_perm('add_snailbed')
@@ -89,6 +90,18 @@ class SnailFeed(models.Model):
     def __str__(self):
         status = str(self.grams_feed_given) + " grams"
         return status
+
+@receiver(post_save, sender=SnailFeed)
+def update_snailbed_feed(sender, instance, **kwargs):
+    # When a SnailFeed object is created or saved,
+    # update the related SnailBed's snail_feed field to use the latest one
+    if instance.snail_bed:
+        latest_feed = SnailFeed.objects.filter(snail_bed=instance.snail_bed).aggregate(Max('consumed_on'))['consumed_on__max']
+        latest_feed_object = SnailFeed.objects.filter(snail_bed=instance.snail_bed, consumed_on=latest_feed).first()
+
+        if latest_feed_object:
+            instance.snail_bed.snail_feed = latest_feed_object
+            instance.snail_bed.save()
 
 class SnailHatchRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)

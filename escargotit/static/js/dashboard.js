@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const boxHatch = box.getAttribute("data-bed-hatch");
             const boxMortality = box.getAttribute("data-bed-mortality");
             const boxMaturity = box.getAttribute("data-bed-maturity");
+            const boxFeed = box.getAttribute("data-bed-feed");
             const boxSnails = box.getAttribute("data-bed-snails");
 
             document.getElementById("box-name").innerText = "Name: " + boxName;
@@ -90,11 +91,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("box-maturity-text").innerText = "Maturity rate: " + boxMaturity; 
             } else { document.getElementById("box-maturity").innerText = "Maturity rate: No data available";}
 
-
-            //  Generate Snail Feed History button
-            document.getElementById("box-feed").innerHTML = 
-            `<a class="btn btn-success" id="box-feed-history">View Feed History</a>`;
-            document.getElementById("box-feed-history").href = "/view_feed_history/" + boxId;
+            //  Generate Snail Feed statistics and History button
+            if (boxFeed != "None") { 
+                document.getElementById("box-feed").innerHTML = 
+                `<p id="box-feed-text"></p>
+                <a id="box-feed-history" class="btn btn-primary btn-sm">View Feed History</a>`
+                document.getElementById("box-feed-history").href = "/view_feed_history/" + boxId;
+                document.getElementById("box-feed-text").innerText = "Latest Feed given: " + boxFeed;
+            } else { document.getElementById("box-feed").innerText = "Latest Feed given: No data available"; }
 
             //  generate Bed Performance button
             document.getElementById("box-details").innerHTML = 
