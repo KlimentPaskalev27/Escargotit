@@ -9,6 +9,7 @@ body{
     min-height: 20rem;
     margin-top: 2rem;
     margin-bottom: 2rem;
+    min-height: 400px;
 }
 
 .account {
