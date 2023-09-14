@@ -36,8 +36,6 @@
             });
         });
     </script>
-    <!-- css for the nav -->
-    <link href="{% static 'css/base.css' %}" rel="stylesheet" type="text/css">
     <!-- Load Bootstrap CSS -->
     {% bootstrap_css %}
     <!-- here insert any page-specific head tag scripts or stylesheets -->
@@ -122,6 +120,9 @@
     <div id="loading-spinner" class="text-center" style="display: none;">
         <div class="spinner-border text-primary" role="status"></div>
     </div>
+
+    <!-- css for the nav -->
+    <link href="{% static 'css/base.css' %}" rel="stylesheet" type="text/css">
 
     <!-- here insert the body content of each page -->
     {% block content %}{% endblock %}
