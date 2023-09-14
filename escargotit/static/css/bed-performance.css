@@ -49,7 +49,7 @@ form button {
     color: #fff;
 }
 
-.feed {
+.label.good {
     background-color: #27ae60;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -243,18 +243,11 @@ form button:hover {
     margin-left: 10px;
 }
 
-.feed.label::after {
-    content: "grams";
-    display: inline-block;
-    font-size: 20px;
-    position: relative;
-} 
-
 span.metric-value.label {
     padding-right: 40px;
 }
 
-span.metric-value.label.feed,
+span.metric-value.label.good,
 span.metric-value.label.days {
     padding-right: 60px;
 }

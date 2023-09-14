@@ -37,7 +37,7 @@
             <div class="metric-box half">
                 <h2 class="metric-title">Net Snail Bed Growth</h2>
                 <p>How many snails has the bed gained/lost since it was established.</p>
-                <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.net_growth_amount }}" data-duration="3500"></span>
+                <span class="metric-value label percentage good" data-start="0" data-end="{{ bed_performance.net_growth_amount }}" data-duration="3500"></span>
             </div>
             <div class="metric-box half">
                 <h2 class="metric-title">Average Reproduction rate</h2>
@@ -60,14 +60,17 @@
             <h2>Hatch rate</h2>
             <div class="metric-box">
                 <h2 class="metric-title">Snail hatch Rate</h2>
-                <span class="metric-value label percentage" data-start="0" 
+                <p>The percentage of snail eggs that have hatched compared to all existing snails in the bed.</p>
+                <span class="metric-value label percentage good" data-start="0" 
                     data-end="{{ bed_performance.average_hatch_rate }}" data-duration="1500"></span>
             </div>
 
             <div class="metric-box">
                 <h2 class="metric-title">Forecasted Average Hatch Rate</h2>
+                <p>The forecasted percentage of snail eggs that will continue to hatch in the future. 
+                    In other words, how much will the snail amount for the snail bed increase.</p>
                 {% if forecast_hatch %}
-                    <span class="metric-value label days" data-start="0" 
+                    <span class="metric-value label percentage good" data-start="0" 
                         data-end="{{ forecast_hatch.forecasted_value }}" data-duration="3500"></span>
                     </div>
 
@@ -92,13 +95,15 @@
         <div class="dashboard">
             <div class="metric-box">
                 <h2 class="metric-title">Mortality Rate</h2>
+                <p>The proportion of snails in the snail bed that expire at each check time. How much the snail bed has decreased in population.</p>
                 <span class="metric-value label percentage mortality" data-start="0" data-end="{{ bed_performance.average_mortality_rate }}" data-duration="2000"></span>
             </div>
         </div>
         <div class="metric-box">
             <h2 class="metric-title">Forecasted Mortality Rate</h2>
+            <p>The forecasted proportion of snails in the snail bed that will expire at the next check. How much the snail bed will decrease in population.</p>
             {% if forecast_mortality %}
-                <span class="metric-value label days" data-start="0" 
+                <span class="metric-value label percentage mortality" data-start="0" 
                     data-end="{{ forecast_mortality.forecasted_value }}" data-duration="3500"></span>
                 </div>
                 
@@ -122,16 +127,19 @@
         <div class="dashboard d-flex flex-row gap-3">
             <div class="metric-box half">
             <h2 class="metric-title">Maturity Rate</h2>
+            <p>The proportion of snails in the snail bed that have reached maturity at check time.</p>
             <span class="metric-value label percentage" data-start="0" data-end="{{ bed_performance.average_maturity_rate }}" data-duration="3000"></span>
             </div>
             <div class="metric-box half">
                 <h2 class="metric-title">Average Days for Maturity</h2>
-                <span class="metric-value label" data-start="0" data-end="{{ bed_performance.actual_average_time_to_maturity }}" data-duration="3000"></span>
+                <p>A calculated average time of snails reaching maturity age from all records by staff.</p>
+                <span class="metric-value label days" data-start="0" data-end="{{ bed_performance.actual_average_time_to_maturity }}" data-duration="3000"></span>
             </div>
         </div>
         <div class="dashboard">
             <div class="metric-box">
                 <h2 class="metric-title">Forecasted Maturity Rate</h2>
+                <p>How long will the period of days be for the snails to reach maturity.</p>
                 {% if forecast_maturity %}
                     <span class="metric-value label days" data-start="0" 
                         data-end="{{ forecast_maturity.forecasted_value }}" data-duration="3500"></span>
