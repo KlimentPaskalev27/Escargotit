@@ -6,11 +6,10 @@
 {% endblock %}
 
 {% block scripts %}
+    <link href="{% static 'css/contact.css' %}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{% static 'js/contact.js' %}" defer></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" defer></script>
 {% endblock %}
-
-
 
 
 {% block content %}
@@ -171,51 +170,4 @@
         </div>
     </div>
 </div>
-
-
-<style>
-    .contact.container{
-        margin-bottom: 2rem;
-    }
-
-    .get-in-touch .card{
-        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
-        border-radius: 10px;
-        color: white;
-    }
-
-    /* Customize accordion headers */
-    .card {
-        background: linear-gradient(to bottom right, #6c63ff, #ffa659);
-        color: white; /* Set header text color to white */
-        margin: 1rem;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); 
-    }
-
-
-    /* Customize accordion headers */
-    .card-header {
-        background: transparent;
-        color: white; /* Set header text color to white */
-    }
-
-    /* Style accordion buttons */
-    .card-header h5 button {
-        
-        text-decoration: none; 
-        color: white;
-    }
-
-    .card-header h5 button:hover {
-        text-decoration: none; 
-        color: rgba(255, 255, 255, 0.601);
-    }
-
-    /* Customize active accordion header */
-    .card-header.active {
-        color:white;
-    }
-</style>
-
 {% endblock %}
