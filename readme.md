@@ -24,6 +24,10 @@ The Admin can also generate a future Forecast graph and forecasted data points f
 
 ## How to setup and run locally
 
+#### Youtube tutorial video
+https://www.youtube.com/watch?v=v3qARIiHepc
+
+
 You need to have pip installed on your PC.
 
 Donwload the repository as a ZIP and unzip on your PC.
