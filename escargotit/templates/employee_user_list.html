@@ -1,7 +1,12 @@
 {% extends "base/base.html" %}
+{% load static %}
 
 {% block title %}
     Employee Users List
+{% endblock %}
+
+{% block scripts %}
+    <link href="{% static 'css/employee-user-list.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
@@ -48,61 +53,4 @@
         <a class="btn btn-secondary" href="{% url 'custom_admin_panel' %}">Go Back</a>
     </div>
 </div>
-
-
-<style>
-    body {
-        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
-    }
-
-    .main.container {
-        background-color: white;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        padding: 1rem 3rem;
-    }
-
-    h1 {
-        color: #6c63ff;
-        padding: 1rem;
-        text-align: center;
-    }
-
-    .main ul {
-        padding-left: 0;
-        display: flex;
-        justify-content: center;
-    }
-
-    .main li {
-        list-style-type: none;
-        display: flex;
-        flex-direction: row;
-        align-content: center;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .main li p {
-        margin-bottom: 5px;
-        margin-top: 5px;
-    }
-
-    .main li a {
-        margin-left: 15px;
-    }
-    
-    .pagination {
-        justify-content: center;
-    }
-
-    #button-container {
-        padding: 1rem;
-        margin-bottom: 2rem;
-    }
-
-</style>
-
 {% endblock %}
