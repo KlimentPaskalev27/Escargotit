@@ -1,9 +1,17 @@
 {% extends "base/base.html" %}
+{% load static %}
 
-{% block title %}Terms and Conditions{% endblock %}
+{% block title %}
+    Terms and Conditions
+{% endblock %}
+
+{% block scripts %}
+    <link href="{% static 'css/privacy.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 
 {% block content %}
-<div class="terms container mt-5">
+<div class="main container mt-5">
     <h1 class="mb-4">Terms and Conditions</h1>
 
     <p class="lead">These Terms and Conditions ("Terms") govern your use of our website and services provided through the website (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use the Service.</p>
@@ -48,49 +56,5 @@
     <h2>11. Free Registration</h2>
     <p>Registration on our platform is free for all users. To get started, please <a href="{% url 'register' %}">register here</a>.</p>
 </div>
-
-<style>
-    /* Body styling */
-    body {
-        background-color: #f4f4f4; /* Light grey background */
-        
-    }
-
-    /* Container for the entire page */
-    .terms.container {
-        max-width: 800px; /* Max width for the text container */
-        margin: 0 auto; /* Center align the container */
-        font-size: 18px; /* Larger text */
-        color: #333; /* Text color */
-    }
-
-    /* Box styling for sections */
-    h2 {
-        background-color: #fff; /* White background for section headers */
-        border: 1px solid #ddd; /* Rounded borders for section headers */
-        border-radius: 10px; /* Rounded corners for section headers */
-        padding: 15px; /* Spacing inside section headers */
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Shadow for section headers */
-        margin-bottom: 20px; /* Margin between sections */
-    }
-
-    p {
-        padding: 20px; /* Spacing inside content sections */
-        margin-bottom: 30px; /* More margin between content sections */
-    }
-
-    /* Link styling */
-    a {
-        color: #007BFF; /* Link color */
-        text-decoration: underline; /* Underline for links */
-    }
-
-    /* Remove default list styles */
-    ul {
-        list-style-type: none;
-        padding-left: 0;
-    }
-</style>
-
 
 {% endblock %}
