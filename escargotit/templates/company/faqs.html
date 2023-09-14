@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block scripts %}
+    <link href="{% static 'css/faqs.css' %}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{% static 'js/faqs.js' %}" defer></script>
 {% endblock %}
 
@@ -32,52 +33,4 @@
 
     </div>
 </div>
-
-<style>
-
-    
-    body{
-        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
-        border-radius: 10px;
-        color: white;
-    }
-
-    .faqs.container {
-        padding-bottom: 2rem;
-    }
-
-    h2{
-        margin: 10px;
-    }
-
-    .accordion-item {
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
-        padding: 5px;
-        margin: 10px;
-    }
-
-
-    /* Customize accordion headers */
-    .accordion-header {
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
-        margin: 1rem;
-    }
-
-    /* Style accordion anchors (buttons) */
-    .accordion-header h2 button {
-        color: rgb(172, 16, 149); /* Set anchor text color to white */
-        text-decoration: none; /* Remove underline from anchor text */
-    }
-
-    /* Customize active accordion header */
-    .accordion-header.active {
-        background-color:rgb(172, 16, 149); /* Set background color to purple for active header */
-    }
-
-    .accordion-body {
-        color:purple;
-    }
-
-</style>
 {% endblock %}
