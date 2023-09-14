@@ -294,6 +294,7 @@ def barchart(request, snail_bed_id):
     plot_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     context = {
+        'snail_bed': snail_bed,
         'plot_base64': plot_base64,
         "correlations": correlation_coefficients,
     }
