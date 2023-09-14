@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     generateHatchForecastButton.addEventListener('click', function(event) {
         let width = 0;
-        const interval = 200; // Interval in milliseconds
-        const step = 1; // Increase width by 1% per step
+        const interval = 100; // Interval in milliseconds
+        const step = 0.25; // Increase width by 1% per step
 
         const animation = setInterval(function() {
             if (width >= 100) {
