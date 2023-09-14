@@ -102,12 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             //  generate Bed Performance button
             document.getElementById("box-details").innerHTML = 
-            `<a class="btn btn-secondary" id="box-details-link">View Performance</a>`;
+            `<a class="btn btn-success" id="box-details-link">View Performance</a>`;
             document.getElementById("box-details-link").href = "/bed_performance/" + boxId;
 
             // generate API button for snail bed details
              document.getElementById("box-api").innerHTML = 
-            `<a class="btn btn-warning" id="box-api-link" target="_blank">Export as JSON</a>`;
+            `<a class="btn btn-warning btn-sm" id="box-api-link" target="_blank">Export as JSON</a>`;
             document.getElementById("box-api-link").href = "/api/specific-snail-bed/" + boxId;
             
             
