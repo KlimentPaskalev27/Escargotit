@@ -486,7 +486,8 @@ class ForecastedMortalityRate(models.Model):
 
 class ForecastedMaturityRate(models.Model):
     snail_bed = models.ForeignKey(SnailBed, on_delete=models.CASCADE)
-    forecasted_value = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    forecasted_value = models.DecimalField(max_digits=10, decimal_places=6, null=True, blank=True)
+    #forecasted_value has specific decimals and digits to match forecasted dataframe cell values, otherwise error
     forecasted_value_pyaf = PickledObjectField()
 
     @staticmethod
@@ -500,7 +501,7 @@ class ForecastedMaturityRate(models.Model):
             closest_forecast = combined_forecast.iloc[first_forecasted_week]['yhat1']
         else:
             # Handle the case where there are no forecasts in the future
-            closest_forecast = 0
+            closest_forecast = None
         return closest_forecast
 
     @staticmethod
