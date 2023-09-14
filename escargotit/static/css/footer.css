@@ -1,6 +1,12 @@
 footer .list-unstyled a {
     text-decoration: none;
 }
+
+footer ul a:hover {
+    opacity: 0.7;
+    transition: opacity 0.3s ease-in-out;
+}
+
 footer .info p {
     color: white;
 }
