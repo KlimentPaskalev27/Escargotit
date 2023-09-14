@@ -1,6 +1,29 @@
-<!-- Used by several view functions for different Form Classes for object creation -->
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}
+    Enter Snail Bed Data
+{% endblock %}
+
+
+{% block content %}
+<div class="main container mt-4">
+
+    <!-- Used by several view functions for different Form Classes for object creation -->
+    <!-- can access this in Log Data on dashboard and then any of those links use this to add Hatch, Feed ... -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="button-container">
+        <a class="btn btn-secondary" href="{% url 'dashboard' %}">Go Back</a>
+    </div>
+
+</div>
+
+<link href="{% static 'css/form-template.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+
