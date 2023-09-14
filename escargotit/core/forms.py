@@ -10,6 +10,15 @@ class TimeTakenToMatureForm(forms.ModelForm):
         model = TimeTakenToMature
         fields = ['snail_hatched', 'snail_matured', 'snails_matured_count']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['snails_matured_count'].label = 'Snails matured count'
+        self.fields['snail_hatched'].label = 'Date and Time snail batch hatched'
+        self.fields['snail_matured'].label = 'Date and Time snail batched matured'
+        # add a widget to the form allows user to select calendar dates and times in UI
+        self.fields['snail_hatched'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
+        self.fields['snail_matured'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
+
 class SnailBedForm(forms.ModelForm):
     class Meta:
         model = SnailBed
@@ -98,7 +107,8 @@ class SnailHatchRateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['newly_hatched_snails'].label = 'Newly Hatched Snails'
         self.fields['datetime'].label = 'Date and Time'
-        #self.fields['datetime'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
+        # add a widget to the form allows user to select calendar dates and times in UI
+        self.fields['datetime'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
 
 class SnailMortalityRateForm(forms.ModelForm):
     class Meta:
@@ -109,7 +119,8 @@ class SnailMortalityRateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['expired_snail_amount'].label = 'Expired Snail Amount'
         self.fields['datetime'].label = 'Date and Time'
-        #self.fields['datetime'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
+        # add a widget to the form allows user to select calendar dates and times in UI
+        self.fields['datetime'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
 
 class SnailFeedForm(forms.ModelForm):
     class Meta:
@@ -119,7 +130,9 @@ class SnailFeedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['grams_feed_given'].label = 'Grams of Feed Given'
-        self.fields['consumed_on'].label = 'Date'
+        self.fields['consumed_on'].label = 'Date and Time'
+        # add a widget to the form allows user to select calendar dates and times in UI
+        self.fields['consumed_on'].widget = forms.TextInput(attrs={'type': 'datetime-local'})
 
 class DeleteEmployeeForm(forms.Form):
     employee_to_delete = forms.ModelChoiceField(
