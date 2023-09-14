@@ -1,0 +1,21 @@
+nav.navbar.second {
+    background-color: rgb(222, 221, 221) !important;
+}
+nav.navbar.second > div.container > div.collapse {
+    flex-direction: row-reverse !important;
+}
+
+/* style the loading circle of Generate Dummy Data  */
+#loading-spinner {
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto;
+    top: 40%;
+    z-index: 1000;
+}
+.spinner-border {
+    width: 10rem;
+    height: 10rem;
+}

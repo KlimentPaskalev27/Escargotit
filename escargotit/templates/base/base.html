@@ -7,6 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EscargotIT | {% block title %}{% endblock %}</title>
+    <!-- add favicon -->
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png">
     <!-- jQuery -->
     <script type="text/javascript" src="{% static 'js/jquery-3.6.4.min.js' %}" defer></script>
     <!-- Load Bootstrap CSS -->
@@ -60,8 +62,6 @@
                         <a class="nav-link" href="{% url 'custom_admin_panel' %}">Manage Employees</a>
                     </li>
 
-                    
-
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-user-circle"></i> APIs <i class="fa fa-chevron-down"></i>
@@ -93,56 +93,6 @@
     <div id="loading-spinner" class="text-center" style="display: none;">
         <div class="spinner-border text-primary" role="status"></div>
     </div>
-    
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Get a reference to the loading spinner element
-            const spinner = document.getElementById("loading-spinner");
-    
-            // Get a reference to the "Generate Dummy Data" link
-            const generateDummyDataLink = document.querySelector('a[href="{% url "create_snailbeds" %}"]');
-    
-            // Add a click event listener to the link
-            generateDummyDataLink.addEventListener("click", function (event) {
-                // Prevent the default link behavior (page navigation)
-                event.preventDefault();
-    
-                // Show the loading spinner
-                spinner.style.display = "inline-block";
-    
-                // Redirect the user after a short delay (simulating a delay)
-                setTimeout(function () {
-                    window.location.href = generateDummyDataLink.href;
-                }, 2000); // Adjust the delay time as needed
-            });
-        });
-    </script>
-    
-
-    <style>
-        nav.navbar.second {
-            background-color: rgb(222, 221, 221) !important;
-        }
-        nav.navbar.second > div.container > div.collapse {
-            flex-direction: row-reverse !important;
-        }
-
-        /* style the loading circle of Generate Dummy Data  */
-        #loading-spinner {
-            position: absolute;
-            left: 0; 
-            right: 0; 
-            margin-left: auto; 
-            margin-right: auto;
-            top: 40%;
-            z-index: 1000;
-        }
-        .spinner-border {
-            width: 10rem;
-            height: 10rem;
-        }
-    </style>
 
     <!-- here insert the body content of each page -->
     {% block content %}{% endblock %}
@@ -150,7 +100,34 @@
     <!-- Include the footer template -->
     {% include 'base/footer.html' %}
 
+    <!-- css for the nav -->
+    <link href="{% static 'css/base.css' %}" rel="stylesheet" type="text/css">
+
     <!-- Load Bootstrap JavaScript and jQuery (optional) -->
     {% bootstrap_javascript %}
+
+    <!-- loading circle for Dummy data gen btn -->
+    <script defer>
+        // this triggers the loading circle when users click Generate Dummy Data
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get a reference to the loading spinner element
+            const spinner = document.getElementById("loading-spinner");
+
+            // Get a reference to the "Generate Dummy Data" link
+            const generateDummyDataLink = document.querySelector('a[href="{% url "create_snailbeds" %}"]');
+
+            // Add a click event listener to the link
+            generateDummyDataLink.addEventListener("click", function (event) {
+                // Prevent the default link behavior (page navigation)
+                event.preventDefault();
+
+                // Show the loading spinner
+                spinner.style.display = "inline-block";
+
+                // Redirect the user after a short delay (simulating a delay)
+                window.location.href = generateDummyDataLink.href;
+            });
+        });
+    </script>
 </body>
 </html>
