@@ -150,3 +150,34 @@ body{
     text-decoration: none;
     color: inherit;
 }
+
+.modal-body ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    align-content: center;
+}
+
+.modal-body li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    align-content: center;
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+.modal-body p {
+    color: black;
+    text-align: center;
+    font-size: 1.4rem;
+}
+
+
+.modal-body a.popup:hover {
+    opacity: 0.7;
+    transition: opacity 0.3s ease-in-out;
+
+}
