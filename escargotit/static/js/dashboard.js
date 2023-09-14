@@ -68,8 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 `<p id="box-hatch-text"></p>
                 <a id="box-hatch-history" class="btn btn-primary btn-sm">View Hatch History</a>`
                 document.getElementById("box-hatch-history").href = "/view_hatch_rate_history/" + boxId;
-                document.getElementById("box-hatch-text").innerText = "Hatch rate: " + boxHatch;
-            } else { document.getElementById("box-hatch").innerText = "Hatch rate: No data available"; }
+                document.getElementById("box-hatch-text").innerText = "Latest Hatch rate: " + boxHatch;
+            } else { document.getElementById("box-hatch").innerText = "Latest Hatch rate: No data available"; }
 
 
 
@@ -78,8 +78,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 `<p id="box-mortality-text"></p>
                 <a id="box-mortality-history" class="btn btn-primary btn-sm">View Mortality History</a>`
                 document.getElementById("box-mortality-history").href = "/view_mortality_rate_history/" + boxId;
-                document.getElementById("box-mortality-text").innerText = "Mortality rate: " + boxMortality;
-            } else { document.getElementById("box-mortality").innerText = "Hatch rate: No data available";}
+                document.getElementById("box-mortality-text").innerText = "Latest Mortality rate: " + boxMortality;
+            } else { document.getElementById("box-mortality").innerText = "Latest Mortality rate: No data available";}
 
 
             
@@ -88,8 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 `<p id="box-maturity-text"></p>
                 <a id="box-maturity-history" class="btn btn-primary btn-sm">View Maturity History</a>`
                 document.getElementById("box-maturity-history").href = "/view_maturity_rate_history/" + boxId;
-                document.getElementById("box-maturity-text").innerText = "Maturity rate: " + boxMaturity; 
-            } else { document.getElementById("box-maturity").innerText = "Maturity rate: No data available";}
+                document.getElementById("box-maturity-text").innerText = "Latest Maturity rate: " + boxMaturity; 
+            } else { document.getElementById("box-maturity").innerText = "Latest Maturity rate: No data available";}
 
             //  Generate Snail Feed statistics and History button
             if (boxFeed != "None") { 
