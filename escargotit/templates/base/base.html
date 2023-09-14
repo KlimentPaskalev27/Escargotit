@@ -9,12 +9,39 @@
     <title>EscargotIT | {% block title %}{% endblock %}</title>
     <!-- add favicon -->
     <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png">
-    <!-- jQuery -->
-    <script type="text/javascript" src="{% static 'js/jquery-3.6.4.min.js' %}" defer></script>
-    <!-- Load Bootstrap CSS -->
-    {% bootstrap_css %}
     <!-- here insert any page-specific head tag scripts or stylesheets -->
     {% block scripts %}{% endblock %}
+    <!-- jQuery -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.6.4.min.js' %}" defer></script>
+    <!-- Load Bootstrap JavaScript and jQuery (optional) -->
+    {% bootstrap_javascript %}
+    <!-- loading circle for Dummy data gen btn -->
+    <script defer>
+        // this triggers the loading circle when users click Generate Dummy Data
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get a reference to the loading spinner element
+            const spinner = document.getElementById("loading-spinner");
+
+            // Get a reference to the "Generate Dummy Data" link
+            const generateDummyDataLink = document.querySelector('a[href="{% url "create_snailbeds" %}"]');
+
+            // Add a click event listener to the link
+            generateDummyDataLink.addEventListener("click", function (event) {
+                // Prevent the default link behavior (page navigation)
+                event.preventDefault();
+
+                // Show the loading spinner
+                spinner.style.display = "inline-block";
+
+                // Redirect the user after a short delay (simulating a delay)
+                window.location.href = generateDummyDataLink.href;
+            });
+        });
+    </script>
+    <!-- css for the nav -->
+    <link href="{% static 'css/base.css' %}" rel="stylesheet" type="text/css">
+    <!-- Load Bootstrap CSS -->
+    {% bootstrap_css %}
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -99,35 +126,5 @@
 
     <!-- Include the footer template -->
     {% include 'base/footer.html' %}
-
-    <!-- css for the nav -->
-    <link href="{% static 'css/base.css' %}" rel="stylesheet" type="text/css">
-
-    <!-- Load Bootstrap JavaScript and jQuery (optional) -->
-    {% bootstrap_javascript %}
-
-    <!-- loading circle for Dummy data gen btn -->
-    <script defer>
-        // this triggers the loading circle when users click Generate Dummy Data
-        document.addEventListener("DOMContentLoaded", function () {
-            // Get a reference to the loading spinner element
-            const spinner = document.getElementById("loading-spinner");
-
-            // Get a reference to the "Generate Dummy Data" link
-            const generateDummyDataLink = document.querySelector('a[href="{% url "create_snailbeds" %}"]');
-
-            // Add a click event listener to the link
-            generateDummyDataLink.addEventListener("click", function (event) {
-                // Prevent the default link behavior (page navigation)
-                event.preventDefault();
-
-                // Show the loading spinner
-                spinner.style.display = "inline-block";
-
-                // Redirect the user after a short delay (simulating a delay)
-                window.location.href = generateDummyDataLink.href;
-            });
-        });
-    </script>
 </body>
 </html>
