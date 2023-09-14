@@ -1,0 +1,49 @@
+body {
+        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
+    }
+
+    .main.container {
+        background-color: white;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        min-height: 60rem;
+        height: fit-content;
+        padding: 1rem 4rem;
+    }
+    
+    h1 {
+        color: #6c63ff;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    /* Define a custom class for list items with styled bullets */
+    .custom-list li {
+        list-style: none; /* Remove the default list-style */
+        position: relative; /* Allow absolute positioning for the custom bullet */
+        padding: 0.5rem; /* Add some space to the left of the text */
+
+        display: flex;
+        align-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+    }
+
+    /* Style the custom bullet (circle) */
+    .custom-list li::before {
+        content: ''; /* Add an empty content before the list item */
+        display: block; /* Make it a block element */
+        width: 20px; /* Set the width of the circle */
+        height: 20px; /* Set the height of the circle */
+        background: linear-gradient(to bottom left, #6c63ff, #ffa659); /* Define the gradient */
+        border-radius: 50%; /* Create a circular shape */
+        margin-right: 1rem; 
+    }
+
+
+    #button-container {
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }

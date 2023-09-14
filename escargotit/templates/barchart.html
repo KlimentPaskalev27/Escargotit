@@ -1,15 +1,20 @@
 {% extends "base/base.html" %}
+{% load static %}
 
 {% block title %}
-    Bar Chart
+    Correlations and Trend Chart for {{ snail_bed.bed_name }}
+{% endblock %}
+
+{% block scripts %}
+    <link href="{% static 'css/barchart.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
+<div class="main container mt-4">
+    <h1>Correlations and Trend Chart for {{ snail_bed.bed_name }}</h1>
 
-<div class="container mt-4">
-    <h1>Bar Chart with Trendline</h1>
-
-    <ul>
+    <h3>Correlation coefficients</h3>
+    <ul class="custom-list">
     {% for correlation in correlations %}
         <li>{{correlation.name}}: {{correlation.coefficient}}</li>
     {% endfor %}
@@ -29,11 +34,11 @@
             1 implies that as one variable increases, the other tends to increase, and a value near 0 
             indicates that there is no clear linear relationship between the variables.</p>
     </div>
-
-
     <div>
         <img src="data:image/png;base64,{{ plot_base64 }}" alt="Bar Chart with Trendline">
     </div>
-
+    <div id="button-container">
+        <a class="btn btn-secondary" href="{% url 'dashboard' %}">Go Back</a>
+    </div>
 </div>
 {% endblock %}
