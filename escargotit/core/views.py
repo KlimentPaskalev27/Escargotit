@@ -721,15 +721,15 @@ def create_snailbeds(request):
         snail_beds.append(snail_bed)
 
         # Create SnailHatchRate instances
-        for i in range(30):
+        for i in range(50):
             SnailHatchRate.objects.create(
                 snail_bed=snail_bed,
-                newly_hatched_snails=random.randint(200, 1200), # hatch rate should in theory be much larger than mortality
+                newly_hatched_snails=random.randint(200, 1100), # hatch rate should in theory be much larger than mortality
                 datetime=current_time + timedelta(weeks=i),# increment to occur each week
             )
 
         # Create SnailMortalityRate instances
-        for i in range(30):
+        for i in range(50):
             if snail_bed.snail_amount <= 0:
                 SnailMortalityRate.objects.create(
                     snail_bed=snail_bed,
@@ -744,7 +744,7 @@ def create_snailbeds(request):
                 )
 
         # Create SnailFeed instances
-        for i in range(30):
+        for i in range(50):
             SnailFeed.objects.create(
                 snail_bed=snail_bed,
                 consumed_on=current_time + timedelta(weeks=i), # increment to occur each week
@@ -752,7 +752,7 @@ def create_snailbeds(request):
             )
 
         # Create TimeTakenToMature instances
-        for i in range(30):
+        for i in range(50):
             days_to_mature = random.randint(20, 40)
             snails_matured_count = random.randint(100, 1000)
             snail_hatched = current_time + timedelta(weeks=i) # increment to occur each week
@@ -766,4 +766,3 @@ def create_snailbeds(request):
 
     messages.success(request, "We've successfully created Snail Bed dummy data and added it to your dashboard!")
     return HttpResponseRedirect(reverse('dashboard'))
-

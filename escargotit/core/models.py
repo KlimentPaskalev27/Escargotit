@@ -8,6 +8,7 @@ from neuralprophet import NeuralProphet # used to forecast data based on previou
 from picklefield.fields import PickledObjectField # pickle together objects and data to be passed in
 from django.contrib.auth.models import User # django User class ready to use
 from django.utils import timezone
+from datetime import datetime
 from decimal import Decimal
 
 class AdminUser(models.Model):
@@ -349,19 +350,17 @@ class ForecastedHatchRate(models.Model):
     forecasted_value_pyaf = PickledObjectField()
 
     @staticmethod
-    def calculate_forecast(snail_bed):
-        # Get all previous records for the specific snail_bed
-        previous_records = SnailHatchRate.objects.filter(snail_bed=snail_bed)
-
-        # Calculate the forecasted value based on previous records (example: average)
-        total_records = previous_records.count()
-        if total_records > 0:
-            sum_hatch_rate = sum([record.hatch_rate_percentage for record in previous_records])
-            forecasted_value = sum_hatch_rate / total_records
+    def calculate_forecast(snail_bed, combined_forecast):
+        snail_hatch_rate_count = SnailHatchRate.objects.filter(snail_bed=snail_bed).count()
+        # get the number of existing records so that we can show the first that is forecasted after the existing ones
+        if not combined_forecast.empty:
+            first_forecasted_week = snail_hatch_rate_count + 1
+            # yhat1 is the column in the dataframe that holds the forecasted values
+            closest_forecast = combined_forecast.iloc[first_forecasted_week]['yhat1']
         else:
-            forecasted_value = 0
-
-        return forecasted_value
+            # Handle the case where there are no forecasts in the future
+            closest_forecast = None
+        return closest_forecast
 
     @staticmethod
     def calculate_forecast_pyaf(snail_bed):
@@ -376,10 +375,18 @@ class ForecastedHatchRate(models.Model):
         data.rename(columns={'date_only': 'ds', 'newly_hatched_snails': 'y'}, inplace=True)
 
         m = NeuralProphet()
-        model = m.fit(data, freq='D', epochs=1000)
+
+        #make the forecast points occur once a week instead of every day in the NeuralProphet model, 
+        #set the freq parameter to 'W' (weekly frequency) when fitting the model 
+        model = m.fit(data, freq='W', epochs=500)
         #epochs (number of passes that the algorithm has to complete during training)
+
         forecast1 = m.predict(data)
-        future = m.make_future_dataframe(data, periods=60) # periods is days
+
+        # periods parameter below is how many frequency periods to predict ahead
+        # in this case is weeks, so make only 8 weeks ahead 2months
+        future = m.make_future_dataframe(data, periods=8)
+    
         forecast2 = m.predict(future)
         #https://medium.com/analytics-vidhya/neuralprophet-a-neural-network-based-time-series-model-3c74af3b0ec6
 
@@ -387,11 +394,12 @@ class ForecastedHatchRate(models.Model):
         combined = pd.concat([forecast1, forecast2])
         fig_forecast = m.plot(combined)
         forecasted_value_pyaf = fig_forecast
-        return forecasted_value_pyaf
+
+        return forecasted_value_pyaf, combined
 
     def save(self, *args, **kwargs):
-        self.forecasted_value = self.calculate_forecast(self.snail_bed)
-        self.forecasted_value_pyaf = self.calculate_forecast_pyaf(self.snail_bed)
+        self.forecasted_value_pyaf, combined_forecast = self.calculate_forecast_pyaf(self.snail_bed)
+        self.forecasted_value = self.calculate_forecast(self.snail_bed, combined_forecast)
         super().save(*args, **kwargs)
 
     def __float__(self):
@@ -403,7 +411,7 @@ class ForecastedHatchRate(models.Model):
         return status
 
     def __str__(self):
-        status = str(self.forecasted_value) + "%"
+        status = str(self.forecasted_value) + " snails"
         return status
 
 class ForecastedMortalityRate(models.Model):
@@ -412,19 +420,17 @@ class ForecastedMortalityRate(models.Model):
     forecasted_value_pyaf = PickledObjectField()
 
     @staticmethod
-    def calculate_forecast(snail_bed):
-        # Get all previous records for the specific snail_bed
-        previous_records = SnailMortalityRate.objects.filter(snail_bed=snail_bed)
-
-        # Calculate the forecasted value based on previous records (example: average)
-        total_records = previous_records.count()
-        if total_records > 0:
-            sum_mortality_rate = sum([record.mortality_rate_percentage for record in previous_records])
-            forecasted_value = sum_mortality_rate / total_records
+    def calculate_forecast(snail_bed, combined_forecast):
+        snail_mortality_rate_count = SnailMortalityRate.objects.filter(snail_bed=snail_bed).count()
+        # get the number of existing records so that we can show the first that is forecasted after the existing ones
+        if not combined_forecast.empty:
+            first_forecasted_week = snail_mortality_rate_count + 1
+            # yhat1 is the column in the dataframe that holds the forecasted values
+            closest_forecast = combined_forecast.iloc[first_forecasted_week]['yhat1']
         else:
-            forecasted_value = 0
-
-        return forecasted_value
+            # Handle the case where there are no forecasts in the future
+            closest_forecast = None
+        return closest_forecast
 
     @staticmethod
     def calculate_forecast_pyaf(snail_bed):
@@ -439,10 +445,18 @@ class ForecastedMortalityRate(models.Model):
         data.rename(columns={'date_only': 'ds', 'expired_snail_amount': 'y'}, inplace=True)
 
         m = NeuralProphet()
-        model = m.fit(data, freq='D', epochs=1000)
+
+        #make the forecast points occur once a week instead of every day in the NeuralProphet model, 
+        #set the freq parameter to 'W' (weekly frequency) when fitting the model 
+        model = m.fit(data, freq='W', epochs=500)
         #epochs (number of passes that the algorithm has to complete during training)
+
         forecast1 = m.predict(data)
-        future = m.make_future_dataframe(data, periods=60) # periods is days
+
+        # periods parameter below is how many frequency periods to predict ahead
+        # in this case is weeks, so make only 8 weeks ahead 2months
+        future = m.make_future_dataframe(data, periods=8)
+    
         forecast2 = m.predict(future)
         #https://medium.com/analytics-vidhya/neuralprophet-a-neural-network-based-time-series-model-3c74af3b0ec6
 
@@ -450,11 +464,12 @@ class ForecastedMortalityRate(models.Model):
         combined = pd.concat([forecast1, forecast2])
         fig_forecast = m.plot(combined)
         forecasted_value_pyaf = fig_forecast
-        return forecasted_value_pyaf
+
+        return forecasted_value_pyaf, combined
 
     def save(self, *args, **kwargs):
-        self.forecasted_value = self.calculate_forecast(self.snail_bed)
-        self.forecasted_value_pyaf = self.calculate_forecast_pyaf(self.snail_bed)
+        self.forecasted_value_pyaf, combined_forecast = self.calculate_forecast_pyaf(self.snail_bed)
+        self.forecasted_value = self.calculate_forecast(self.snail_bed, combined_forecast)
         super().save(*args, **kwargs)
 
     def __float__(self):
@@ -466,7 +481,7 @@ class ForecastedMortalityRate(models.Model):
         return status
 
     def __str__(self):
-        status = str(self.forecasted_value) + "%"
+        status = str(self.forecasted_value) + " snails"
         return status
 
 class ForecastedMaturityRate(models.Model):
@@ -475,22 +490,18 @@ class ForecastedMaturityRate(models.Model):
     forecasted_value_pyaf = PickledObjectField()
 
     @staticmethod
-    def calculate_forecast(snail_bed):
-        # Get all previous records for the specific snail_bed
-        previous_records = TimeTakenToMature.objects.filter(snail_bed=snail_bed)
-
-        # Calculate the forecasted value based on previous records (example: average)
-        total_records = previous_records.count()
-        if total_records > 0:
-            #sum_maturity_rate = sum([record.maturity_percentage for record in previous_records])
-            # use a conditional expression to replace None with 0
-            maturity_percentages = [record.maturity_percentage if record.maturity_percentage is not None else 0 for record in previous_records]
-            sum_maturity_rate = sum(maturity_percentages)
-            forecasted_value = sum_maturity_rate / total_records
+    def calculate_forecast(snail_bed, combined_forecast):
+        print(combined_forecast)
+        snail_maturity_rate_count = TimeTakenToMature.objects.filter(snail_bed=snail_bed).count()
+        # get the number of existing records so that we can show the first that is forecasted after the existing ones
+        if not combined_forecast.empty:
+            first_forecasted_week = snail_maturity_rate_count + 1
+            # yhat1 is the column in the dataframe that holds the forecasted values
+            closest_forecast = combined_forecast.iloc[first_forecasted_week]['yhat1']
         else:
-            forecasted_value = 0
-
-        return forecasted_value
+            # Handle the case where there are no forecasts in the future
+            closest_forecast = 0
+        return closest_forecast
 
     @staticmethod
     def calculate_forecast_pyaf(snail_bed):
@@ -509,10 +520,18 @@ class ForecastedMaturityRate(models.Model):
         data.drop_duplicates(subset=['ds'], keep='first', inplace=True)
 
         m = NeuralProphet()
-        model = m.fit(data, freq='D', epochs=1000)
+
+        #make the forecast points occur once a week instead of every day in the NeuralProphet model, 
+        #set the freq parameter to 'W' (weekly frequency) when fitting the model 
+        model = m.fit(data, freq='W', epochs=500)
         #epochs (number of passes that the algorithm has to complete during training)
+
         forecast1 = m.predict(data)
-        future = m.make_future_dataframe(data, periods=60) # periods is days
+
+        # periods parameter below is how many frequency periods to predict ahead
+        # in this case is weeks, so make only 8 weeks ahead 2months
+        future = m.make_future_dataframe(data, periods=8)
+    
         forecast2 = m.predict(future)
         #https://medium.com/analytics-vidhya/neuralprophet-a-neural-network-based-time-series-model-3c74af3b0ec6
 
@@ -520,11 +539,11 @@ class ForecastedMaturityRate(models.Model):
         combined = pd.concat([forecast1, forecast2])
         fig_forecast = m.plot(combined)
         forecasted_value_pyaf = fig_forecast
-        return forecasted_value_pyaf
+        return forecasted_value_pyaf, combined
 
     def save(self, *args, **kwargs):
-        self.forecasted_value = self.calculate_forecast(self.snail_bed)
-        self.forecasted_value_pyaf = self.calculate_forecast_pyaf(self.snail_bed)
+        self.forecasted_value_pyaf, combined_forecast = self.calculate_forecast_pyaf(self.snail_bed)
+        self.forecasted_value = self.calculate_forecast(self.snail_bed, combined_forecast)
         super().save(*args, **kwargs)
 
     def __float__(self):
@@ -536,5 +555,5 @@ class ForecastedMaturityRate(models.Model):
         return status
 
     def __str__(self):
-        status = str(self.forecasted_value) + "%"
+        status = str(self.forecasted_value) + " snails"
         return status

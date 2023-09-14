@@ -66,16 +66,17 @@
             </div>
 
             <div class="metric-box">
-                <h2 class="metric-title">Forecasted Average Hatch Rate</h2>
-                <p>The forecasted percentage of snail eggs that will continue to hatch in the future. 
-                    In other words, how much will the snail amount for the snail bed increase.</p>
+                <h2 class="metric-title">Forecasted Next Hatch Amount</h2>
+                <p>The next forecasted amount of snails that this snail bed will produce by hatching. 
+                    This is the value of the first forecasted week following the last actual recorded value for the bed.</p>
                 {% if forecast_hatch %}
-                    <span class="metric-value label percentage good" data-start="0" 
+                    <span class="metric-value label good" data-start="0" 
                         data-end="{{ forecast_hatch.forecasted_value }}" data-duration="3000"></span>
                     </div>
 
                     <div class="metric-box">
                         <h3>Forecasted amount of new snails hatched</h3>
+                        <p>Forecasted data is for the following 8 weeks after last input record.</p>
                         <div class="dataframe-table">
                             {{ html_table_hatch | safe }}
                         </div>
@@ -100,15 +101,17 @@
             </div>
         </div>
         <div class="metric-box">
-            <h2 class="metric-title">Forecasted Mortality Rate</h2>
-            <p>The forecasted proportion of snails in the snail bed that will expire at the next check. How much the snail bed will decrease in population.</p>
+            <h2 class="metric-title">Forecasted Next Mortality Amount</h2>
+            <p>The forecasted number of snails in the snail bed that will expire at the next check. 
+                How much the snail bed will decrease in population.</p>
             {% if forecast_mortality %}
-                <span class="metric-value label percentage mortality" data-start="0" 
+                <span class="metric-value label mortality" data-start="0" 
                     data-end="{{ forecast_mortality.forecasted_value }}" data-duration="2500"></span>
                 </div>
                 
                 <div class="metric-box">
                     <h3>Forecasted amount of expired snails</h3>
+                    <p>Forecasted data is for the following 8 weeks after last input record.</p>
                     <div class="dataframe-table">
                         {{ html_table_mortality | safe }}
                     </div>
@@ -138,15 +141,16 @@
         </div>
         <div class="dashboard">
             <div class="metric-box">
-                <h2 class="metric-title">Forecasted Maturity Rate</h2>
-                <p>The forecasted proportion of the snails in this snail bed that will reach maturity.</p>
+                <h2 class="metric-title">Forecasted Next Amount at Maturity</h2>
+                <p>The forecasted amount of the snails in this snail bed that will reach maturity.</p>
                 {% if forecast_maturity %}
-                    <span class="metric-value label percentage" data-start="0" 
+                    <span class="metric-value label" data-start="0" 
                         data-end="{{ forecast_maturity.forecasted_value }}" data-duration="3000"></span>
                     </div>
                     
                     <div class="metric-box">
                         <h3>Forecasted snails to reach maturity (marketable age)</h3>
+                        <p>Forecasted data is for the following 8 weeks after last input record.</p>
                         <div class="dataframe-table">
                             {{ html_table_maturity | safe }}
                         </div>
