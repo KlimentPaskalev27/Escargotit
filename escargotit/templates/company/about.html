@@ -5,6 +5,10 @@
     About Us
 {% endblock %}
 
+{% block scripts %}
+    <link href="{% static 'css/about.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 
 {% block content %}
 <div class="about container mt-5">
@@ -52,41 +56,4 @@
         <p>At our company, we ensure pay equity. We maintain a low pay gap and offer competitive compensation to all team members, regardless of gender, race, or background.</p>
     </section>
 </div>
-
-
-
-
-<style>
-
-    body{
-        background: linear-gradient(to bottom left, #6c63ff, #ffa659);
-    }
-
-    /* Customize accordion headers */
-    .about.container {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); 
-        padding: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    h1 {
-        text-align: center;
-    }
-
-
-    /* Custom CSS Styles */
-    h2 {
-        color: #6c63ff; /* Change heading text color */
-    }
-
-    p {
-        color: #333; /* Change paragraph text color */
-        margin-bottom: 20px; /* Add margin to paragraphs */
-    }
-
-</style>
-
-
 {% endblock %}
