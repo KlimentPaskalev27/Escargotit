@@ -245,7 +245,7 @@ def barchart(request, snail_bed_id):
     maturity_rate_change = maturity_rate_change[:min_length]
 
     # Create the overlapping bar chart
-    plt.figure(figsize=(8, 4))
+    plt.figure(figsize=(12, 6))
     plt.plot(snail_feeds.values_list('consumed_on', flat=True)[:min_length], grams_feed_change, alpha=0.5, label='Grams Feed Change (%)')
     plt.plot(hatch_rates.values_list('datetime', flat=True)[:min_length], hatch_rate_change, alpha=0.5, label='Hatch Rate Change (%)')
     plt.plot(mortality_rates.values_list('datetime', flat=True)[:min_length], mortality_rate_change, alpha=0.5, color='red', label='Mortality Rate (%)')
