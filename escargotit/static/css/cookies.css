@@ -1,0 +1,37 @@
+
+body {
+    background: linear-gradient(to bottom left, #6c63ff, #ffa659);
+}
+
+.cookies.container {
+    font-size: 18px;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f4f4f4;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 2rem;
+}
+
+h2 {
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+p {
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+a {
+    color: #007BFF;
+    text-decoration: underline;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+} 
