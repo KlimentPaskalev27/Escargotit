@@ -339,7 +339,7 @@ def custom_admin_panel(request):
             if SnailBed.objects.filter(employee=employee_to_delete).exists():
                 messages.error(request, f'Employee {username} is assigned to one or more Snail Beds. Unassign them first before deleting.')
             else:
-                employee_to_delete.delete()
+                user_to_delete = employee_to_delete.user
                 user_to_delete.delete()
                 messages.success(request, f'Employee {username} has been deleted.')
 
