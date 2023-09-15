@@ -12,6 +12,10 @@ body{
     margin-bottom: 10rem;
 }
 
+.main.container.logout {
+    margin-bottom: 20rem;
+}
+
 h1, p {
     text-align: center;
 }
