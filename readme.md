@@ -76,3 +76,8 @@ Now left to run locally
 - python manage.py runserver 127.0.0.1:8080 
 Now if there are no errors open https://127.0.0.1:8080  in your browser and you should see EscargotIT running. 
 Yay!
+
+### Testing
+The application has 37 unit tests prepared using Faker and Factory Boy packages, to create a dummy database and test each field for each model class.
+To run the test, in terminal, navigate inside the outer escargotit repository and run:
+- python manage.py test
